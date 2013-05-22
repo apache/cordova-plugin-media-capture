@@ -2,9 +2,37 @@
 
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
-id="org.apache.cordova.core">
+id="org.apache.cordova.core.Capture"
     version="0.1.0">
     <name>Capture</name>
+
+    <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
+        <clobbers target="CaptureAudioOptions" />
+    </js-module>
+    
+    <js-module src="www/CaptureImageOptions.js" name="CaptureImageOptions">
+        <clobbers target="CaptureImageOptions" />
+    </js-module>
+
+    <js-module src="www/CaptureVideoOptions.js" name="CaptureVideoOptions">
+        <clobbers target="CaptureVideoOptions" />
+    </js-module>
+        
+    <js-module src="www/CaptureError.js" name="CaptureError">
+        <clobbers target="CaptureError" />
+    </js-module>
+
+    <js-module src="www/MediaFileData.js" name="MediaFileData">
+        <clobbers target="MediaFileData" />
+    </js-module>
+        
+    <js-module src="www/MediaFile.js" name="MediaFile">
+        <clobbers target="MediaFile" />
+    </js-module>
+    
+    <js-module src="www/capture.js" name="capture">
+        <clobbers target="navigator.device.capture" />
+    </js-module>
 
     <!-- android -->
     <platform name="android">
@@ -13,5 +41,20 @@ id="org.apache.cordova.core">
         </config-file>
 
         <source-file src="Capture.java" target-dir="org/apache/cordova/core" />
-       </platform>
+    </platform>
+    
+    <!-- ios -->
+    <platform name="ios">    
+        <config-file target="config.xml" parent="/*">
+            <feature name="Capture">
+                <param name="ios-package" value="CDVCapture" /> 
+            </feature>
+        </config-file>
+        <header-file src="src/ios/CDVAvailability.h" />
+        <header-file src="src/ios/CDVFile.h" />
+        <header-file src="src/ios/CDVJSON.h" />
+        <header-file src="src/ios/CDVCapture.h" />
+        <source-file src="src/ios/CDVCapture.m" />
+    </platform>
+        
 </plugin>
