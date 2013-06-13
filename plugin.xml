@@ -62,5 +62,22 @@ id="org.apache.cordova.core.Capture"
         <header-file src="src/ios/CDVCapture.h" />
         <source-file src="src/ios/CDVCapture.m" />
     </platform>
+
+    <!-- wp7 -->
+    <platform name="wp7">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Notification">
+                <param name="wp-package" value="Notification"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/wp7/Capture.cs" />
+        <source-file src="src/wp7/UI/AudioCaptureTask.cs" />
+        <source-file src="src/wp7/UI/AudioRecorder.xaml" />
+        <source-file src="src/wp7/UI/AudioRecorder.xaml.cs" />
+        <source-file src="src/wp7/UI/VideoCaptureTask.cs" />
+        <source-file src="src/wp7/UI/VideoRecorder.xaml" />
+        <source-file src="src/wp7/UI/VideoRecorder.xaml.cs" />
+    </platform>
         
 </plugin>
