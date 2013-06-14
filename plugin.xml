@@ -71,6 +71,11 @@ id="org.apache.cordova.core.Capture"
             </feature>
         </config-file>
 
+        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
+            <Capability Name="ID_CAP_MEDIALIB"/>
+            <Capability Name="ID_CAP_MICROPHONE"/>
+        </config-file>
+
         <source-file src="src/wp7/Capture.cs" />
         <source-file src="src/wp7/UI/AudioCaptureTask.cs" />
         <source-file src="src/wp7/UI/AudioRecorder.xaml" />
