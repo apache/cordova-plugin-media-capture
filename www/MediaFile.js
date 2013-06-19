@@ -21,8 +21,8 @@
 
 var utils = require('cordova/utils'),
     exec = require('cordova/exec'),
-    File = require('cordova/plugin/File'),
-    CaptureError = require('cordova/plugin/CaptureError');
+    File = require('org.apache.cordova.core.FileUtils.File'),
+    CaptureError = require('org.apache.cordova.core.Capture.CaptureError');
 /**
  * Represents a single file.
  *
