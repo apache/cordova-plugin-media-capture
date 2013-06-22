@@ -59,9 +59,6 @@ id="org.apache.cordova.core.Capture" version="0.1.0">
                 <param name="ios-package" value="CDVCapture" /> 
             </feature>
         </config-file>
-        <header-file src="src/ios/CDVAvailability.h" />
-        <header-file src="src/ios/CDVFile.h" />
-        <header-file src="src/ios/CDVJSON.h" />
         <header-file src="src/ios/CDVCapture.h" />
         <source-file src="src/ios/CDVCapture.m" />
     </platform>

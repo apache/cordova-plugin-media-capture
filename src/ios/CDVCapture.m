@@ -18,8 +18,8 @@
  */
 
 #import "CDVCapture.h"
-#import "CDVJSON.h"
-#import "CDVAvailability.h"
+#import <Cordova/CDVJSON.h>
+#import <Cordova/CDVAvailability.h>
 
 #define kW3CMediaFormatHeight @"height"
 #define kW3CMediaFormatWidth @"width"
