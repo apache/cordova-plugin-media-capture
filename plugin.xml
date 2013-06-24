@@ -74,6 +74,7 @@ id="org.apache.cordova.core.Capture" version="0.1.0">
         <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
             <Capability Name="ID_CAP_MEDIALIB"/>
             <Capability Name="ID_CAP_MICROPHONE"/>
+            <Capability Name="ID_CAP_ISV_CAMERA" />
         </config-file>
 
         <source-file src="src/wp7/Capture.cs" />
@@ -83,6 +84,29 @@ id="org.apache.cordova.core.Capture" version="0.1.0">
         <source-file src="src/wp7/UI/VideoCaptureTask.cs" />
         <source-file src="src/wp7/UI/VideoRecorder.xaml" />
         <source-file src="src/wp7/UI/VideoRecorder.xaml.cs" />
+    </platform>
+
+    <!-- wp8 -->
+    <platform name="wp8">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Notification">
+                <param name="wp-package" value="Notification"/>
+            </feature>
+        </config-file>
+
+        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
+            <Capability Name="ID_CAP_MEDIALIB"/>
+            <Capability Name="ID_CAP_MICROPHONE"/>
+            <Capability Name="ID_CAP_ISV_CAMERA" />
+        </config-file>
+
+        <source-file src="src/wp8/Capture.cs" />
+        <source-file src="src/wp8/UI/AudioCaptureTask.cs" />
+        <source-file src="src/wp8/UI/AudioRecorder.xaml" />
+        <source-file src="src/wp8/UI/AudioRecorder.xaml.cs" />
+        <source-file src="src/wp8/UI/VideoCaptureTask.cs" />
+        <source-file src="src/wp8/UI/VideoRecorder.xaml" />
+        <source-file src="src/wp8/UI/VideoRecorder.xaml.cs" />
     </platform>
         
 </plugin>
