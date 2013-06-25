@@ -61,6 +61,7 @@ id="org.apache.cordova.core.Capture" version="0.1.0">
         </config-file>
         <header-file src="src/ios/CDVCapture.h" />
         <source-file src="src/ios/CDVCapture.m" />
+        <resource-file src="src/ios/CDVCapture.bundle" />
     </platform>
 
     <!-- wp7 -->

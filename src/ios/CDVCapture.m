@@ -544,7 +544,7 @@
     BOOL isLessThaniOS4 = ([systemVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedAscending);
 
     // the iPad image (nor retina) differentiation code was not in 3.x, and we have to explicitly set the path
-    // if user wants iPhone only app to run on iPad they must remove *~ipad.* images from capture.bundle
+    // if user wants iPhone only app to run on iPad they must remove *~ipad.* images from CDVCapture.bundle
     if (isLessThaniOS4) {
         NSString* iPadResource = [NSString stringWithFormat:@"%@~ipad.png", resource];
         if (CDV_IsIPad() && [UIImage imageNamed:iPadResource]) {
@@ -579,10 +579,10 @@
     UIView* tmp = [[UIView alloc] initWithFrame:viewRect];
 
     // make backgrounds
-    NSString* microphoneResource = @"Capture.bundle/microphone";
+    NSString* microphoneResource = @"CDVCapture.bundle/microphone";
 
     if (CDV_IsIPhone5()) {
-        microphoneResource = @"Capture.bundle/microphone-568h";
+        microphoneResource = @"CDVCapture.bundle/microphone-568h";
     }
 
     UIImage* microphone = [UIImage imageNamed:[self resolveImageResource:microphoneResource]];
@@ -593,7 +593,7 @@
     [tmp addSubview:microphoneView];
 
     // add bottom bar view
-    UIImage* grayBkg = [UIImage imageNamed:[self resolveImageResource:@"Capture.bundle/controls_bg"]];
+    UIImage* grayBkg = [UIImage imageNamed:[self resolveImageResource:@"CDVCapture.bundle/controls_bg"]];
     UIView* controls = [[UIView alloc] initWithFrame:CGRectMake(0, microphone.size.height, viewRect.size.width, grayBkg.size.height)];
     [controls setBackgroundColor:[UIColor colorWithPatternImage:grayBkg]];
     [controls setUserInteractionEnabled:NO];
@@ -601,7 +601,7 @@
     [tmp addSubview:controls];
 
     // make red recording background view
-    UIImage* recordingBkg = [UIImage imageNamed:[self resolveImageResource:@"Capture.bundle/recording_bg"]];
+    UIImage* recordingBkg = [UIImage imageNamed:[self resolveImageResource:@"CDVCapture.bundle/recording_bg"]];
     UIColor* background = [UIColor colorWithPatternImage:recordingBkg];
     self.recordingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, viewRect.size.width, recordingBkg.size.height)];
     [self.recordingView setBackgroundColor:background];
@@ -624,8 +624,8 @@
 
     // Add record button
 
-    self.recordImage = [UIImage imageNamed:[self resolveImageResource:@"Capture.bundle/record_button"]];
-    self.stopRecordImage = [UIImage imageNamed:[self resolveImageResource:@"Capture.bundle/stop_button"]];
+    self.recordImage = [UIImage imageNamed:[self resolveImageResource:@"CDVCapture.bundle/record_button"]];
+    self.stopRecordImage = [UIImage imageNamed:[self resolveImageResource:@"CDVCapture.bundle/stop_button"]];
     self.recordButton.accessibilityTraits |= [self accessibilityTraits];
     self.recordButton = [[UIButton alloc] initWithFrame:CGRectMake((viewRect.size.width - recordImage.size.width) / 2, (microphone.size.height + (grayBkg.size.height - recordImage.size.height) / 2), recordImage.size.width, recordImage.size.height)];
     [self.recordButton setAccessibilityLabel:NSLocalizedString(@"toggle audio recording", nil)];
