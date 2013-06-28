@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-xmlns:android="http://schemas.android.com/apk/res/android"
-id="org.apache.cordova.core.Capture" version="0.1.0">
+           id="org.apache.cordova.core.media-capture"
+      version="0.1.0">
     <name>Capture</name>
-    <dependency id="org.apache.cordova.core.FileUtils" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-file" commit="master" subdir="/*" />
-    <dependency id="org.apache.cordova.core.AudioHandler" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-media" commit="master" subdir="/*" />
+    <dependency id="org.apache.cordova.core.file" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-file" commit="master" subdir="/*" />
     
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
