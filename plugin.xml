@@ -77,13 +77,13 @@
             <Capability Name="ID_CAP_ISV_CAMERA" />
         </config-file>
 
-        <source-file src="src/wp7/Capture.cs" />
-        <source-file src="src/wp7/UI/AudioCaptureTask.cs" />
-        <source-file src="src/wp7/UI/AudioRecorder.xaml" />
-        <source-file src="src/wp7/UI/AudioRecorder.xaml.cs" />
-        <source-file src="src/wp7/UI/VideoCaptureTask.cs" />
-        <source-file src="src/wp7/UI/VideoRecorder.xaml" />
-        <source-file src="src/wp7/UI/VideoRecorder.xaml.cs" />
+        <source-file src="src/wp/Capture.cs" />
+        <source-file src="src/wp/UI/AudioCaptureTask.cs" />
+        <source-file src="src/wp/UI/AudioRecorder.xaml" />
+        <source-file src="src/wp/UI/AudioRecorder.xaml.cs" />
+        <source-file src="src/wp/UI/VideoCaptureTask.cs" />
+        <source-file src="src/wp/UI/VideoRecorder.xaml" />
+        <source-file src="src/wp/UI/VideoRecorder.xaml.cs" />
     </platform>
 
     <!-- wp8 -->
@@ -102,13 +102,13 @@
             <Capability Name="ID_CAP_ISV_CAMERA" />
         </config-file>
 
-        <source-file src="src/wp8/Capture.cs" />
-        <source-file src="src/wp8/UI/AudioCaptureTask.cs" />
-        <source-file src="src/wp8/UI/AudioRecorder.xaml" />
-        <source-file src="src/wp8/UI/AudioRecorder.xaml.cs" />
-        <source-file src="src/wp8/UI/VideoCaptureTask.cs" />
-        <source-file src="src/wp8/UI/VideoRecorder.xaml" />
-        <source-file src="src/wp8/UI/VideoRecorder.xaml.cs" />
+        <source-file src="src/wp/Capture.cs" />
+        <source-file src="src/wp/UI/AudioCaptureTask.cs" />
+        <source-file src="src/wp/UI/AudioRecorder.xaml" />
+        <source-file src="src/wp/UI/AudioRecorder.xaml.cs" />
+        <source-file src="src/wp/UI/VideoCaptureTask.cs" />
+        <source-file src="src/wp/UI/VideoRecorder.xaml" />
+        <source-file src="src/wp/UI/VideoRecorder.xaml.cs" />
     </platform>
         
 </plugin>
