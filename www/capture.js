@@ -20,7 +20,7 @@
 */
 
 var exec = require('cordova/exec'),
-    MediaFile = require('org.apache.cordova.core.media-capture.MediaFile');
+    MediaFile = require('./MediaFile');
 
 /**
  * Launches a capture of different types.
