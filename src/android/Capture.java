@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import android.os.Build;
-import org.apache.cordova.api.CallbackContext;
-import org.apache.cordova.api.CordovaPlugin;
-import org.apache.cordova.api.LOG;
-import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.LOG;
+import org.apache.cordova.PluginResult;
 import org.apache.cordova.FileHelper;
 import org.apache.cordova.DirectoryManager;
 import org.json.JSONArray;
