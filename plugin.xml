@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.apache.cordova.core.media-capture"
       version="0.1.0">
@@ -12,7 +12,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     
     <dependency id="org.apache.cordova.core.file" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-file" commit="master" />
 
-    
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
     </js-module>
