@@ -61,6 +61,8 @@
         <header-file src="src/ios/CDVCapture.h" />
         <source-file src="src/ios/CDVCapture.m" />
         <resource-file src="src/ios/CDVCapture.bundle" />
+        
+        <framework src="CoreGraphics.framework" />
     </platform>
 
     <!-- blackberry10 -->
