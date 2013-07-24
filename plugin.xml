@@ -63,6 +63,7 @@
         <resource-file src="src/ios/CDVCapture.bundle" />
         
         <framework src="CoreGraphics.framework" />
+        <framework src="MobileCoreServices.framework" />
     </platform>
 
     <!-- blackberry10 -->
