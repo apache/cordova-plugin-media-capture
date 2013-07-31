@@ -4,11 +4,13 @@
            id="org.apache.cordova.core.media-capture"
       version="0.1.0">
     <name>Capture</name>
+
     <description>Cordova Media Capture Plugin</description>
     <license>Apache</license>
     <keywords>cordova,media,capture</keywords>
     
     <dependency id="org.apache.cordova.core.file" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-file" commit="master" subdir="/*" />
+
     
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
@@ -125,5 +127,18 @@
         <source-file src="src/wp/UI/VideoRecorder.xaml" />
         <source-file src="src/wp/UI/VideoRecorder.xaml.cs" />
     </platform>
+
+    <!-- windows8 -->
+    <platform name="windows8">
+
+        <js-module src="src/windows8/MediaFile.js" name="MediaFile2">
+            <clobbers target="MediaFile" />
+        </js-module>
+
+        <js-module src="src/windows8/CaptureProxy.js" name="CaptureProxy">
+            <merges target="" />
+        </js-module>
+        
+    </platform>    
         
 </plugin>
