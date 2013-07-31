@@ -9,7 +9,7 @@
     <license>Apache</license>
     <keywords>cordova,media,capture</keywords>
     
-    <dependency id="org.apache.cordova.core.file" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-file" commit="master" subdir="/*" />
+    <dependency id="org.apache.cordova.core.file" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-file" commit="master" />
 
     
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
