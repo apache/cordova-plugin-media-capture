@@ -24,11 +24,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import android.os.Build;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PluginResult;
-import org.apache.cordova.DirectoryManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -198,6 +198,24 @@ public class Capture extends CordovaPlugin {
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_AUDIO);
     }
 
+    private String getTempDirectoryPath() {
+        File cache = null;
+
+        // SD Card Mounted
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            cache = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
+                    "/Android/data/" + cordova.getActivity().getPackageName() + "/cache/");
+        }
+        // Use internal storage
+        else {
+            cache = cordova.getActivity().getCacheDir();
+        }
+
+        // Create the cache directory if it doesn't exist
+        cache.mkdirs();
+        return cache.getAbsolutePath();
+    }
+
     /**
      * Sets up an intent to capture images.  Result handled by onActivityResult()
      */
@@ -208,7 +226,7 @@ public class Capture extends CordovaPlugin {
         Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Specify file so that large image is captured and returned
-        File photo = new File(DirectoryManager.getTempDirectoryPath(this.cordova.getActivity()), "Capture.jpg");
+        File photo = new File(getTempDirectoryPath(), "Capture.jpg");
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
 
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_IMAGE);
@@ -276,7 +294,7 @@ public class Capture extends CordovaPlugin {
                             return;
                         }
                     }
-                    FileInputStream fis = new FileInputStream(DirectoryManager.getTempDirectoryPath(this.cordova.getActivity()) + "/Capture.jpg");
+                    FileInputStream fis = new FileInputStream(getTempDirectoryPath() + "/Capture.jpg");
                     OutputStream os = this.cordova.getActivity().getContentResolver().openOutputStream(uri);
                     byte[] buffer = new byte[4096];
                     int len;
