@@ -74,7 +74,7 @@ namespace WPCordovaClassLib.Cordova.UI
 
                 root.Navigated += new System.Windows.Navigation.NavigatedEventHandler(NavigationService_Navigated);
 
-                string baseUrl = WPCordovaClassLib.Cordova.Commands.BaseCommand.GetBaseURL();
+                string baseUrl = "/";
                 // dummy parameter is used to always open a fresh version
                 root.Navigate(new System.Uri(baseUrl + "Plugins/org.apache.cordova.core.media-capture/AudioRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
 
