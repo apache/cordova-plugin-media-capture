@@ -88,7 +88,8 @@
 
         self.inUse = YES;
 
-        if ([self.viewController respondsToSelector:@selector(presentViewController:::)]) {
+        SEL pvcSel = NSSelectorFromString(@"presentViewController:::");
+        if ([self.viewController respondsToSelector:pvcSel]) {
             [self.viewController presentViewController:navController animated:YES completion:nil];
         } else {
             [self.viewController presentModalViewController:navController animated:YES];
@@ -139,7 +140,8 @@
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
 
-        if ([self.viewController respondsToSelector:@selector(presentViewController:::)]) {
+        SEL pvcSel = NSSelectorFromString(@"presentViewController:::");
+        if ([self.viewController respondsToSelector:pvcSel]) {
             [self.viewController presentViewController:pickerController animated:YES completion:nil];
         } else {
             [self.viewController presentModalViewController:pickerController animated:YES];
@@ -255,7 +257,8 @@
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
 
-        if ([self.viewController respondsToSelector:@selector(presentViewController:::)]) {
+        SEL pvcSel = NSSelectorFromString(@"presentViewController:::");
+        if ([self.viewController respondsToSelector:pvcSel]) {
             [self.viewController presentViewController:pickerController animated:YES completion:nil];
         } else {
             [self.viewController presentModalViewController:pickerController animated:YES];
@@ -615,7 +618,7 @@
     // timerLabel.autoresizingMask = reSizeMask;
     [self.timerLabel setBackgroundColor:[UIColor clearColor]];
     [self.timerLabel setTextColor:[UIColor whiteColor]];
-    [self.timerLabel setTextAlignment:UITextAlignmentCenter];
+    [self.timerLabel setTextAlignment:NSTextAlignmentCenter];
     [self.timerLabel setText:@"0:00"];
     [self.timerLabel setAccessibilityHint:NSLocalizedString(@"recorded time in minutes and seconds", nil)];
     self.timerLabel.accessibilityTraits |= UIAccessibilityTraitUpdatesFrequently;
