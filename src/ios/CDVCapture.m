@@ -88,9 +88,11 @@
 
         self.inUse = YES;
 
-        if ([self.viewController respondsToSelector:@selector(presentViewController:::)]) {
+        SEL selector = NSSelectorFromString(@"presentViewController:animated:completion:");
+        if ([self.viewController respondsToSelector:selector]) {
             [self.viewController presentViewController:navController animated:YES completion:nil];
         } else {
+            // deprecated as of iOS >= 6.0
             [self.viewController presentModalViewController:navController animated:YES];
         }
     }
@@ -139,9 +141,11 @@
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
 
-        if ([self.viewController respondsToSelector:@selector(presentViewController:::)]) {
+        SEL selector = NSSelectorFromString(@"presentViewController:animated:completion:");
+        if ([self.viewController respondsToSelector:selector]) {
             [self.viewController presentViewController:pickerController animated:YES completion:nil];
         } else {
+            // deprecated as of iOS >= 6.0
             [self.viewController presentModalViewController:pickerController animated:YES];
         }
     }
@@ -255,9 +259,11 @@
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
 
-        if ([self.viewController respondsToSelector:@selector(presentViewController:::)]) {
+        SEL selector = NSSelectorFromString(@"presentViewController:animated:completion:");
+        if ([self.viewController respondsToSelector:selector]) {
             [self.viewController presentViewController:pickerController animated:YES completion:nil];
         } else {
+            // deprecated as of iOS >= 6.0
             [self.viewController presentModalViewController:pickerController animated:YES];
         }
     }
