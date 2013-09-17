@@ -721,47 +721,25 @@
         [self.recordButton setImage:stopRecordImage forState:UIControlStateNormal];
         self.recordButton.accessibilityTraits &= ~[self accessibilityTraits];
         [self.recordingView setHidden:NO];
-        __block NSError* error = nil;
-        
-        void (^startRecording)(void) = ^{
-            [self.avSession setCategory:AVAudioSessionCategoryRecord error:&error];
-            [self.avSession setActive:YES error:&error];
-            if (error) {
-                // can't continue without active audio session
-                self.errorCode = CAPTURE_INTERNAL_ERR;
-                [self dismissAudioView:nil];
-            } else {
-                if (self.duration) {
-                    self.isTimed = true;
-                    [self.avRecorder recordForDuration:[duration doubleValue]];
-                } else {
-                    [self.avRecorder record];
-                }
-                [self.timerLabel setText:@"0.00"];
-                self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-                self.doneButton.enabled = NO;
-            }
-            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
-        };
-        
-        SEL rrpSel = NSSelectorFromString(@"requestRecordPermission:");
-        if ([self.avSession respondsToSelector:rrpSel])
-        {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-            [self.avSession performSelector:rrpSel withObject:^(BOOL granted){
-                if (granted) {
-                    startRecording();
-                } else {
-                    NSLog(@"Error creating audio session, microphone permission denied.");
-                    self.errorCode = CAPTURE_INTERNAL_ERR;
-                    [self dismissAudioView:nil];
-                }
-            }];
-#pragma clang diagnostic pop
+        NSError* error = nil;
+        [self.avSession setCategory:AVAudioSessionCategoryRecord error:&error];
+        [self.avSession setActive:YES error:&error];
+        if (error) {
+            // can't continue without active audio session
+            self.errorCode = CAPTURE_INTERNAL_ERR;
+            [self dismissAudioView:nil];
         } else {
-            startRecording();
+            if (self.duration) {
+                self.isTimed = true;
+                [self.avRecorder recordForDuration:[duration doubleValue]];
+            } else {
+                [self.avRecorder record];
+            }
+            [self.timerLabel setText:@"0.00"];
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+            self.doneButton.enabled = NO;
         }
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
 }
 
