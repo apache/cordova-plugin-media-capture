@@ -158,4 +158,4 @@ module.exports = {
     }
 };
 
-require("cordova/commandProxy").add("Capture",module.exports);
+require("cordova/windows8/commandProxy").add("Capture",module.exports);
