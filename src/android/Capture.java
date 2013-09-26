@@ -24,12 +24,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import android.os.Build;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PluginResult;
-import org.apache.cordova.FileHelper;
-import org.apache.cordova.DirectoryManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,6 +119,7 @@ public class Capture extends CordovaPlugin {
      * @return a MediaFileData object
      */
     private JSONObject getFormatData(String filePath, String mimeType) throws JSONException {
+        Uri fileUrl = filePath.startsWith("file:") ? Uri.parse(filePath) : Uri.fromFile(new File(filePath));
         JSONObject obj = new JSONObject();
         // setup defaults
         obj.put("height", 0);
@@ -131,12 +131,12 @@ public class Capture extends CordovaPlugin {
         // If the mimeType isn't set the rest will fail
         // so let's see if we can determine it.
         if (mimeType == null || mimeType.equals("") || "null".equals(mimeType)) {
-            mimeType = FileHelper.getMimeType(filePath, cordova);
+            mimeType = FileHelper.getMimeType(fileUrl, cordova);
         }
         Log.d(LOG_TAG, "Mime type = " + mimeType);
 
         if (mimeType.equals(IMAGE_JPEG) || filePath.endsWith(".jpg")) {
-            obj = getImageData(filePath, obj);
+            obj = getImageData(fileUrl, obj);
         }
         else if (mimeType.endsWith(AUDIO_3GPP)) {
             obj = getAudioVideoData(filePath, obj, false);
@@ -155,10 +155,10 @@ public class Capture extends CordovaPlugin {
      * @return a JSONObject that represents the Media File Data
      * @throws JSONException
      */
-    private JSONObject getImageData(String filePath, JSONObject obj) throws JSONException {
+    private JSONObject getImageData(Uri fileUrl, JSONObject obj) throws JSONException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(FileHelper.stripFileProtocol(filePath), options);
+        BitmapFactory.decodeFile(fileUrl.getPath(), options);
         obj.put("height", options.outHeight);
         obj.put("width", options.outWidth);
         return obj;
@@ -198,6 +198,24 @@ public class Capture extends CordovaPlugin {
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_AUDIO);
     }
 
+    private String getTempDirectoryPath() {
+        File cache = null;
+
+        // SD Card Mounted
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            cache = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
+                    "/Android/data/" + cordova.getActivity().getPackageName() + "/cache/");
+        }
+        // Use internal storage
+        else {
+            cache = cordova.getActivity().getCacheDir();
+        }
+
+        // Create the cache directory if it doesn't exist
+        cache.mkdirs();
+        return cache.getAbsolutePath();
+    }
+
     /**
      * Sets up an intent to capture images.  Result handled by onActivityResult()
      */
@@ -208,7 +226,7 @@ public class Capture extends CordovaPlugin {
         Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Specify file so that large image is captured and returned
-        File photo = new File(DirectoryManager.getTempDirectoryPath(this.cordova.getActivity()), "Capture.jpg");
+        File photo = new File(getTempDirectoryPath(), "Capture.jpg");
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
 
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_IMAGE);
@@ -276,7 +294,7 @@ public class Capture extends CordovaPlugin {
                             return;
                         }
                     }
-                    FileInputStream fis = new FileInputStream(DirectoryManager.getTempDirectoryPath(this.cordova.getActivity()) + "/Capture.jpg");
+                    FileInputStream fis = new FileInputStream(getTempDirectoryPath() + "/Capture.jpg");
                     OutputStream os = this.cordova.getActivity().getContentResolver().openOutputStream(uri);
                     byte[] buffer = new byte[4096];
                     int len;
@@ -357,13 +375,13 @@ public class Capture extends CordovaPlugin {
      * @throws IOException
      */
     private JSONObject createMediaFile(Uri data) {
-        File fp = new File(FileHelper.getRealPath(data, this.cordova));
+        File fp = webView.getResourceApi().mapUriToFile(data);
         JSONObject obj = new JSONObject();
 
         try {
             // File properties
             obj.put("name", fp.getName());
-            obj.put("fullPath", "file://" + fp.getAbsolutePath());
+            obj.put("fullPath", fp.toURI().toString());
             // Because of an issue with MimeTypeMap.getMimeTypeFromExtension() all .3gpp files
             // are reported as video/3gpp. I'm doing this hacky check of the URI to see if it
             // is stored in the audio or video content store.
@@ -374,7 +392,7 @@ public class Capture extends CordovaPlugin {
                     obj.put("type", VIDEO_3GPP);
                 }
             } else {
-                obj.put("type", FileHelper.getMimeType(fp.getAbsolutePath(), cordova));
+                obj.put("type", FileHelper.getMimeType(Uri.fromFile(fp), cordova));
             }
 
             obj.put("lastModifiedDate", fp.lastModified());

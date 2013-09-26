@@ -21,12 +21,12 @@
 
 /*global Windows:true */
 
-var MediaFile = require('org.apache.cordova.core.media-capture.MediaFile');
-var CaptureError = require('org.apache.cordova.core.media-capture.CaptureError');
-var CaptureAudioOptions = require('org.apache.cordova.core.media-capture.CaptureAudioOptions');
-var CaptureImageOptions = require('org.apache.cordova.core.media-capture.CaptureImageOptions');
-var CaptureVideoOptions = require('org.apache.cordova.core.media-capture.CaptureVideoOptions');
-var MediaFileData = require('org.apache.cordova.core.media-capture.MediaFileData');
+var MediaFile = require('org.apache.cordova.media-capture.MediaFile');
+var CaptureError = require('org.apache.cordova.media-capture.CaptureError');
+var CaptureAudioOptions = require('org.apache.cordova.media-capture.CaptureAudioOptions');
+var CaptureImageOptions = require('org.apache.cordova.media-capture.CaptureImageOptions');
+var CaptureVideoOptions = require('org.apache.cordova.media-capture.CaptureVideoOptions');
+var MediaFileData = require('org.apache.cordova.media-capture.MediaFileData');
 
 module.exports = {
 
@@ -158,4 +158,4 @@ module.exports = {
     }
 };
 
-require("cordova/commandProxy").add("Capture",module.exports);
+require("cordova/windows8/commandProxy").add("Capture",module.exports);

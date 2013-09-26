@@ -20,4 +20,17 @@
 -->
 # Release Notes
 
-
+### 0.2.2 (Sept 25, 2013)
+* CB-4889 bumping&resetting version
+* [windows8] commandProxy was moved
+* [windows8] commandProxy was moved
+* CB-4889
+* CB-4889 renaming org.apache.cordova.core.media-capture to org.apache.cordova.media-capture and updating dependency
+* Rename CHANGELOG.md -> RELEASENOTES.md
+* [CB-4847] iOS 7 microphone access requires user permission - if denied, CDVCapture, CDVSound does not handle it properly
+* [CB-4826] Fix warning using UITextAlignmentCenter
+* [CB-4826] Fix XCode 5 capture plugin warnings
+* [CB-4488] - added manual capture test
+* [CB-4764] Remove reference to DirectoryManager from Capture.java
+* [CB-4763] Use own version of FileHelper.
+* [CB-4752] Incremented plugin version on dev branch.

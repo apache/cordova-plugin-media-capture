@@ -2,15 +2,15 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
-           id="org.apache.cordova.core.media-capture"
-      version="0.2.0">
+           id="org.apache.cordova.media-capture"
+      version="0.2.2">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,media,capture</keywords>
     
-    <dependency id="org.apache.cordova.core.file" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-file" commit="master" />
+    <dependency id="org.apache.cordova.file" />
 
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
@@ -55,6 +55,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
         <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
+        <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
     </platform>
     
     <!-- ios -->

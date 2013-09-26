@@ -21,8 +21,8 @@
 
 /*global Windows:true */
 
-var MediaFileData = require('org.apache.cordova.core.media-capture.MediaFileData');
-var CaptureError = require('org.apache.cordova.core.media-capture.CaptureError');
+var MediaFileData = require('org.apache.cordova.media-capture.MediaFileData');
+var CaptureError = require('org.apache.cordova.media-capture.CaptureError');
 
 module.exports = {
 
