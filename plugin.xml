@@ -84,8 +84,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- wp7 -->
     <platform name="wp7">
         <config-file target="config.xml" parent="/*">
-            <feature name="Notification">
-                <param name="wp-package" value="Notification"/>
+            <feature name="Capture">
+                <param name="wp-package" value="Capture"/>
             </feature>
         </config-file>
 
@@ -107,8 +107,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- wp8 -->
     <platform name="wp8">
         <config-file target="config.xml" parent="/*">
-            <feature name="Notification">
-                <param name="wp-package" value="Notification"/>
+            <feature name="Capture">
+                <param name="wp-package" value="Capture"/>
             </feature>
         </config-file>
 
