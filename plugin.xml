@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="org.apache.cordova.media-capture"
-      version="0.2.2">
+      version="0.2.3">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -84,8 +84,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- wp7 -->
     <platform name="wp7">
         <config-file target="config.xml" parent="/*">
-            <feature name="Notification">
-                <param name="wp-package" value="Notification"/>
+            <feature name="Capture">
+                <param name="wp-package" value="Capture"/>
             </feature>
         </config-file>
 
@@ -107,8 +107,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- wp8 -->
     <platform name="wp8">
         <config-file target="config.xml" parent="/*">
-            <feature name="Notification">
-                <param name="wp-package" value="Notification"/>
+            <feature name="Capture">
+                <param name="wp-package" value="Capture"/>
             </feature>
         </config-file>
 

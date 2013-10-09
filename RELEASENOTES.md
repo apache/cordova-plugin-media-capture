@@ -34,3 +34,7 @@
 * [CB-4764] Remove reference to DirectoryManager from Capture.java
 * [CB-4763] Use own version of FileHelper.
 * [CB-4752] Incremented plugin version on dev branch.
+
+### 0.2.3 (Oct 9, 2013)
+* CB-4720: fixed incorrect feature tag in plugin.xml for wp
+* [CB-4915] Incremented plugin version on dev branch.
