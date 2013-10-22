@@ -9,6 +9,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <description>Cordova Media Capture Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,media,capture</keywords>
+    <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-media-capture.git</repo>
+    <issue>https://issues.apache.org/jira/browse/CB/component/12320646</issue>
     
     <dependency id="org.apache.cordova.file" />
 
