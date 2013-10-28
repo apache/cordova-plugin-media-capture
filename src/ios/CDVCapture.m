@@ -45,6 +45,23 @@
     return UIAccessibilityTraitNone;
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+    
+- (UIViewController*)childViewControllerForStatusBarHidden {
+    return nil;
+}
+    
+- (void)viewWillAppear:(BOOL)animated {
+    SEL sel = NSSelectorFromString(@"setNeedsStatusBarAppearanceUpdate");
+    if ([self respondsToSelector:sel]) {
+        [self performSelector:sel withObject:nil afterDelay:0];
+    }
+    
+    [super viewWillAppear:animated];
+}
+
 @end
 
 @implementation CDVCapture
@@ -580,6 +597,10 @@
 
 - (void)loadView
 {
+	if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
+    
     // create view and display
     CGRect viewRect = [[UIScreen mainScreen] applicationFrame];
     UIView* tmp = [[UIView alloc] initWithFrame:viewRect];

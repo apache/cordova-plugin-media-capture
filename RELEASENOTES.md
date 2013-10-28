@@ -38,3 +38,8 @@
 ### 0.2.3 (Oct 9, 2013)
 * CB-4720: fixed incorrect feature tag in plugin.xml for wp
 * [CB-4915] Incremented plugin version on dev branch.
+
+ ### 0.2.4 (Oct 28, 2013)
+* CB-5199 - ios - Media Capture - UI issues under iOS 7
+* CB-5128: added repo + issue tag to plugin.xml for media capture plugin
+* [CB-5010] Incremented plugin version on dev branch.
