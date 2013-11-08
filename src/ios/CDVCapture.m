@@ -558,6 +558,11 @@
 
 @end
 
+@interface CDVAudioRecorderViewController () {
+    UIStatusBarStyle _previousStatusBarStyle;
+}
+@end
+
 @implementation CDVAudioRecorderViewController
 @synthesize errorCode, callbackId, duration, captureCommand, doneButton, recordingView, recordButton, recordImage, stopRecordImage, timerLabel, avRecorder, avSession, pluginResult, timer, isTimed;
 
@@ -588,6 +593,7 @@
         self.callbackId = theCallbackId;
         self.errorCode = CAPTURE_NO_MEDIA_FILES;
         self.isTimed = self.duration != nil;
+        _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
 
         return self;
     }
@@ -846,6 +852,10 @@
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     // return result
     [self.captureCommand.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+
+    if (IsAtLeastiOSVersion(@"7.0")) {
+        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
+    }
 }
 
 - (void)updateTime
@@ -894,6 +904,20 @@
     NSLog(@"error recording audio");
     self.pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageToErrorObject:CAPTURE_INTERNAL_ERR];
     [self dismissAudioView:nil];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleDefault;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    if (IsAtLeastiOSVersion(@"7.0")) {
+        [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
+    }
+
+    [super viewWillAppear:animated];
 }
 
 @end
