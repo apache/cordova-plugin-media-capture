@@ -60,6 +60,24 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
     </platform>
     
+    <!-- amazon-fireos -->
+    <platform name="amazon-fireos">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Capture" >
+                <param name="android-package" value="org.apache.cordova.mediacapture.Capture"/>
+            </feature>
+        </config-file>
+        
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.RECORD_AUDIO" />
+            <uses-permission android:name="android.permission.RECORD_VIDEO"/>
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        </config-file>
+
+        <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
+        <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
+    </platform>
+    
     <!-- ios -->
     <platform name="ios">    
         <config-file target="config.xml" parent="/*">
