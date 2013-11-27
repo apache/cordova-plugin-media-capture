@@ -245,10 +245,6 @@ public class Capture extends CordovaPlugin {
             intent.putExtra("android.intent.extra.durationLimit", duration);
         }
         
-        // Specify file so that large image is captured and returned
-        File movie = new File(getTempDirectoryPath(), "Capture.avi");
-        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(movie));
-        
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_VIDEO);
     }
 
@@ -330,8 +326,20 @@ public class Capture extends CordovaPlugin {
                     this.fail(createErrorObject(CAPTURE_INTERNAL_ERR, "Error capturing image."));
                 }
             } else if (requestCode == CAPTURE_VIDEO) {
-                // Get the uri of the video clip
-                Uri data = intent.getData();
+                
+                Uri data = null;
+                if (intent != null)
+                {
+                    // Get the uri of the video clip
+                    data = intent.getData();
+                }
+
+                if (data == null)
+                {
+                    File movie = new File(getTempDirectoryPath(), "Capture.avi");
+                    data = Uri.fromFile(movie);            			
+                }
+                
                 // create a file object from the uri
                 if(data == null)
                 {
