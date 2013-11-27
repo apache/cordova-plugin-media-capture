@@ -22,6 +22,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import android.os.Build;
 
@@ -241,6 +244,7 @@ public class Capture extends CordovaPlugin {
         if(Build.VERSION.SDK_INT > 7){
             intent.putExtra("android.intent.extra.durationLimit", duration);
         }
+        
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_VIDEO);
     }
 
@@ -322,8 +326,20 @@ public class Capture extends CordovaPlugin {
                     this.fail(createErrorObject(CAPTURE_INTERNAL_ERR, "Error capturing image."));
                 }
             } else if (requestCode == CAPTURE_VIDEO) {
-                // Get the uri of the video clip
-                Uri data = intent.getData();
+                
+                Uri data = null;
+                if (intent != null)
+                {
+                    // Get the uri of the video clip
+                    data = intent.getData();
+                }
+
+                if (data == null)
+                {
+                    File movie = new File(getTempDirectoryPath(), "Capture.avi");
+                    data = Uri.fromFile(movie);            			
+                }
+                
                 // create a file object from the uri
                 if(data == null)
                 {
@@ -374,35 +390,58 @@ public class Capture extends CordovaPlugin {
      * @return a JSONObject that represents a File
      * @throws IOException
      */
-    private JSONObject createMediaFile(Uri data) {
-        File fp = webView.getResourceApi().mapUriToFile(data);
-        JSONObject obj = new JSONObject();
+    private JSONObject createMediaFile(final Uri data) {
+        Future<JSONObject> result = cordova.getThreadPool().submit(new Callable<JSONObject>()
+        {
+            @Override
+            public JSONObject call() throws Exception
+            {
+                File fp = webView.getResourceApi().mapUriToFile(data);
+                JSONObject obj = new JSONObject();
 
-        try {
-            // File properties
-            obj.put("name", fp.getName());
-            obj.put("fullPath", fp.toURI().toString());
-            // Because of an issue with MimeTypeMap.getMimeTypeFromExtension() all .3gpp files
-            // are reported as video/3gpp. I'm doing this hacky check of the URI to see if it
-            // is stored in the audio or video content store.
-            if (fp.getAbsoluteFile().toString().endsWith(".3gp") || fp.getAbsoluteFile().toString().endsWith(".3gpp")) {
-                if (data.toString().contains("/audio/")) {
-                    obj.put("type", AUDIO_3GPP);
-                } else {
-                    obj.put("type", VIDEO_3GPP);
+                try {
+                    // File properties
+                    obj.put("name", fp.getName());
+                    obj.put("fullPath", fp.toURI().toString());
+                    // Because of an issue with MimeTypeMap.getMimeTypeFromExtension() all .3gpp files
+                    // are reported as video/3gpp. I'm doing this hacky check of the URI to see if it
+                    // is stored in the audio or video content store.
+                    if (fp.getAbsoluteFile().toString().endsWith(".3gp") || fp.getAbsoluteFile().toString().endsWith(".3gpp")) {
+                        if (data.toString().contains("/audio/")) {
+                            obj.put("type", AUDIO_3GPP);
+                        } else {
+                            obj.put("type", VIDEO_3GPP);
+                        }
+                    } else {
+                        obj.put("type", FileHelper.getMimeType(Uri.fromFile(fp), cordova));
+                    }
+
+                    obj.put("lastModifiedDate", fp.lastModified());
+                    obj.put("size", fp.length());
+                } catch (JSONException e) {
+                    // this will never happen
+                    e.printStackTrace();
                 }
-            } else {
-                obj.put("type", FileHelper.getMimeType(Uri.fromFile(fp), cordova));
-            }
 
-            obj.put("lastModifiedDate", fp.lastModified());
-            obj.put("size", fp.length());
-        } catch (JSONException e) {
-            // this will never happen
+                return obj;
+            }
+        });
+
+
+        try
+        {
+            return result.get();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e)
+        {
             e.printStackTrace();
         }
 
-        return obj;
+        return null;
     }
 
     private JSONObject createErrorObject(int code, String message) {
