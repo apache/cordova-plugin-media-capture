@@ -135,7 +135,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <platform name="windows8">
 
         <js-module src="src/windows8/MediaFile.js" name="MediaFile2">
-            <clobbers target="MediaFile" />
+            <merges target="MediaFile" />
         </js-module>
 
         <js-module src="src/windows8/CaptureProxy.js" name="CaptureProxy">
