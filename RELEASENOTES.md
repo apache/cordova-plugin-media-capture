@@ -42,4 +42,10 @@
  ### 0.2.4 (Oct 28, 2013)
 * CB-5199 - ios - Media Capture - UI issues under iOS 7
 * CB-5128: added repo + issue tag to plugin.xml for media capture plugin
-* [CB-5010] Incremented plugin version on dev branch.
+* [CB-5010] Incremented plugin version on dev branch. 
+
+### 0.2.5 (Dec 4, 2013)
+* add ubuntu platform
+* Added amazon-fireos platform. Change to use amazon-fireos as a platform if user agent string contains 'cordova-amazon-fireos'
+* CB-5291 - ios - Media Capture Audio - status bar issues under iOS 7
+* CB-5275: CaptureImage and CaptureVideo have runnables and CaptureVideo works on 4.2.  Still doesn't work for 4.3
