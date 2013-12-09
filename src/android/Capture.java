@@ -259,18 +259,27 @@ public class Capture extends CordovaPlugin {
         if (resultCode == Activity.RESULT_OK) {
             // An audio clip was requested
             if (requestCode == CAPTURE_AUDIO) {
-                // Get the uri of the audio clip
-                Uri data = intent.getData();
-                // create a file object from the uri
-                results.put(createMediaFile(data));
+                
+                final Capture that = this;
+                Runnable captureAudio = new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        // Get the uri of the audio clip
+                        Uri data = intent.getData();
+                        // create a file object from the uri
+                        results.put(createMediaFile(data));
 
-                if (results.length() >= limit) {
-                    // Send Uri back to JavaScript for listening to audio
-                    this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, results));
-                } else {
-                    // still need to capture more audio clips
-                    captureAudio();
-                }
+                        if (results.length() >= limit) {
+                            // Send Uri back to JavaScript for listening to audio
+                        	that.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, results));
+                        } else {
+                            // still need to capture more audio clips
+                            captureAudio();
+                        }
+                    }
+                };
+                this.cordova.getThreadPool().execute(captureAudio);
             } else if (requestCode == CAPTURE_IMAGE) {
                 // For some reason if I try to do:
                 // Uri data = intent.getData();
