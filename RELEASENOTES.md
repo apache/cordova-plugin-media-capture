@@ -49,3 +49,8 @@
 * Added amazon-fireos platform. Change to use amazon-fireos as a platform if user agent string contains 'cordova-amazon-fireos'
 * CB-5291 - ios - Media Capture Audio - status bar issues under iOS 7
 * CB-5275: CaptureImage and CaptureVideo have runnables and CaptureVideo works on 4.2.  Still doesn't work for 4.3
+
+### 0.2.6 (Jan 02, 2014)
+* CB-5658 Add doc/index.md for Media Capture plugin
+* CB-5569 Windows8. MediaFile constructor does not exist
+* CB-5517 Fix the audio capture IO exception by putting it in a runnable
