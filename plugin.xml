@@ -2,15 +2,17 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
-           id="org.apache.cordova.core.media-capture"
-      version="0.2.0">
+           id="org.apache.cordova.media-capture"
+      version="0.2.6">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,media,capture</keywords>
+    <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-media-capture.git</repo>
+    <issue>https://issues.apache.org/jira/browse/CB/component/12320646</issue>
     
-    <dependency id="org.apache.cordova.core.file" url="https://git-wip-us.apache.org/repos/asf/cordova-plugin-file" commit="master" />
+    <dependency id="org.apache.cordova.file" />
 
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
@@ -55,8 +57,44 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
         <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
+        <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
     </platform>
     
+    <!-- amazon-fireos -->
+    <platform name="amazon-fireos">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Capture" >
+                <param name="android-package" value="org.apache.cordova.mediacapture.Capture"/>
+            </feature>
+        </config-file>
+        
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.RECORD_AUDIO" />
+            <uses-permission android:name="android.permission.RECORD_VIDEO"/>
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        </config-file>
+
+        <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
+        <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
+    </platform>
+    
+
+    <!-- ubuntu -->
+    <platform name="ubuntu">
+        <header-file src="src/ubuntu/capture.h" />
+        <source-file src="src/ubuntu/capture.cpp" />
+
+        <resource-file src="src/ubuntu/back.png" />
+        <resource-file src="src/ubuntu/MediaCaptureWidget.qml" />
+        <resource-file src="src/ubuntu/shoot.png" />
+        <resource-file src="src/ubuntu/microphone.png" />
+        <resource-file src="src/ubuntu/record_on.png" />
+        <resource-file src="src/ubuntu/record_off.png" />
+        <resource-file src="src/ubuntu/toolbar-left.png" />
+        <resource-file src="src/ubuntu/toolbar-middle.png" />
+        <resource-file src="src/ubuntu/toolbar-right.png" />
+    </platform>
+
     <!-- ios -->
     <platform name="ios">    
         <config-file target="config.xml" parent="/*">
@@ -132,7 +170,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <platform name="windows8">
 
         <js-module src="src/windows8/MediaFile.js" name="MediaFile2">
-            <clobbers target="MediaFile" />
+            <merges target="MediaFile" />
         </js-module>
 
         <js-module src="src/windows8/CaptureProxy.js" name="CaptureProxy">
