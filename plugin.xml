@@ -116,6 +116,9 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="www/config.xml" parent="/widget">
             <feature name="media-capture" value="Capture"/>
         </config-file>
+        <config-file target="www/config.xml" parent="/widget/rim:permissions">
+          <rim:permit>access_shared</rim:permit>
+        </config-file>
       </platform>
 
     <!-- wp7 -->
