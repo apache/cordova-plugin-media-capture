@@ -93,6 +93,13 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <resource-file src="src/ubuntu/toolbar-left.png" />
         <resource-file src="src/ubuntu/toolbar-middle.png" />
         <resource-file src="src/ubuntu/toolbar-right.png" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="Capture">
+                <param policy_group="audio" policy_version="1" />
+                <param policy_group="camera" policy_version="1" />
+                <param policy_group="microphone" policy_version="1" />
+            </feature>
+        </config-file>
     </platform>
 
     <!-- ios -->
