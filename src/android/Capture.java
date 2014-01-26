@@ -310,15 +310,21 @@ public class Capture extends CordovaPlugin {
                                 }
                             }
                             FileInputStream fis = new FileInputStream(getTempDirectoryPath() + "/Capture.jpg");
-                            OutputStream os = that.cordova.getActivity().getContentResolver().openOutputStream(uri);
-                            byte[] buffer = new byte[4096];
-                            int len;
-                            while ((len = fis.read(buffer)) != -1) {
-                                os.write(buffer, 0, len);
+                            try {
+                                OutputStream os = that.cordova.getActivity().getContentResolver().openOutputStream(uri);
+                                try {
+                                    byte[] buffer = new byte[4096];
+                                    int len;
+                                    while ((len = fis.read(buffer)) != -1) {
+                                        os.write(buffer, 0, len);
+                                    }
+                                    os.flush();
+                                } finally {
+                                    os.close();
+                                }
+                            } finally {
+                                fis.close();
                             }
-                            os.flush();
-                            os.close();
-                            fis.close();
 
                             // Add image to results
                             results.put(createMediaFile(uri));
