@@ -346,8 +346,19 @@ public class Capture extends CordovaPlugin {
 
                     @Override
                     public void run() {
-                        // Get the uri of the video clip
-                        Uri data = intent.getData();
+                    
+                        Uri data = null;
+                        
+                        if (intent != null){
+                            // Get the uri of the video clip
+                            data = intent.getData();
+                        }
+                        
+                        if( data == null){
+                           File movie = new File(getTempDirectoryPath(), "Capture.avi");
+                           data = Uri.fromFile(movie);
+                        }
+                        
                         // create a file object from the uri
                         if(data == null)
                         {
@@ -428,7 +439,6 @@ public class Capture extends CordovaPlugin {
             // this will never happen
             e.printStackTrace();
         }
-
         return obj;
     }
 
