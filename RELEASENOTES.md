@@ -54,3 +54,8 @@
 * CB-5658 Add doc/index.md for Media Capture plugin
 * CB-5569 Windows8. MediaFile constructor does not exist
 * CB-5517 Fix the audio capture IO exception by putting it in a runnable
+
+### 0.2.7 (Feb 05, 2014)
+* [ubuntu] request audio/camera/microphone permission
+* fixed  cordova cli add capture plugin not work wp
+* CB-5685 [BlackBerry10] Add access_shared permission
