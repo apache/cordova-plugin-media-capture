@@ -59,3 +59,6 @@
 * [ubuntu] request audio/camera/microphone permission
 * fixed  cordova cli add capture plugin not work wp
 * CB-5685 [BlackBerry10] Add access_shared permission
+
+### 0.2.8 (Feb 26, 2014)
+* CB-5202 Fix video capture crash on Android 4.3+
