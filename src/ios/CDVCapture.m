@@ -440,7 +440,7 @@
         // NSLog(@"getFormatData: %@", [formatData description]);
     }
     if (bError) {
-        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:errorCode];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:(int)errorCode];
     }
     if (result) {
         [self.commandDelegate sendPluginResult:result callbackId:callbackId];
