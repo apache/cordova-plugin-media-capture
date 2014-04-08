@@ -2,8 +2,9 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:rim="http://www.blackberry.com/ns/widgets"
            id="org.apache.cordova.media-capture"
-      version="0.2.7-dev">
+      version="0.2.9-dev">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -12,7 +13,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-media-capture.git</repo>
     <issue>https://issues.apache.org/jira/browse/CB/component/12320646</issue>
     
-    <dependency id="org.apache.cordova.file" />
+    <dependency id="org.apache.cordova.file" version="1.0.1" />
 
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
@@ -93,6 +94,13 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <resource-file src="src/ubuntu/toolbar-left.png" />
         <resource-file src="src/ubuntu/toolbar-middle.png" />
         <resource-file src="src/ubuntu/toolbar-right.png" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="Capture">
+                <param policy_group="audio" policy_version="1" />
+                <param policy_group="camera" policy_version="1" />
+                <param policy_group="microphone" policy_version="1" />
+            </feature>
+        </config-file>
     </platform>
 
     <!-- ios -->
