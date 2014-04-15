@@ -18,6 +18,7 @@
  */
 
 #import "CDVCapture.h"
+#import "CDVFile.h"
 #import <Cordova/CDVJSON.h>
 #import <Cordova/CDVAvailability.h>
 
@@ -452,8 +453,20 @@
     NSFileManager* fileMgr = [[NSFileManager alloc] init];
     NSMutableDictionary* fileDict = [NSMutableDictionary dictionaryWithCapacity:5];
 
+    CDVFile *fs = [self.commandDelegate getCommandInstance:@"File"];
+
+    // Get canonical version of localPath
+    NSURL *fileURL = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@", fullPath]];
+    NSURL *resolvedFileURL = [fileURL URLByResolvingSymlinksInPath];
+    NSString *path = [resolvedFileURL path];
+
+    CDVFilesystemURL *url = [fs fileSystemURLforLocalPath:path];
+
     [fileDict setObject:[fullPath lastPathComponent] forKey:@"name"];
     [fileDict setObject:fullPath forKey:@"fullPath"];
+    if (url) {
+        [fileDict setObject:[url absoluteURL] forKey:@"localURL"];
+    }
     // determine type
     if (!type) {
         id command = [self.commandDelegate getCommandInstance:@"File"];
