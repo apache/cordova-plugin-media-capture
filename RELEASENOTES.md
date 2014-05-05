@@ -62,3 +62,13 @@
 
 ### 0.2.8 (Feb 26, 2014)
 * CB-5202 Fix video capture crash on Android 4.3+
+
+### 0.3.0 (Apr 17, 2014)
+* CB-6152: [ios, android] Make mediafile compatible with file plugin
+* CB-6385: Specify file plugin dependency version
+* CB-6212: [iOS] fix warnings compiled under arm64 64-bit
+* CB-6016 [BlackBerry10] Add audio capture capability
+* [Blackberry10] Add rim xml namespaces declaration
+* CB-6422 [windows8] use cordova/exec/proxy
+* CB-6460: Update license headers
+* Add NOTICE file
