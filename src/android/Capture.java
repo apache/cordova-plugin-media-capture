@@ -412,7 +412,7 @@ public class Capture extends CordovaPlugin {
         File fp = webView.getResourceApi().mapUriToFile(data);
         JSONObject obj = new JSONObject();
 
-        FileUtils filePlugin = (FileUtils)webView.pluginManager.getPlugin("File");
+        FileUtils filePlugin = (FileUtils)webView.getPluginManager().getPlugin("File");
         LocalFilesystemURL url = filePlugin.filesystemURLforLocalPath(fp.getAbsolutePath());
 
         try {
