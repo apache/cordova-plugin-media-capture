@@ -110,10 +110,6 @@ Cuando finaliza la operación de captura, el `CaptureCallback` se ejecuta con un
     navigator.device.capture.captureAudio(captureSuccess, captureError, {limit:2});
     
 
-### BlackBerry 10 rarezas
-
-*   Cordova para BlackBerry 10 intentos iniciar la aplicación **Grabadora de notas de voz** , proporcionada por RIM, para capturar grabaciones de audio. La aplicación recibe una `CaptureError.CAPTURE_NOT_SUPPORTED` código de error si la aplicación no está instalada en el dispositivo.
-
 ### iOS rarezas
 
 *   iOS no tiene una aplicación de grabación de audio predeterminada, así se proporciona una sencilla interfaz de usuario.
@@ -151,6 +147,7 @@ Cuando finaliza la operación de captura, el `CaptureCallback` se ejecuta con un
 ### BlackBerry 10 rarezas
 
 *   El `duration` no se admite el parámetro. Longitudes de la grabación no puede limitarse mediante programación.
+*   El `limit` no se admite el parámetro, tan sólo una grabación puede crearse para cada invocación.
 
 ### iOS rarezas
 

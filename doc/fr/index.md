@@ -110,17 +110,13 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCallbac
     navigator.device.capture.captureAudio(captureSuccess, captureError, {limit:2});
     
 
-### BlackBerry 10 Quirks
-
-*   Cordova pour BlackBerry 10 essaie de lancer l'application **Dictaphone Notes** , fournie par RIM, pour capturer des enregistrements audio. Le code d'erreur `CaptureError.CAPTURE_NOT_SUPPORTED` est renvoyé si celle-ci n'est pas installée sur l'appareil.
-
 ### iOS Quirks
 
-*   iOS ne possède pas d'application d'enregistrement audio par défaut, par conséquent une interface utilisateur simple est fournie.
+*   iOS n'a pas une application d'enregistrement audio par défaut, donc une interface utilisateur simple est fournie.
 
 ### Windows Phone 7 et 8 Quirks
 
-*   Windows Phone 7 ne possède pas d'application d'enregistrement audio par défaut, par conséquent une interface utilisateur simple est fournie.
+*   Windows Phone 7 n'a pas une application d'enregistrement audio par défaut, donc une interface utilisateur simple est fournie.
 
 ## CaptureAudioOptions
 
@@ -128,9 +124,9 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCallbac
 
 ### Propriétés
 
-*   **limit** : le nombre maximal de clips audio que l'utilisateur peut enregistrer en une opération unique de capture. La valeur doit être supérieure ou égale à 1 (1 par défaut).
+*   **limite**: le nombre maximal de clips audio, l'utilisateur de l'appareil permet d'enregistrer dans une opération de capture unique. La valeur doit être supérieure ou égale à 1 (1 par défaut).
 
-*   **duration** : la durée maximale d'un clip audio, en secondes.
+*   **durée**: la durée maximale d'un clip sonore audio, en quelques secondes.
 
 ### Exemple
 
@@ -151,10 +147,11 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCallbac
 ### BlackBerry 10 Quirks
 
 *   Le `duration` paramètre n'est pas pris en charge. Longueurs d'enregistrement ne peut être limitée par programme.
+*   Le `limit` paramètre n'est pas pris en charge, ainsi qu'un enregistrement peut être créée pour chaque appel.
 
 ### iOS Quirks
 
-*   Le paramètre `limit` n'est pas pris en charge, par conséquent un seul fichier audio peut être enregistré pour chaque appel.
+*   Le `limit` paramètre n'est pas pris en charge, ainsi qu'un enregistrement peut être créée pour chaque appel.
 
 ## capture.captureImage
 
@@ -212,7 +209,7 @@ Ouvrir l'application native appareil photo pendant que l'appareil est connecté 
 
 ### Propriétés
 
-*   **limit** : le nombre maximum d'images que l'utilisateur peut enregistrer en une opération unique de capture. La valeur doit être supérieure ou égale à 1 (1 par défaut).
+*   **limite**: le nombre maximum d'images, l'utilisateur peut saisir dans une opération de capture unique. La valeur doit être supérieure ou égale à 1 (1 par défaut).
 
 ### Exemple
 
@@ -224,7 +221,7 @@ Ouvrir l'application native appareil photo pendant que l'appareil est connecté 
 
 ### iOS Quirks
 
-*   Le paramètre **limit** n'est pas pris en charge, par conséquent une seule image est capturée par appel.
+*   Le paramètre **limit** n'est pas pris en charge, et qu'une image est prise par l'invocation.
 
 ## capture.captureVideo
 
@@ -282,9 +279,9 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCB` est
 
 ### Propriétés
 
-*   **limit** : le nombre maximal de clips vidéo que utilisateur peut enregistrer en une opération unique de capture. La valeur doit être supérieure ou égale à 1 (1 par défaut).
+*   **limite**: le nombre maximal de clips vidéo, utilisateur de l'appareil peut capturer dans une opération de capture unique. La valeur doit être supérieure ou égale à 1 (1 par défaut).
 
-*   **duration** : la durée maximale d'un clip vidéo, en secondes.
+*   **durée**: la durée maximale d'un clip vidéo, en quelques secondes.
 
 ### Exemple
 
@@ -300,7 +297,7 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCB` est
 
 ### iOS Quirks
 
-*   Le paramètre **limit** n'est pas pris en charge. De ce fait, une seule vidéo est enregistrée par appel.
+*   Le paramètre **limit** n'est pas pris en charge. Qu'une vidéo est enregistrée par l'invocation.
 
 ## CaptureCB
 
@@ -333,19 +330,19 @@ Chaque objet `MediaFile` décrit un fichier média capturé.
 
 ### Propriétés
 
-*   **code** : un des codes d'erreur prédéfinis énumérés ci-dessous.
+*   **code**: un des codes d'erreur prédéfinis énumérés ci-dessous.
 
 ### Constantes
 
-*   `CaptureError.CAPTURE_INTERNAL_ERR` : la caméra ou le microphone n'a pas pu capturer d'image ou de son.
+*   `CaptureError.CAPTURE_INTERNAL_ERR`: La caméra ou un microphone a échoué à capturer l'image ou le son.
 
-*   `CaptureError.CAPTURE_APPLICATION_BUSY` : l'application de capture vidéo ou audio est actuellement occupée à traiter une autre requête.
+*   `CaptureError.CAPTURE_APPLICATION_BUSY`: L'application de capture caméra / audio est actuellement une autre demande de capture.
 
-*   `CaptureError.CAPTURE_INVALID_ARGUMENT` : utilisation incorrecte de l'API (par exemple, la valeur donnée pour `limit` est inférieure à 1).
+*   `CaptureError.CAPTURE_INVALID_ARGUMENT`: Utilisation incorrecte de l'API (par exemple, la valeur de `limit` est inférieur à 1).
 
-*   `CaptureError.CAPTURE_NO_MEDIA_FILES` : l'utilisateur a quitté l'application de capture audio ou vidéo avant de capturer quoi que ce soit.
+*   `CaptureError.CAPTURE_NO_MEDIA_FILES`: L'utilisateur quitte l'application capture audio ou de la caméra avant de capturer n'importe quoi.
 
-*   `CaptureError.CAPTURE_NOT_SUPPORTED` : l'opération de capture demandée n'est pas prise en charge.
+*   `CaptureError.CAPTURE_NOT_SUPPORTED`: L'opération de capture demandée n'est pas pris en charge.
 
 ## CaptureErrorCB
 
@@ -388,11 +385,11 @@ Les types MIME doivent respecter la norme [RFC2046][1]. Exemples :
 
 ### Propriétés
 
-*   **type** : la chaîne de caractères bas de casse ASCII représentant le type de média souhaité. (DOMString)
+*   **type**: The ASCII encodée en chaîne minuscule qui représente le type de média. (DOMString)
 
-*   **height** : la hauteur de l'image ou de la vidéo en pixels. La valeur pour les extraits sonores est zéro. (Number)
+*   **hauteur**: la hauteur de l'image ou la vidéo en pixels. La valeur est zéro pour les extraits sonores. (Nombre)
 
-*   **width** : la largeur de l'image ou de la vidéo en pixels. La valeur pour les extraits sonores est zéro. (Number)
+*   **largeur**: la largeur de l'image ou la vidéo en pixels. La valeur est zéro pour les extraits sonores. (Nombre)
 
 ### Exemple
 
@@ -454,19 +451,19 @@ L'API pour accéder aux médias file format informations est limité, donc pas t
 
 ### Propriétés
 
-*   **name** : le nom du fichier, sans le chemin d'accès associé. (DOMString)
+*   **nom**: le nom du fichier, sans le chemin d'accès. (DOMString)
 
-*   **fullPath** : le chemin d'accès complet au fichier, nom compris. (DOMString)
+*   **fullPath**: le chemin d'accès complet du fichier, y compris le nom. (DOMString)
 
-*   **type** : le type MIME du fichier. (DOMString)
+*   **type**: type de mime du fichier (DOMString)
 
-*   **lastModifiedDate** : la date et l'heure de la dernière modification du fichier. (Date)
+*   **lastModifiedDate**: la date et l'heure lorsque le fichier a été modifié. (Date)
 
-*   **size** : le poids du fichier, en octets. (Number)
+*   **taille**: la taille du fichier, en octets. (Nombre)
 
 ### Méthodes
 
-*   **MediaFile.getFormatData** : récupère les informations de format du fichier média.
+*   **MediaFile.getFormatData**: récupère les informations sur le format du fichier multimédia.
 
 ## MediaFileData
 
@@ -474,41 +471,41 @@ L'API pour accéder aux médias file format informations est limité, donc pas t
 
 ### Propriétés
 
-*   **codecs** : le format réel du contenu audio et vidéo. (DOMString)
+*   **codecs**: le format réel du contenu audio et vidéo. (DOMString)
 
-*   **bitrate** : le débit moyen du contenu. Pour les images, la valeur est zéro. (Number)
+*   **débit**: le débit moyen du contenu. La valeur est égale à zéro pour les images. (Nombre)
 
-*   **height** : la hauteur de l'image ou de la vidéo en pixels. Pour des clips audio, la valeur est zéro. (Number)
+*   **hauteur**: la hauteur de l'image ou la vidéo en pixels. La valeur est égale à zéro pour des clips audio. (Nombre)
 
-*   **width** : la largeur de l'image ou de la vidéo en pixels. Pour des clips audio, la valeur est zéro. (Number)
+*   **largeur**: la largeur de l'image ou la vidéo en pixels. La valeur est égale à zéro pour des clips audio. (Nombre)
 
-*   **duration** : la durée du clip vidéo ou audio en secondes. Pour les images, la valeur est zéro. (Number)
+*   **durée**: la durée du clip vidéo ou audio en quelques secondes. La valeur est égale à zéro pour les images. (Nombre)
 
 ### BlackBerry 10 Quirks
 
 Aucune API fournissant des informations sur le format des fichiers média n'est disponible, par conséquent les objets `MediaFileData` retournés par `MediaFile.getFormatData` comportent les valeurs par défaut suivantes :
 
-*   **codecs** : propriété non prise en charge, sa valeur est `null`.
+*   **codecs**: pas pris en charge et retourne`null`.
 
-*   **bitrate** : propriété non prise en charge, sa valeur est zéro.
+*   **Bitrate**: pas pris en charge et retourne la valeur zéro.
 
-*   **height** : propriété non prise en charge, sa valeur est zéro.
+*   **hauteur**: pas pris en charge et retourne la valeur zéro.
 
-*   **width** : propriété non prise en charge, sa valeur est zéro.
+*   **largeur**: non pris en charge et retourne la valeur zéro.
 
-*   **duration** : propriété non prise en charge, sa valeur est zéro.
+*   **durée**: non pris en charge et retourne la valeur zéro.
 
 ### Amazon Fire OS Quirks
 
 Supporte les propriétés `MediaFileData` suivantes :
 
-*   **codecs**: pas pris en charge et retourne`null`.
+*   **codecs** : propriété non prise en charge, sa valeur est `null`.
 
-*   **Bitrate**: pas pris en charge et retourne la valeur zéro.
+*   **bitrate** : propriété non prise en charge, sa valeur est zéro.
 
-*   **height** : propriété prise en charge seulement pour les fichiers image et vidéo.
+*   **hauteur**: prise en charge : seuls les fichiers image et vidéo.
 
-*   **width** : propriété prise en charge seulement pour les fichiers image et vidéo.
+*   **largeur**: prise en charge : seuls les fichiers image et vidéo.
 
 *   **durée**: prise en charge : seuls les fichiers audio et vidéo
 
@@ -520,11 +517,11 @@ Prend en charge ce qui suit `MediaFileData` Propriétés :
 
 *   **Bitrate**: pas pris en charge et retourne la valeur zéro.
 
-*   **hauteur**: prise en charge : seuls les fichiers image et vidéo.
+*   **height** : propriété prise en charge seulement pour les fichiers image et vidéo.
 
-*   **largeur**: prise en charge : seuls les fichiers image et vidéo.
+*   **width** : propriété prise en charge seulement pour les fichiers image et vidéo.
 
-*   **duration** : propriété prise en charge seulement pour les fichiers audio et vidéo.
+*   **durée**: prise en charge : seuls les fichiers audio et vidéo.
 
 ### iOS Quirks
 
@@ -532,10 +529,10 @@ Prend en charge ce qui suit `MediaFileData` Propriétés :
 
 *   **codecs**: pas pris en charge et retourne`null`.
 
-*   **bitrate** : propriété prise en charge uniquement pour les fichiers audio sous iOS4. Renvoie zéro pour les images et les vidéos.
+*   **Bitrate**: pris en charge sur les périphériques d'iOS4 pour l'audio uniquement. Renvoie zéro pour les images et vidéos.
 
 *   **hauteur**: prise en charge : seuls les fichiers image et vidéo.
 
 *   **largeur**: prise en charge : seuls les fichiers image et vidéo.
 
-*   **durée**: prise en charge : seuls les fichiers audio et vidéo.
+*   **duration** : propriété prise en charge seulement pour les fichiers audio et vidéo.
