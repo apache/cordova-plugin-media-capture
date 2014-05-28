@@ -19,7 +19,7 @@
 
 # org.apache.cordova.media-capture
 
-This plugin provides access to the device's audio, image, and video capture capabilities.
+このプラグインは、デバイスのオーディオ、イメージ、およびビデオ キャプチャ機能へのアクセスを提供します。
 
 **警告**: イメージ、ビデオ、またはデバイスのカメラやマイクからの音声の収集と利用を重要なプライバシーの問題を発生させます。 アプリのプライバシー ポリシーは、アプリがそのようなセンサーを使用する方法と、記録されたデータは他の当事者と共有かどうかを議論すべきです。 さらに、カメラまたはマイクのアプリの使用がない場合明らかに、ユーザー インターフェイスで、前に、アプリケーションにアクセスするカメラまたはマイクを (デバイスのオペレーティング システムしない場合そう既に) - 時間のお知らせを提供する必要があります。 その通知は、上記の (例えば、 **[ok]**を**おかげで**選択肢を提示する) によってユーザーのアクセス許可を取得するだけでなく、同じ情報を提供する必要があります。 いくつかのアプリのマーケットプ レース - 時間の通知を提供して、カメラまたはマイクにアクセスする前にユーザーからアクセス許可を取得するアプリをする必要がありますに注意してください。 詳細については、プライバシーに関するガイドを参照してください。
 
@@ -112,7 +112,7 @@ This plugin provides access to the device's audio, image, and video capture capa
 
 ### iOS の癖
 
-*   iOS does not have a default audio recording application, so a simple user interface is provided.
+*   iOS に既定のオーディオ録音アプリケーションがない単純なユーザー インターフェイスが提供されます。
 
 ### Windows Phone 7 と 8 癖
 
@@ -124,9 +124,9 @@ This plugin provides access to the device's audio, image, and video capture capa
 
 ### プロパティ
 
-*   **limit**: The maximum number of audio clips the device user can record in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+*   **制限**: デバイス ユーザーは、単一のキャプチャ操作で記録することができますオーディオ クリップの最大数。値 1 (デフォルトは 1) 以上にする必要があります。
 
-*   **duration**: The maximum duration of an audio sound clip, in seconds.
+*   **期間**: オーディオのサウンド クリップの最大継続時間を秒単位で。
 
 ### 例
 
@@ -136,9 +136,9 @@ This plugin provides access to the device's audio, image, and video capture capa
     navigator.device.capture.captureAudio(captureSuccess, captureError, options);
     
 
-### Amazon Fire OS Quirks
+### アマゾン火 OS 癖
 
-*   The `duration` parameter is not supported. Recording lengths cannot be limited programmatically.
+*   `duration`パラメーターはサポートされていません。長さの記録プログラムで限定することはできません。
 
 ### Android の癖
 
@@ -147,11 +147,11 @@ This plugin provides access to the device's audio, image, and video capture capa
 ### ブラックベリー 10 癖
 
 *   `duration`パラメーターはサポートされていません。長さの記録プログラムで限定することはできません。
-*   The `limit` parameter is not supported, so only one recording can be created for each invocation.
+*   `limit`パラメーターはサポートされていません、各呼び出しに対して、1 つだけ記録を作成できます。
 
 ### iOS の癖
 
-*   The `limit` parameter is not supported, so only one recording can be created for each invocation.
+*   `limit`パラメーターはサポートされていません、各呼び出しに対して、1 つだけ記録を作成できます。
 
 ## capture.captureImage
 
@@ -209,7 +209,7 @@ Zune を介してお使いのデバイスが接続されているネイティブ
 
 ### プロパティ
 
-*   **limit**: The maximum number of images the user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+*   **制限**: ユーザーは、単一のキャプチャ操作でキャプチャすることができますイメージの最大数。値 1 (デフォルトは 1) 以上にする必要があります。
 
 ### 例
 
@@ -221,7 +221,7 @@ Zune を介してお使いのデバイスが接続されているネイティブ
 
 ### iOS の癖
 
-*   The **limit** parameter is not supported, and only one image is taken per invocation.
+*   **Limit**パラメーターはサポートされていませんとだけ 1 枚の画像の呼び出しごと。
 
 ## capture.captureVideo
 
@@ -271,7 +271,7 @@ Zune を介してお使いのデバイスが接続されているネイティブ
 
 ### ブラックベリー 10 癖
 
-*   Cordova for BlackBerry 10 attempts to launch the **Video Recorder** application, provided by RIM, to capture video recordings. The app receives a `CaptureError.CAPTURE_NOT_SUPPORTED` error code if the application is not installed on the device.
+*   ブラックベリー 10 コルドバ**ビデオ レコーダー**アプリケーションを起動し、リム、によって提供されるビデオ録画をキャプチャしようとします。 アプリは受け取ります、 `CaptureError.CAPTURE_NOT_SUPPORTED` 、アプリケーションがデバイスにインストールされていない場合はエラー コード。
 
 ## CaptureVideoOptions
 
@@ -279,9 +279,9 @@ Zune を介してお使いのデバイスが接続されているネイティブ
 
 ### プロパティ
 
-*   **limit**: The maximum number of video clips the device's user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+*   **制限**: デバイスのユーザーを単一のキャプチャ操作でキャプチャすることができますビデオ クリップの最大数。値 1 (デフォルトは 1) 以上にする必要があります。
 
-*   **duration**: The maximum duration of a video clip, in seconds.
+*   **期間**: ビデオ クリップの最大継続時間を秒単位で。
 
 ### 例
 
@@ -293,11 +293,11 @@ Zune を介してお使いのデバイスが接続されているネイティブ
 
 ### ブラックベリー 10 癖
 
-*   The **duration** parameter is not supported, so the length of recordings can't be limited programmatically.
+*   **期間**パラメーターはサポートされていませんので、録音の長さは限られたプログラムを使用することはできません。
 
 ### iOS の癖
 
-*   The **limit** parameter is not supported. Only one video is recorded per invocation.
+*   **Limit**パラメーターはサポートされていません。のみ 1 つのビデオは、呼び出しごとに記録されます。
 
 ## CaptureCB
 
@@ -330,19 +330,19 @@ Zune を介してお使いのデバイスが接続されているネイティブ
 
 ### プロパティ
 
-*   **code**: One of the pre-defined error codes listed below.
+*   **コード**: 事前定義されたエラー コードのいずれか次のとおりです。
 
 ### 定数
 
-*   `CaptureError.CAPTURE_INTERNAL_ERR`: The camera or microphone failed to capture image or sound.
+*   `CaptureError.CAPTURE_INTERNAL_ERR`: カメラまたはマイクの画像やサウンドをキャプチャに失敗しました。
 
 *   `CaptureError.CAPTURE_APPLICATION_BUSY`： 現在カメラやオーディオのキャプチャのアプリケーション別のキャプチャ要求を提供します。
 
 *   `CaptureError.CAPTURE_INVALID_ARGUMENT`： 無効な API の使用 (例えば、の値 `limit` が 1 未満です)。
 
-*   `CaptureError.CAPTURE_NO_MEDIA_FILES`: The user exits the camera or audio capture application before capturing anything.
+*   `CaptureError.CAPTURE_NO_MEDIA_FILES`: ユーザーが何かをキャプチャする前にカメラやオーディオのキャプチャ アプリケーションを終了します。
 
-*   `CaptureError.CAPTURE_NOT_SUPPORTED`: The requested capture operation is not supported.
+*   `CaptureError.CAPTURE_NOT_SUPPORTED`： 要求されたキャプチャ操作はサポートされていません。
 
 ## CaptureErrorCB
 
@@ -385,11 +385,11 @@ MIME の種類は[RFC2046][1]に従う必要があります。例:
 
 ### プロパティ
 
-*   **type**: The ASCII-encoded lowercase string representing the media type. (DOMString)
+*   **タイプ**: 小文字の文字列を ASCII でエンコードされたメディアの種類を表します。（，）
 
-*   **height**: The height of the image or video in pixels. The value is zero for sound clips. (Number)
+*   **高さ**: イメージまたはビデオのピクセルでの高さ。値は、サウンド クリップの場合は 0 です。(数)
 
-*   **width**: The width of the image or video in pixels. The value is zero for sound clips. (Number)
+*   **幅**: イメージまたはピクセルのビデオの幅。値は、サウンド クリップの場合は 0 です。(数)
 
 ### 例
 
@@ -429,7 +429,7 @@ MIME の種類は[RFC2046][1]に従う必要があります。例:
 *   Windows Phone 7 と 8
 *   Windows 8
 
-### Amazon Fire OS Quirks
+### アマゾン火 OS 癖
 
 API 情報にアクセスするメディア ファイル形式は限られて、それで、必ずしもすべて `MediaFileData` プロパティがサポートされます。
 
@@ -451,19 +451,19 @@ API 情報にアクセスするメディア ファイル形式は限られて、
 
 ### プロパティ
 
-*   **name**: The name of the file, without path information. (DOMString)
+*   **名前**: パス情報なしのファイルの名前。（，）
 
-*   **fullPath**: The full path of the file, including the name. (DOMString)
+*   **fullPath**: 名を含むファイルの完全パス。（，）
 
-*   **type**: The file's mime type (DOMString)
+*   **タイプ**: ファイルの mime の種類 (，)
 
-*   **lastModifiedDate**: The date and time when the file was last modified. (Date)
+*   **ファイルサイズ**: 日付と時刻、ファイルが最後に変更されました。（日）
 
-*   **size**: The size of the file, in bytes. (Number)
+*   **サイズ**: バイトで、ファイルのサイズ。(数)
 
 ### メソッド
 
-*   **MediaFile.getFormatData**: Retrieves the format information of the media file.
+*   **MediaFile.getFormatData**: メディア ファイルの形式情報を取得します。
 
 ## MediaFileData
 
@@ -471,31 +471,31 @@ API 情報にアクセスするメディア ファイル形式は限られて、
 
 ### プロパティ
 
-*   **codecs**: The actual format of the audio and video content. (DOMString)
+*   **コーデック**： オーディオおよびビデオ コンテンツの実際のフォーマット。（，）
 
-*   **bitrate**: The average bitrate of the content. The value is zero for images. (Number)
+*   **ビットレート**： コンテンツの平均ビットレート。値が画像の場合は 0 です。(数)
 
-*   **height**: The height of the image or video in pixels. The value is zero for audio clips. (Number)
+*   **高さ**: イメージまたはビデオのピクセルでの高さ。値は、オーディオ クリップの場合は 0 です。(数)
 
-*   **width**: The width of the image or video in pixels. The value is zero for audio clips. (Number)
+*   **幅**: イメージまたはピクセルのビデオの幅。値は、オーディオ クリップの場合は 0 です。(数)
 
-*   **duration**: The length of the video or sound clip in seconds. The value is zero for images. (Number)
+*   **期間**: 秒のビデオまたはサウンドのクリップの長さ。値が画像の場合は 0 です。(数)
 
 ### ブラックベリー 10 癖
 
 メディア ファイルの形式情報を提供する API がしないので、 `MediaFileData` によって返されるオブジェクト `MediaFile.getFormatData` 機能次の既定値。
 
-*   **コーデック**： いないサポートしを返します`null`.
+*   **コーデック**： ないサポートされておりを返します`null`.
 
-*   **ビットレート**： いないサポートし、ゼロを返します。
+*   **ビットレート**： ないサポートされており、ゼロを返します。
 
-*   **height**: Not supported, and returns zero.
+*   **高さ**: ないサポートされており、ゼロを返します。
 
-*   **width**: Not supported, and returns zero.
+*   **幅**: ないサポートされており、ゼロを返します。
 
-*   **duration**: Not supported, and returns zero.
+*   **期間**: ないサポートされており、ゼロを返します。
 
-### Amazon Fire OS Quirks
+### アマゾン火 OS 癖
 
 以下がサポート `MediaFileData` プロパティ。
 
@@ -507,15 +507,15 @@ API 情報にアクセスするメディア ファイル形式は限られて、
 
 *   **幅**: サポート: イメージ ファイルやビデオ ファイルのみです。
 
-*   **duration**: Supported: audio and video files only
+*   **期間**: サポート: オーディオおよびビデオ ファイルのみ
 
 ### Android の癖
 
 以下がサポート `MediaFileData` プロパティ。
 
-*   **コーデック**： いないサポートしを返します`null`.
+*   **コーデック**： ないサポートされておりを返します`null`.
 
-*   **ビットレート**： いないサポートし、ゼロを返します。
+*   **ビットレート**： ないサポートされており、ゼロを返します。
 
 *   **高さ**: サポート: イメージ ファイルやビデオ ファイルのみです。
 
@@ -527,9 +527,9 @@ API 情報にアクセスするメディア ファイル形式は限られて、
 
 以下がサポート `MediaFileData` プロパティ。
 
-*   **コーデック**： いないサポートしを返します`null`.
+*   **コーデック**： ないサポートされておりを返します`null`.
 
-*   **bitrate**: Supported on iOS4 devices for audio only. Returns zero for images and videos.
+*   **ビットレート**： iOS4 オーディオのみのデバイスでサポートされています。画像や動画はゼロを返します。
 
 *   **高さ**: サポート: イメージ ファイルやビデオ ファイルのみです。
 
