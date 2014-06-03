@@ -76,7 +76,7 @@ namespace WPCordovaClassLib.Cordova.UI
 
                 string baseUrl = "/";
                 // dummy parameter is used to always open a fresh version
-                root.Navigate(new System.Uri(baseUrl + "Plugins/org.apache.cordova.core.media-capture/VideoRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
+                root.Navigate(new System.Uri(baseUrl + "Plugins/org.apache.cordova.media-capture/VideoRecorder.xaml?dummy=" + Guid.NewGuid().ToString(), UriKind.Relative));
             });
         }
 
