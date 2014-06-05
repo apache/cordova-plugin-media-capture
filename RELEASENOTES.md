@@ -72,3 +72,11 @@
 * CB-6422 [windows8] use cordova/exec/proxy
 * CB-6460: Update license headers
 * Add NOTICE file
+
+### 0.3.1 (Jun 05, 2014)
+* Added translations to documentation. Github close #14
+* Remove deprecated symbols for iOS < 6
+* Fixes captureTasks UI URIs
+* CB-6808 Add license
+* CB-6706: Relax dependency on file plugin
+* CB-6491 add CONTRIBUTING.md
