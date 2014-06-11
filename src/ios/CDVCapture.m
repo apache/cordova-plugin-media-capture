@@ -106,13 +106,7 @@
 
         self.inUse = YES;
 
-        SEL selector = NSSelectorFromString(@"presentViewController:animated:completion:");
-        if ([self.viewController respondsToSelector:selector]) {
-            [self.viewController presentViewController:navController animated:YES completion:nil];
-        } else {
-            // deprecated as of iOS >= 6.0
-            [self.viewController presentModalViewController:navController animated:YES];
-        }
+        [self.viewController presentViewController:navController animated:YES completion:nil];
     }
 
     if (result) {
@@ -159,13 +153,7 @@
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
 
-        SEL selector = NSSelectorFromString(@"presentViewController:animated:completion:");
-        if ([self.viewController respondsToSelector:selector]) {
-            [self.viewController presentViewController:pickerController animated:YES completion:nil];
-        } else {
-            // deprecated as of iOS >= 6.0
-            [self.viewController presentModalViewController:pickerController animated:YES];
-        }
+        [self.viewController presentViewController:pickerController animated:YES completion:nil];
     }
 }
 
@@ -277,13 +265,7 @@
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
 
-        SEL selector = NSSelectorFromString(@"presentViewController:animated:completion:");
-        if ([self.viewController respondsToSelector:selector]) {
-            [self.viewController presentViewController:pickerController animated:YES completion:nil];
-        } else {
-            // deprecated as of iOS >= 6.0
-            [self.viewController presentModalViewController:pickerController animated:YES];
-        }
+        [self.viewController presentViewController:pickerController animated:YES completion:nil];
     }
 }
 
@@ -505,11 +487,7 @@
     CDVImagePicker* cameraPicker = (CDVImagePicker*)picker;
     NSString* callbackId = cameraPicker.callbackId;
 
-    if ([picker respondsToSelector:@selector(presentingViewController)]) {
-        [[picker presentingViewController] dismissModalViewControllerAnimated:YES];
-    } else {
-        [[picker parentViewController] dismissModalViewControllerAnimated:YES];
-    }
+    [[picker presentingViewController] dismissViewControllerAnimated:YES completion:nil];
 
     CDVPluginResult* result = nil;
 
@@ -546,11 +524,7 @@
     CDVImagePicker* cameraPicker = (CDVImagePicker*)picker;
     NSString* callbackId = cameraPicker.callbackId;
 
-    if ([picker respondsToSelector:@selector(presentingViewController)]) {
-        [[picker presentingViewController] dismissModalViewControllerAnimated:YES];
-    } else {
-        [[picker parentViewController] dismissModalViewControllerAnimated:YES];
-    }
+    [[picker presentingViewController] dismissViewControllerAnimated:YES completion:nil];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_NO_MEDIA_FILES];
     [self.commandDelegate sendPluginResult:result callbackId:callbackId];
@@ -847,11 +821,7 @@
 - (void)dismissAudioView:(id)sender
 {
     // called when done button pressed or when error condition to do cleanup and remove view
-    if ([self.captureCommand.viewController.modalViewController respondsToSelector:@selector(presentingViewController)]) {
-        [[self.captureCommand.viewController.modalViewController presentingViewController] dismissModalViewControllerAnimated:YES];
-    } else {
-        [[self.captureCommand.viewController.modalViewController parentViewController] dismissModalViewControllerAnimated:YES];
-    }
+    [[self.captureCommand.viewController.presentedViewController presentingViewController] dismissViewControllerAnimated:YES completion:nil];
 
     if (!self.pluginResult) {
         // return error
