@@ -227,6 +227,16 @@ public class Capture extends CordovaPlugin {
 
         // Specify file so that large image is captured and returned
         File photo = new File(getTempDirectoryPath(), "Capture.jpg");
+        // Create the capture file, making it globally writable so the camera app has access
+        try {
+          if (photo.exists() == false) {
+            photo.createNewFile();
+          }
+          photo.setWritable(true,false);
+        }
+        catch(IOException e) {
+          Log.d(LOG_TAG, "Unable to prepare writable capture image for camera app.");
+        }
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
 
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_IMAGE);
