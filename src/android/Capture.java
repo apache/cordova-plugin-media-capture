@@ -227,9 +227,21 @@ public class Capture extends CordovaPlugin {
 
         // Specify file so that large image is captured and returned
         File photo = new File(getTempDirectoryPath(), "Capture.jpg");
+        try {
+            // the ACTION_IMAGE_CAPTURE is run under different credentials and has to be granted write permissions 
+            createWritableFile(photo);
+        } catch (IOException ex) {
+            this.fail(createErrorObject(CAPTURE_INTERNAL_ERR, ex.toString()));
+            return;
+        }
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
 
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_IMAGE);
+    }
+
+    private static void createWritableFile(File file) throws IOException {
+        file.createNewFile();
+        file.setWritable(true, false);
     }
 
     /**
@@ -272,7 +284,7 @@ public class Capture extends CordovaPlugin {
 
                         if (results.length() >= limit) {
                             // Send Uri back to JavaScript for listening to audio
-                        	that.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, results));
+                            that.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, results));
                         } else {
                             // still need to capture more audio clips
                             captureAudio();
