@@ -19,36 +19,36 @@
  *
 */
 
-exports.defineAutoTests = function() {
+exports.defineAutoTests = function () {
     describe('Capture (navigator.device.capture)', function () {
-        it("capture.spec.1 should exist", function() {
+        it("capture.spec.1 should exist", function () {
             expect(navigator.device).toBeDefined();
             expect(navigator.device.capture).toBeDefined();
         });
 
-        it("capture.spec.2 should have the correct properties ", function() {
+        it("capture.spec.2 should have the correct properties ", function () {
             expect(navigator.device.capture.supportedAudioModes).toBeDefined();
             expect(navigator.device.capture.supportedImageModes).toBeDefined();
             expect(navigator.device.capture.supportedVideoModes).toBeDefined();
         });
 
-        it("capture.spec.3 should contain a captureAudio function", function() {
+        it("capture.spec.3 should contain a captureAudio function", function () {
             expect(navigator.device.capture.captureAudio).toBeDefined();
             expect(typeof navigator.device.capture.captureAudio == 'function').toBe(true);
         });
 
-        it("capture.spec.4 should contain a captureImage function", function() {
+        it("capture.spec.4 should contain a captureImage function", function () {
             expect(navigator.device.capture.captureImage).toBeDefined();
             expect(typeof navigator.device.capture.captureImage == 'function').toBe(true);
         });
 
-        it("capture.spec.5 should contain a captureVideo function", function() {
+        it("capture.spec.5 should contain a captureVideo function", function () {
             expect(navigator.device.capture.captureVideo).toBeDefined();
             expect(typeof navigator.device.capture.captureVideo == 'function').toBe(true);
         });
 
         describe('CaptureAudioOptions', function () {
-            it("capture.spec.6 CaptureAudioOptions constructor should exist", function() {
+            it("capture.spec.6 CaptureAudioOptions constructor should exist", function () {
                 var options = new CaptureAudioOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
@@ -57,7 +57,7 @@ exports.defineAutoTests = function() {
         });
 
         describe('CaptureImageOptions', function () {
-            it("capture.spec.7 CaptureImageOptions constructor should exist", function() {
+            it("capture.spec.7 CaptureImageOptions constructor should exist", function () {
                 var options = new CaptureImageOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
@@ -65,7 +65,7 @@ exports.defineAutoTests = function() {
         });
 
         describe('CaptureVideoOptions', function () {
-            it("capture.spec.8 CaptureVideoOptions constructor should exist", function() {
+            it("capture.spec.8 CaptureVideoOptions constructor should exist", function () {
                 var options = new CaptureVideoOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
@@ -74,14 +74,14 @@ exports.defineAutoTests = function() {
         });
 
         describe('CaptureError interface', function () {
-            it("capture.spec.9 CaptureError constants should be defined", function() {
+            it("capture.spec.9 CaptureError constants should be defined", function () {
                 expect(CaptureError.CAPTURE_INTERNAL_ERR).toBe(0);
                 expect(CaptureError.CAPTURE_APPLICATION_BUSY).toBe(1);
                 expect(CaptureError.CAPTURE_INVALID_ARGUMENT).toBe(2);
                 expect(CaptureError.CAPTURE_NO_MEDIA_FILES).toBe(3);
             });
 
-            it("capture.spec.10 CaptureError properties should exist", function() {
+            it("capture.spec.10 CaptureError properties should exist", function () {
                 var error = new CaptureError();
                 expect(error).toBeDefined();
                 expect(error.code).toBeDefined();
@@ -89,7 +89,7 @@ exports.defineAutoTests = function() {
         });
 
         describe('MediaFileData', function () {
-            it("capture.spec.11 MediaFileData constructor should exist", function() {
+            it("capture.spec.11 MediaFileData constructor should exist", function () {
                 var fileData = new MediaFileData();
                 expect(fileData).toBeDefined();
                 expect(fileData.bitrate).toBeDefined();
@@ -101,7 +101,7 @@ exports.defineAutoTests = function() {
         });
 
         describe('MediaFile', function () {
-            it("capture.spec.12 MediaFile constructor should exist", function() {
+            it("capture.spec.12 MediaFile constructor should exist", function () {
                 var fileData = new MediaFile();
                 expect(fileData).toBeDefined();
                 expect(fileData.name).toBeDefined();
@@ -111,4 +111,142 @@ exports.defineAutoTests = function() {
             });
         });
     });
+};
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
+exports.defineManualTests = function (contentEl, createActionButton) {
+    var platformId = cordova.require('cordova/platform').id;
+    var pageStartTime = +new Date();
+
+    function log(value) {
+        document.getElementById('camera_status').textContent += (new Date() - pageStartTime) / 1000 + ': ' + value + '\n';
+        console.log(value);
+    }
+
+    function captureAudioWin(mediaFiles) {
+        var path = mediaFiles[0].fullPath;
+        log('Audio captured: ' + path);
+        var m = new Media(path);
+        m.play();
+    }
+
+    function captureAudioFail(e) {
+        log('Error getting audio: ' + e.code);
+    }
+
+    function getAudio() {
+        clearStatus();
+        var options = { limit: 1, duration: 10 };
+        navigator.device.capture.captureAudio(captureAudioWin, captureAudioFail, options);
+    }
+
+    function captureImageWin(mediaFiles) {
+        var path = mediaFiles[0].fullPath;
+        log('Image captured: ' + path);
+        document.getElementById('camera_image').src = path;
+    }
+
+    function captureImageFail(e) {
+        log('Error getting image: ' + e.code);
+    }
+
+    function getImage() {
+        clearStatus();
+        var options = { limit: 1 };
+        navigator.device.capture.captureImage(captureImageWin, captureImageFail, options);
+    }
+
+    function captureVideoWin(mediaFiles) {
+        var path = mediaFiles[0].fullPath;
+        log('Video captured: ' + path);
+
+        // need to inject the video element into the html
+        // doesn't seem to work if you have a pre-existing video element and
+        // add in a source tag
+        var vid = document.createElement('video');
+        vid.id = "theVideo";
+        vid.width = "320";
+        vid.height = "240";
+        vid.controls = "true";
+        var source_vid = document.createElement('source');
+        source_vid.id = "theSource";
+        source_vid.src = path;
+        vid.appendChild(source_vid);
+        document.getElementById('video_container').appendChild(vid);
+    }
+
+    function captureVideoFail(e) {
+        log('Error getting video: ' + e.code);
+    }
+
+    function getVideo() {
+        clearStatus();
+        var options = { limit: 1, duration: 10 };
+        navigator.device.capture.captureVideo(captureVideoWin, captureVideoFail, options);
+    }
+
+    function resolveMediaFileURL(mediaFile, callback) {
+        resolveLocalFileSystemURL(mediaFile.localURL, function (entry) {
+            log("Resolved by URL: " + mediaFile.localURL);
+            if (callback) callback();
+        }, function (err) {
+            log("Failed to resolve by URL: " + mediaFile.localURL);
+            log("Error: " + JSON.stringify(err));
+            if (callback) callback();
+        });
+    }
+
+    function resolveMediaFile(mediaFile, callback) {
+        resolveLocalFileSystemURL(mediaFile.fullPath, function (entry) {
+            log("Resolved by path: " + mediaFile.fullPath);
+            if (callback) callback();
+        }, function (err) {
+            log("Failed to resolve by path: " + mediaFile.fullPath);
+            log("Error: " + JSON.stringify(err));
+            if (callback) callback();
+        });
+    }
+
+    function resolveVideo() {
+        clearStatus();
+        var options = { limit: 1, duration: 5 };
+        navigator.device.capture.captureVideo(function (mediaFiles) {
+            captureVideoWin(mediaFiles);
+            resolveMediaFile(mediaFiles[0], function () {
+                resolveMediaFileURL(mediaFiles[0]);
+            });
+        }, captureVideoFail, options);
+    }
+
+    function clearStatus() {
+        document.getElementById('camera_status').innerHTML = '';
+        document.getElementById('camera_image').src = 'about:blank';
+    }
+
+    /******************************************************************************/
+
+    contentEl.innerHTML = '<div id="info" style="white-space: pre-wrap">' +
+        '<b>Status:</b> <div id="camera_status"></div>' +
+        'img: <img width="100" id="camera_image">' +
+        'video: <div id="video_container"></div>' +
+        '</div><div id="actions"></div>';
+
+    createActionButton('Capture 10 sec of audio and play', function () {
+        getAudio();
+    }, 'actions');
+
+    createActionButton('Capture 1 image', function () {
+        getImage();
+    }, 'actions');
+
+    createActionButton('Capture 10 sec of video', function () {
+        getVideo();
+    }, 'actions');
+
+    createActionButton('Capture 5 sec of video and resolve', function () {
+        resolveVideo();
+    }, 'actions');
 };
