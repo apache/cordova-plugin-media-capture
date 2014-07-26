@@ -49,7 +49,7 @@ public slots:
 
     void recordAudio();
     void cancel();
-    void onVideoRecordEnd(QString path);
+    void onVideoRecordEnd(const QString &uri);
     void onImageSaved(const QString &path);
 
     QString generateLocation(const QString &extension) {
