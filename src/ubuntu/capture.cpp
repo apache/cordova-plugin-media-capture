@@ -50,7 +50,7 @@ static QString formatFile(const QMimeDatabase &db, const QString &path) {
 MediaCapture::MediaCapture(Cordova *cordova): CPlugin(cordova), _scId(0), _ecId(0) {
 }
 
-void MediaCapture::captureAudio(int scId, int ecId, QVariantMap options) {
+void MediaCapture::captureAudio(int scId, int ecId, const QVariantMap &) {
     if (_scId || _ecId) {
         this->callback(_ecId, QString("{code: %1}").arg(CAPTURE_APPLICATION_BUSY));
         return;
@@ -118,7 +118,7 @@ void MediaCapture::cancel() {
     _recorder.clear();
 }
 
-void MediaCapture::captureVideo(int scId, int ecId, QVariantMap options) {
+void MediaCapture::captureVideo(int scId, int ecId, const QVariantMap &) {
     if (_scId || _ecId) {
         this->callback(_ecId, QString("{code: %1}").arg(CAPTURE_APPLICATION_BUSY));
         return;
@@ -141,15 +141,13 @@ void MediaCapture::onVideoRecordEnd(const QString &uri) {
     m_cordova->execQML("CordovaWrapper.global.captureObject.destroy()");
 }
 
-void MediaCapture::captureImage(int scId, int ecId, QVariantMap options) {
+void MediaCapture::captureImage(int scId, int ecId, const QVariantMap &) {
     if (_scId || _ecId) {
         this->callback(_ecId, QString("{code: %1}").arg(CAPTURE_APPLICATION_BUSY));
         return;
     }
 
     QString path = m_cordova->get_app_dir() + "/../qml/MediaCaptureWidget.qml";
-
-    // TODO: relative url
     QString qml = QString(code).arg(CordovaInternal::format(path)).arg("camera");
     m_cordova->execQML(qml);
 
