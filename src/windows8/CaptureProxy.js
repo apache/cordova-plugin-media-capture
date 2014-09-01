@@ -28,6 +28,243 @@ var CaptureImageOptions = require('org.apache.cordova.media-capture.CaptureImage
 var CaptureVideoOptions = require('org.apache.cordova.media-capture.CaptureVideoOptions');
 var MediaFileData = require('org.apache.cordova.media-capture.MediaFileData');
 
+/*
+ * Class that combines all logic for capturing picture and video on WP8.1
+ */
+function MediaCaptureProxy() {
+
+    var previewContainer,
+        capturePreview = null,
+        captureCancelButton = null,
+        captureSettings = null,
+        captureStarted = false,
+        capturedPictureFile,
+        capturedVideoFile,
+        capture = null;
+
+    var CaptureNS = Windows.Media.Capture;
+
+    /**
+     * Helper function that toggles visibility of DOM elements with provided ids
+     * @param {String} variable number of elements' ids which visibility needs to be toggled 
+     */
+    function toggleElements() {
+        // convert arguments to array
+        var args = Array.prototype.slice.call(arguments);
+        args.forEach(function(buttonId) {
+            var buttonEl = document.getElementById(buttonId);
+            if (buttonEl) {
+                var curDisplayStyle = buttonEl.style.display;
+                buttonEl.style.display = curDisplayStyle === 'none' ? 'block' : 'none';
+            }
+        });
+    }
+
+    /**
+     * Creates basic camera UI with preview 'video' element and 'Cancel' button
+     * Capture starts, when you clicking on preview.
+     */
+    function createCameraUI() {
+
+        var buttonStyle = "margin: 7px; border: 2.5px solid white; width: 45%; height: 35px; color: white; background-color: black;";
+
+        previewContainer = document.createElement('div');
+        previewContainer.style.cssText = "background-position: 50% 50%; background-repeat: no-repeat; background-size: contain; background-color: black; left: 0px; top: 0px; width: 100%; height: 100%; position: fixed; z-index: 9999";
+        previewContainer.innerHTML =
+            '<video id="capturePreview" style="width: 100%; height: 100%"></video>' +
+            '<div id="previewButtons" style="width: 100%; bottom: 0px; display: flex; position: absolute; justify-content: space-around; background-color: black;">' +
+                '<button id="takePicture" style="' + buttonStyle + '">Capture</button>' +
+                '<button id="cancelCapture" style="' + buttonStyle + '">Cancel</button>' +
+                '<button id="selectPicture" style="display: none; ' + buttonStyle + '">Accept</button>' +
+                '<button id="retakePicture" style="display: none; ' + buttonStyle + '">Retake</button>' +
+            '</div>';
+
+        document.body.appendChild(previewContainer);
+
+        // Create fullscreen preview
+        capturePreview = document.getElementById('capturePreview');
+
+        // Create cancel button
+        captureCancelButton = document.getElementById('cancelCapture');
+
+        capture = new CaptureNS.MediaCapture();
+
+        captureSettings = new CaptureNS.MediaCaptureInitializationSettings();
+        captureSettings.streamingCaptureMode = CaptureNS.StreamingCaptureMode.audioAndVideo;
+    }
+
+    /**
+     * Starts camera preview and binds provided callbacks to controls
+     * @param  {function} takeCallback   Callback for Take button
+     * @param  {function} errorCallback  Callback for Cancel button + default error callback
+     * @param  {function} selectCallback Callback for Select button
+     * @param  {function} retakeCallback Callback for Retake button
+     */
+    function startCameraPreview(takeCallback, errorCallback, selectCallback, retakeCallback) {
+        // try to select appropriate device for capture
+        // rear camera is preferred option
+        var expectedPanel = Windows.Devices.Enumeration.Panel.back;
+        Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture).done(function (devices) {
+            if (devices.length > 0) {
+                devices.forEach(function (currDev) {
+                    if (currDev.enclosureLocation && currDev.enclosureLocation.panel && currDev.enclosureLocation.panel == expectedPanel) {
+                        captureSettings.videoDeviceId = currDev.id;
+                    }
+                });
+
+                capture.initializeAsync(captureSettings).done(function () {
+                    // This is necessary since WP8.1 MediaCapture outputs video stream rotated 90 degrees CCW
+                    // TODO: This can be not consistent across devices, need additional testing on various devices
+                    // msdn.microsoft.com/en-us/library/windows/apps/hh452807.aspx
+                    capture.setPreviewRotation(Windows.Media.Capture.VideoRotation.clockwise90Degrees);
+                    capturePreview.msZoom = true;
+
+                    capturePreview.src = URL.createObjectURL(capture);
+                    capturePreview.play();
+
+                    previewContainer.style.display = 'block';
+
+                    // Bind events to controls
+                    capturePreview.onclick = takeCallback;
+                    document.getElementById('takePicture').onclick = takeCallback;
+                    document.getElementById('cancelCapture').onclick = function () {
+                        errorCallback(CaptureError.CAPTURE_NO_MEDIA_FILES);
+                    };
+                    document.getElementById('selectPicture').onclick = selectCallback;
+                    document.getElementById('retakePicture').onclick = retakeCallback;
+                }, function (err) {
+                    destroyCameraPreview();
+                    errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                });
+            } else {
+                // no appropriate devices found
+                destroyCameraPreview();
+                errorCallback(CaptureError.CAPTURE_INTERNAL_ERR);
+            }
+        });
+    }
+
+    /**
+     * Destroys camera preview, removes all elements created
+     */
+    function destroyCameraPreview() {
+        capturePreview.pause();
+        capturePreview.src = null;
+        previewContainer && document.body.removeChild(previewContainer);
+        if (capture) {
+            capture.stopRecordAsync();
+            capture = null;
+        }
+    }
+
+    return {
+        /**
+         * Initiate video capture using MediaCapture class
+         * @param  {function} successCallback Called, when user clicked on preview, with captured file object
+         * @param  {function} errorCallback   Called on any error
+         */
+        captureVideo: function (successCallback, errorCallback) {
+            try {
+                createCameraUI();
+                startCameraPreview(function () {
+                    // This callback called twice: whem video capture started and when it ended
+                    // so we need to check capture status
+                    if (!captureStarted) {
+                        // remove cancel button and rename 'Take' button to 'Stop'
+                        toggleElements('cancelCapture');
+                        document.getElementById('takePicture').text = 'Stop';
+
+                        var encodingProperties = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.auto),
+                            generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName,
+                            localFolder = Windows.Storage.ApplicationData.current.localFolder;
+
+                        localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function(capturedFile) {
+                            capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function() {
+                                capturedVideoFile = capturedFile;
+                                captureStarted = true;
+                            }, function(err) {
+                                destroyCameraPreview();
+                                errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                            });
+                        }, function(err) {
+                            destroyCameraPreview();
+                            errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                        });
+                    } else {
+                        capture.stopRecordAsync().done(function () {
+                            destroyCameraPreview();
+                            successCallback(capturedVideoFile);
+                        });
+                    }
+                }, errorCallback);
+            } catch (ex) {
+                destroyCameraPreview();
+                errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, ex);
+            }
+        },
+
+        /**
+         * Initiate image capture using MediaCapture class
+         * @param  {function} successCallback Called, when user clicked on preview, with captured file object
+         * @param  {function} errorCallback   Called on any error
+         */
+        capturePhoto: function (successCallback, errorCallback) {
+            try {
+                createCameraUI();
+                startCameraPreview(
+                    // Callback for Take button - captures intermediate image file.
+                    function () {
+                        var encodingProperties = Windows.Media.MediaProperties.ImageEncodingProperties.createJpeg(),
+                            overwriteCollisionOption = Windows.Storage.CreationCollisionOption.replaceExisting,
+                            tempFolder = Windows.Storage.ApplicationData.current.temporaryFolder;
+
+                        tempFolder.createFileAsync("cameraCaptureImage.jpg", overwriteCollisionOption).done(function (capturedFile) {
+                            capture.capturePhotoToStorageFileAsync(encodingProperties, capturedFile).done(function () {
+                                // store intermediate result in object's global variable
+                                capturedPictureFile = capturedFile;
+                                // show pre-captured image and toggle visibility of all buttons
+                                previewContainer.style.backgroundImage = 'url("' + 'ms-appdata:///temp/' + capturedFile.name + '")';
+                                toggleElements('capturePreview', 'takePicture', 'cancelCapture', 'selectPicture', 'retakePicture');
+                            }, function (err) {
+                                destroyCameraPreview();
+                                errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                            });
+                        }, function (err) {
+                            destroyCameraPreview();
+                            errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                        });
+                    },
+                    // error + cancel callback
+                    function (err) {
+                        destroyCameraPreview();
+                        errorCallback(err);
+                    },
+                    // Callback for Select button - copies intermediate file into persistent application's storage
+                    function () {
+                        var generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName,
+                            localFolder = Windows.Storage.ApplicationData.current.localFolder;
+
+                        capturedPictureFile.copyAsync(localFolder, capturedPictureFile.name, generateUniqueCollisionOption).done(function (copiedFile) {
+                            destroyCameraPreview();
+                            successCallback(copiedFile);
+                        }, function(err) {
+                            destroyCameraPreview();
+                            errorCallback(err);
+                        });
+                    },
+                    // Callback for retake button - just toggles visibility of necessary elements
+                    function () {
+                        toggleElements('capturePreview', 'takePicture', 'cancelCapture', 'selectPicture', 'retakePicture');
+                    }
+                );
+            } catch (ex) {
+                destroyCameraPreview();
+                errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, ex);
+            }
+        }
+    };
+}
+
 module.exports = {
 
     captureAudio:function(successCallback, errorCallback, args) {
@@ -54,14 +291,14 @@ module.exports = {
         initCaptureSettings();
         var mediaCapture = new Windows.Media.Capture.MediaCapture();
         mediaCapture.initializeAsync(mediaCaptureSettings).done(function () {
-            Windows.Storage.KnownFolders.musicLibrary.createFileAsync("captureAudio.mp3", Windows.Storage.NameCollisionOption.generateUniqueName).then(function (storageFile) {
+            Windows.Storage.ApplicationData.current.localFolder.createFileAsync("captureAudio.mp3", Windows.Storage.NameCollisionOption.generateUniqueName).then(function (storageFile) {
                 var mediaEncodingProfile = new Windows.Media.MediaProperties.MediaEncodingProfile.createMp3(Windows.Media.MediaProperties.AudioEncodingQuality.auto);
                 var stopRecord = function () {
                     mediaCapture.stopRecordAsync().then(function (result) {
                         storageFile.getBasicPropertiesAsync().then(function (basicProperties) {
-                            var results = [];
-                            results.push(new MediaFile(storageFile.name, storageFile.path, storageFile.contentType, basicProperties.dateModified, basicProperties.size));
-                            successCallback(results);
+                            var result = new MediaFile(storageFile.name, 'ms-appdata:///local/' + storageFile.name, storageFile.contentType, basicProperties.dateModified, basicProperties.size);
+                            result.fullPath = storageFile.path;
+                            successCallback([result]);
                         }, function () {
                             errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                         });
@@ -69,60 +306,120 @@ module.exports = {
                 };
                 mediaCapture.startRecordToStorageFileAsync(mediaEncodingProfile, storageFile).then(function () {
                     setTimeout(stopRecord, cameraCaptureAudioDuration * 1000);
-                }, function () { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
+                }, function(err) {
+                    errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                });
             }, function () { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
         });
     },
 
     captureImage:function (successCallback, errorCallback, args) {
         var options = args[0];
-        var imageOptions = new CaptureImageOptions();
-        var cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
-        cameraCaptureUI.photoSettings.allowCropping = true;
-        cameraCaptureUI.photoSettings.maxResolution = Windows.Media.Capture.CameraCaptureUIMaxPhotoResolution.highestAvailable;
-        cameraCaptureUI.photoSettings.format = Windows.Media.Capture.CameraCaptureUIPhotoFormat.jpeg;
-        cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.photo).then(function (file) {
-            file.moveAsync(Windows.Storage.KnownFolders.picturesLibrary, "cameraCaptureImage.jpg", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
-                file.getBasicPropertiesAsync().then(function (basicProperties) {
-                    var results = [];
-                    results.push(new MediaFile(file.name, file.path, file.contentType, basicProperties.dateModified, basicProperties.size));
-                    successCallback(results);
+
+        var CaptureNS = Windows.Media.Capture;
+        // Check if necessary API available
+        if (!CaptureNS.CameraCaptureUI) {
+            // We are running on WP8.1 which lacks CameraCaptureUI class
+            // so we need to use MediaCapture class instead and implement custom UI for camera
+
+            function fail(code, data) {
+                var err = new CaptureError(code);
+                err.message = data;
+                errorCallback(err);
+            }
+
+            var proxy = new MediaCaptureProxy();
+
+            proxy.capturePhoto(function (photoFile) {
+                photoFile.getBasicPropertiesAsync().done(function (basicProperties) {
+                    var result = new MediaFile(photoFile.name, 'ms-appdata:///local/' + photoFile.name, photoFile.contentType, basicProperties.dateModified, basicProperties.size);
+                    result.fullPath = photoFile.path;
+                    successCallback([result]);
+                }, function (err) {
+                    fail(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                });
+            }, function (err) {
+                fail(err);
+            });
+
+        } else {
+            var imageOptions = new CaptureImageOptions();
+            var cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
+            cameraCaptureUI.photoSettings.allowCropping = true;
+            cameraCaptureUI.photoSettings.maxResolution = Windows.Media.Capture.CameraCaptureUIMaxPhotoResolution.highestAvailable;
+            cameraCaptureUI.photoSettings.format = Windows.Media.Capture.CameraCaptureUIPhotoFormat.jpeg;
+            cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.photo).done(function (file) {
+                file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureImage.jpg", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
+                    file.getBasicPropertiesAsync().then(function (basicProperties) {
+                        var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
+                        result.fullPath = file.path;
+                        successCallback([result]);
+                    }, function () {
+                        errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                    });
                 }, function () {
                     errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                 });
             }, function () {
                 errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
             });
-        }, function () { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
+        }
     },
 
     captureVideo:function (successCallback, errorCallback, args) {
         var options = args[0];
-        var videoOptions = new CaptureVideoOptions();
-        if (options.duration && options.duration > 0) {
-            videoOptions.duration = options.duration;
-        }
-        if (options.limit > 1) {
-            videoOptions.limit = options.limit;
-        }
-        var cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
-        cameraCaptureUI.videoSettings.allowTrimming = true;
-        cameraCaptureUI.videoSettings.format = Windows.Media.Capture.CameraCaptureUIVideoFormat.mp4;
-        cameraCaptureUI.videoSettings.maxDurationInSeconds = videoOptions.duration;
-        cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.video).then(function (file) {
-            file.moveAsync(Windows.Storage.KnownFolders.videosLibrary, "cameraCaptureVedio.mp4", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
-                file.getBasicPropertiesAsync().then(function (basicProperties) {
-                    var results = [];
-                    results.push(new MediaFile(file.name, file.path, file.contentType, basicProperties.dateModified, basicProperties.size));
-                    successCallback(results);
-                }, function () {
+
+        var CaptureNS = Windows.Media.Capture;
+        // Check if necessary API available
+        if (!CaptureNS.CameraCaptureUI) {
+            // We are running on WP8.1 which lacks CameraCaptureUI class
+            // so we need to use MediaCapture class instead and implement custom UI for camera
+
+            function fail(code, data) {
+                var err = new CaptureError(code);
+                err.message = data;
+                errorCallback(err);
+            }
+
+            var proxy = new MediaCaptureProxy();
+
+            proxy.captureVideo(function (videoFile) {
+                videoFile.getBasicPropertiesAsync().done(function (basicProperties) {
+                    var result = new MediaFile(videoFile.name, 'ms-appdata:///local/' + videoFile.name, videoFile.contentType, basicProperties.dateModified, basicProperties.size);
+                    result.fullPath = videoFile.path;
+                    successCallback([result]);
+                }, function (err) {
+                    fail(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                });
+            }, fail);
+
+        } else {
+
+            var videoOptions = new CaptureVideoOptions();
+            if (options.duration && options.duration > 0) {
+                videoOptions.duration = options.duration;
+            }
+            if (options.limit > 1) {
+                videoOptions.limit = options.limit;
+            }
+            var cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
+            cameraCaptureUI.videoSettings.allowTrimming = true;
+            cameraCaptureUI.videoSettings.format = Windows.Media.Capture.CameraCaptureUIVideoFormat.mp4;
+            cameraCaptureUI.videoSettings.maxDurationInSeconds = videoOptions.duration;
+            cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.video).then(function(file) {
+                file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureVideo.mp4", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
+                    file.getBasicPropertiesAsync().then(function(basicProperties) {
+                        var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
+                        result.fullPath = file.path;
+                        successCallback([result]);
+                    }, function() {
+                        errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                    });
+                }, function() {
                     errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                 });
-            }, function () {
-                errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
-            });
-        }, function () { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
-
+            }, function() { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
+        }
     },
 
     getFormatData: function (successCallback, errorCallback, args) {
