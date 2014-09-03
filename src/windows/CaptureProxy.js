@@ -280,34 +280,60 @@ module.exports = {
             return;
         }
 
-        var cameraCaptureAudioDuration = audioOptions.duration;
-        var mediaCaptureSettings;
-        var initCaptureSettings = function () {
-            mediaCaptureSettings = null;
-            mediaCaptureSettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
-            mediaCaptureSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.audio;
+        // Some shortcuts for long namespaces
+        var CaptureNS = Windows.Media.Capture,
+            MediaPropsNS = Windows.Media.MediaProperties,
+            localAppData = Windows.Storage.ApplicationData.current.localFolder,
+            generateUniqueName = Windows.Storage.NameCollisionOption.generateUniqueName;
+
+        var mediaCapture = new CaptureNS.MediaCapture(),
+            mediaCaptureSettings = new CaptureNS.MediaCaptureInitializationSettings(),
+            mp3EncodingProfile = new MediaPropsNS.MediaEncodingProfile.createMp3(MediaPropsNS.AudioEncodingQuality.auto),
+            m4aEncodingProfile = new MediaPropsNS.MediaEncodingProfile.createM4a(MediaPropsNS.AudioEncodingQuality.auto);
+
+        mediaCaptureSettings.streamingCaptureMode = CaptureNS.StreamingCaptureMode.audio;
+
+        var capturedFile,
+            stopRecordTimeout;
+
+        var stopRecord = function () {
+            mediaCapture.stopRecordAsync().then(function() {
+                capturedFile.getBasicPropertiesAsync().then(function (basicProperties) {
+                    var result = new MediaFile(capturedFile.name, 'ms-appdata:///local/' + capturedFile.name, capturedFile.contentType, basicProperties.dateModified, basicProperties.size);
+                    result.fullPath = capturedFile.path;
+                    successCallback([result]);
+                }, function() {
+                    errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                });
+            }, function() { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
         };
 
-        initCaptureSettings();
-        var mediaCapture = new Windows.Media.Capture.MediaCapture();
         mediaCapture.initializeAsync(mediaCaptureSettings).done(function () {
-            Windows.Storage.ApplicationData.current.localFolder.createFileAsync("captureAudio.mp3", Windows.Storage.NameCollisionOption.generateUniqueName).then(function (storageFile) {
-                var mediaEncodingProfile = new Windows.Media.MediaProperties.MediaEncodingProfile.createMp3(Windows.Media.MediaProperties.AudioEncodingQuality.auto);
-                var stopRecord = function () {
-                    mediaCapture.stopRecordAsync().then(function (result) {
-                        storageFile.getBasicPropertiesAsync().then(function (basicProperties) {
-                            var result = new MediaFile(storageFile.name, 'ms-appdata:///local/' + storageFile.name, storageFile.contentType, basicProperties.dateModified, basicProperties.size);
-                            result.fullPath = storageFile.path;
-                            successCallback([result]);
-                        }, function () {
-                            errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+            localAppData.createFileAsync("captureAudio.mp3", generateUniqueName).then(function (storageFile) {
+                capturedFile = storageFile;
+                mediaCapture.startRecordToStorageFileAsync(mp3EncodingProfile, capturedFile).then(function () {
+                    stopRecordTimeout = setTimeout(stopRecord, audioOptions.duration * 1000);
+                }, function (err) {
+                    // -1072868846 is the error code for "No suitable transform was found to encode or decode the content."
+                    // so we try to use another (m4a) format
+                    if (err.number === -1072868846) {
+                        // first we clear existing timeout to prevent success callback to be called with invalid arguments
+                        // second we start same actions to try to record m4a audio
+                        clearTimeout(stopRecordTimeout);
+                        localAppData.createFileAsync("captureAudio.m4a", generateUniqueName).then(function (storageFile) {
+                            capturedFile = storageFile;
+                            mediaCapture.startRecordToStorageFileAsync(m4aEncodingProfile, capturedFile).then(function () {
+                                stopRecordTimeout = setTimeout(stopRecord, audioOptions.duration * 1000);
+                            }, function() {
+                                // if we here, we're totally failed to record either mp3 or m4a
+                                errorCallback(new CaptureError(CaptureError.CAPTURE_INTERNAL_ERR));
+                                return;
+                            });
                         });
-                    }, function () { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
-                };
-                mediaCapture.startRecordToStorageFileAsync(mediaEncodingProfile, storageFile).then(function () {
-                    setTimeout(stopRecord, cameraCaptureAudioDuration * 1000);
-                }, function(err) {
-                    errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                    } else {
+                        errorCallback(new CaptureError(CaptureError.CAPTURE_INTERNAL_ERR));
+                        return;
+                    }
                 });
             }, function () { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
         });
