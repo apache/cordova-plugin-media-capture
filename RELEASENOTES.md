@@ -87,3 +87,9 @@
 * CB-6127 Updated translations for docs
 * CB-6978 captureImage() function fails in Android
 * CB-6890: Fix pluginManager access for 4.0.x branch
+
+### 0.3.3 (Sep 17, 2014)
+* Renamed test dir, added nested plugin.xml
+* added documentation for manual tests
+* CB-6959 Added manual tests
+* CB-6959 Port capture tests to plugin-test-framework
