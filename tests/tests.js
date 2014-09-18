@@ -145,6 +145,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     function captureImageWin(mediaFiles) {
         var path = mediaFiles[0].fullPath;
+        // Necessary since windows doesn't allow file URLs for <img> elements
+        if (cordova.platformId == 'windows' || cordova.platformId == 'windows8') {
+            path = mediaFiles[0].localURL;
+        }
         log('Image captured: ' + path);
         document.getElementById('camera_image').src = path;
     }
