@@ -30,7 +30,7 @@ Este plugin proporciona acceso a audio, imagen y las capacidades de captura de v
 
 ## Plataformas soportadas
 
-*   Amazon fuego OS
+*   Amazon fire OS
 *   Android
 *   BlackBerry 10
 *   iOS
@@ -83,7 +83,7 @@ Cuando finaliza la operación de captura, el `CaptureCallback` se ejecuta con un
 
 ### Plataformas soportadas
 
-*   Amazon fuego OS
+*   Amazon fire OS
 *   Android
 *   BlackBerry 10
 *   iOS
@@ -172,7 +172,7 @@ Cuando finaliza la operación de captura, invoca la `CaptureCB` "callback" con u
 
 ### Plataformas soportadas
 
-*   Amazon fuego OS
+*   Amazon fire OS
 *   Android
 *   BlackBerry 10
 *   iOS
@@ -242,7 +242,7 @@ Cuando finaliza la operación de captura, es la `CaptureCB` devolución de llama
 
 ### Plataformas soportadas
 
-*   Amazon fuego OS
+*   Amazon fire OS
 *   Android
 *   BlackBerry 10
 *   iOS
@@ -425,7 +425,7 @@ Esta función asincrónica intentará recuperar la información de formato para 
 
 ### Plataformas soportadas
 
-*   Amazon fuego OS
+*   Amazon fire OS
 *   Android
 *   BlackBerry 10
 *   iOS

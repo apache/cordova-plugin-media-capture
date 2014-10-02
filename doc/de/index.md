@@ -114,7 +114,7 @@ Wenn der Capture-Vorgang abgeschlossen ist, die `CaptureCallback` führt mit ein
 
 *   iOS muss keine Standard-audio-Recording-Anwendung, so dass eine einfache Benutzeroberfläche bereitgestellt wird.
 
-### Windows Phone 7 und 8 Macken
+### Windows Phone 7 und 8 Eigenarten
 
 *   Windows Phone 7 muss keine Standard-audio-Recording-Anwendung, so dass eine einfache Benutzeroberfläche bereitgestellt wird.
 
@@ -140,7 +140,7 @@ Wenn der Capture-Vorgang abgeschlossen ist, die `CaptureCallback` führt mit ein
 
 *   Die `duration` Parameter wird nicht unterstützt. Aufnahme Längen kann nicht programmgesteuert begrenzt.
 
-### Android Macken
+### Android Eigenarten
 
 *   Die `duration` Parameter wird nicht unterstützt. Aufnahme Längen kann nicht programmgesteuert begrenzt.
 
@@ -440,7 +440,7 @@ Die API zum Zugriff Medien Dateiformat-Information ist begrenzt, so dass nicht a
 
 Bietet eine API keine Informationen zum Media-Dateien, so dass alle `MediaFileData` Objekte zurückgeben, mit Standardwerten.
 
-### Android Macken
+### Android Eigenarten
 
 Die API zum Zugriff Medien Dateiformat-Information ist begrenzt, so dass nicht alle `MediaFileData` Eigenschaften werden unterstützt.
 
@@ -512,7 +512,7 @@ Unterstützt die folgenden `MediaFileData` Eigenschaften:
 
 *   **Dauer**: unterstützt: Audio- und video-Dateien nur
 
-### Android Macken
+### Android Eigenarten
 
 Unterstützt die folgenden `MediaFileData` Eigenschaften:
 
