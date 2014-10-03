@@ -93,3 +93,9 @@
 * added documentation for manual tests
 * CB-6959 Added manual tests
 * CB-6959 Port capture tests to plugin-test-framework
+
+### 0.3.4 (Oct 03, 2014)
+* CB-7453 Adds fallback to m4a audio format when mp3 recording fails.
+* CB-7429 Fixes image capture manual tests on windows
+* CB-7429 Move windows8 and windows Proxies into one file
+* CB-7429 Adds media capture support for windows
