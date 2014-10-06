@@ -23,16 +23,16 @@ Ten plugin umożliwia dostęp do urządzenia dźwięku, obrazu i możliwości pr
 
 **Ostrzeżenie**: zbierania i wykorzystywania zdjęć, wideo lub audio z urządzenia kamery lub mikrofonu podnosi kwestie prywatności ważne. Polityka prywatności danej aplikacji należy Dyskutować, jak aplikacja używa takich czujników i czy dane zapisane jest współużytkowany z innymi stronami. Ponadto jeśli aplikacji wykorzystanie kamery lub mikrofonu nie jest widoczne w interfejsie użytkownika, powinny zapewnić just-in czas wypowiedzenia przed aplikacji dostęp do kamery lub mikrofonu (jeśli urządzenie system operacyjny nie robi już). Że ogłoszenie powinno zawierać te same informacje, o których wspomniano powyżej, jak również uzyskanie uprawnienia użytkownika (np. poprzez przedstawianie wyborów **OK** i **Nie dzięki**). Należy pamiętać, że niektóre platformy aplikacji może wymagać aplikacji powiadomienia just-in-time oraz uzyskania zgody użytkownika przed dostęp do kamery lub mikrofonu. Aby uzyskać więcej informacji zobacz przewodnik prywatności.
 
-## Instalacji
+## Instalacja
 
     cordova plugin add org.apache.cordova.media-capture
     
 
 ## Obsługiwane platformy
 
-*   Amazon ogień OS
+*   Amazon Fire OS
 *   Android
-*   Jeżyna 10
+*   BlackBerry 10
 *   iOS
 *   Windows Phone 7 i 8
 *   Windows 8
@@ -83,9 +83,9 @@ Po zakończeniu operacji przechwytywania, `CaptureCallback` wykonuje z tablicą 
 
 ### Obsługiwane platformy
 
-*   Amazon ogień OS
+*   Amazon Fire OS
 *   Android
-*   Jeżyna 10
+*   BlackBerry 10
 *   iOS
 *   Windows Phone 7 i 8
 *   Windows 8
@@ -110,7 +110,7 @@ Po zakończeniu operacji przechwytywania, `CaptureCallback` wykonuje z tablicą 
     navigator.device.capture.captureAudio(captureSuccess, captureError, {limit:2});
     
 
-### iOS dziwactwa
+### Dziwactwa iOS
 
 *   iOS nie ma domyślnej aplikacji do nagrywania dźwięku, więc podano pewien prosty użytkownik złącze standardowe.
 
@@ -140,7 +140,7 @@ Po zakończeniu operacji przechwytywania, `CaptureCallback` wykonuje z tablicą 
 
 *   `duration`Parametr nie jest obsługiwana. Zapis długości nie może być ograniczony programowo.
 
-### Android dziwactwa
+### Dziwactwa Androida
 
 *   `duration`Parametr nie jest obsługiwana. Zapis długości nie może być ograniczony programowo.
 
@@ -149,7 +149,7 @@ Po zakończeniu operacji przechwytywania, `CaptureCallback` wykonuje z tablicą 
 *   `duration`Parametr nie jest obsługiwana. Zapis długości nie może być ograniczony programowo.
 *   `limit`Parametr nie jest obsługiwana, więc tylko jednego nagrania mogą być tworzone dla każdego wywołania.
 
-### iOS dziwactwa
+### Dziwactwa iOS
 
 *   `limit`Parametr nie jest obsługiwana, więc tylko jednego nagrania mogą być tworzone dla każdego wywołania.
 
@@ -172,14 +172,14 @@ Po zakończeniu operacji przechwytywania, wywołuje `CaptureCB` wywołania zwrot
 
 ### Obsługiwane platformy
 
-*   Amazon ogień OS
+*   Amazon Fire OS
 *   Android
-*   Jeżyna 10
+*   BlackBerry 10
 *   iOS
 *   Windows Phone 7 i 8
 *   Windows 8
 
-### Windows Phone 7 dziwactwa
+### Dziwactwa Windows Phone 7
 
 Wywoływanie aparat native aplikacji, podczas gdy urządzenie jest podłączone przez Zune nie dziala, i wykonuje błąd wywołania zwrotnego.
 
@@ -219,7 +219,7 @@ Wywoływanie aparat native aplikacji, podczas gdy urządzenie jest podłączone 
     navigator.device.capture.captureImage(captureSuccess, captureError, options);
     
 
-### iOS dziwactwa
+### Dziwactwa iOS
 
 *   Parametr **limit** nie jest obsługiwane, i tylko jeden obraz jest podejmowana na wywołanie.
 
@@ -242,9 +242,9 @@ Po zakończeniu operacji przechwytywania, to `CaptureCB` wykonuje wywołanie zwr
 
 ### Obsługiwane platformy
 
-*   Amazon ogień OS
+*   Amazon Fire OS
 *   Android
-*   Jeżyna 10
+*   BlackBerry 10
 *   iOS
 *   Windows Phone 7 i 8
 *   Windows 8
@@ -295,7 +295,7 @@ Po zakończeniu operacji przechwytywania, to `CaptureCB` wykonuje wywołanie zwr
 
 *   **Czas trwania** parametr nie jest obsługiwana, więc długość nagrania nie może być ograniczony programowo.
 
-### iOS dziwactwa
+### Dziwactwa iOS
 
 *   Parametr **limit** nie jest obsługiwane. Tylko jeden film jest nagrany na wywołanie.
 
@@ -425,9 +425,9 @@ Ta funkcja asynchronicznie podejmie próby pobrania informacji o formacie plik m
 
 ### Obsługiwane platformy
 
-*   Amazon ogień OS
+*   Amazon Fire OS
 *   Android
-*   Jeżyna 10
+*   BlackBerry 10
 *   iOS
 *   Windows Phone 7 i 8
 *   Windows 8
@@ -440,11 +440,11 @@ Ten API wobec dostęp do mediów informacji o formacie pliku jest ograniczona, w
 
 Nie dostarcza API dla informacji na temat plików multimedialnych, więc wszystkie `MediaFileData` obiektów zwrotu z wartości domyślnych.
 
-### Android dziwactwa
+### Dziwactwa Androida
 
 Ten API wobec dostęp do mediów informacji o formacie pliku jest ograniczona, więc nie wszystkie `MediaFileData` są obsługiwane właściwości.
 
-### iOS dziwactwa
+### Dziwactwa iOS
 
 Ten API wobec dostęp do mediów informacji o formacie pliku jest ograniczona, więc nie wszystkie `MediaFileData` są obsługiwane właściwości.
 
@@ -512,7 +512,7 @@ Obsługuje następujące `MediaFileData` Właściwości:
 
 *   **czas trwania**: obsługiwane: audio i wideo tylko pliki
 
-### Android dziwactwa
+### Dziwactwa Androida
 
 Obsługuje następujące `MediaFileData` Właściwości:
 
@@ -526,7 +526,7 @@ Obsługuje następujące `MediaFileData` Właściwości:
 
 *   **czas trwania**: obsługiwane: audio i wideo tylko pliki.
 
-### iOS dziwactwa
+### Dziwactwa iOS
 
 Obsługuje następujące `MediaFileData` Właściwości:
 
