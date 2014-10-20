@@ -29,6 +29,16 @@
 #define kW3CMediaFormatDuration @"duration"
 #define kW3CMediaModeType @"type"
 
+@implementation NSBundle (PluginExtensions)
+
++ (NSBundle*) pluginBundle:(CDVPlugin*)plugin {
+    NSBundle* bundle = [NSBundle bundleWithPath: [[NSBundle mainBundle] pathForResource:NSStringFromClass([plugin class]) ofType: @"bundle"]];
+    return bundle;
+}
+@end
+
+#define PluginLocalizedString(plugin, key, comment) [[NSBundle pluginBundle:(plugin)] localizedStringForKey:(key) value:nil table:nil]
+
 @implementation CDVImagePicker
 
 @synthesize quality;
@@ -642,7 +652,7 @@
     [self.timerLabel setTextAlignment:UITextAlignmentCenter];
 #endif
     [self.timerLabel setText:@"0:00"];
-    [self.timerLabel setAccessibilityHint:NSLocalizedString(@"recorded time in minutes and seconds", nil)];
+    [self.timerLabel setAccessibilityHint:PluginLocalizedString(captureCommand, @"recorded time in minutes and seconds", nil)];
     self.timerLabel.accessibilityTraits |= UIAccessibilityTraitUpdatesFrequently;
     self.timerLabel.accessibilityTraits &= ~UIAccessibilityTraitStaticText;
     [tmp addSubview:self.timerLabel];
@@ -653,7 +663,7 @@
     self.stopRecordImage = [UIImage imageNamed:[self resolveImageResource:@"CDVCapture.bundle/stop_button"]];
     self.recordButton.accessibilityTraits |= [self accessibilityTraits];
     self.recordButton = [[UIButton alloc] initWithFrame:CGRectMake((viewRect.size.width - recordImage.size.width) / 2, (microphone.size.height + (grayBkg.size.height - recordImage.size.height) / 2), recordImage.size.width, recordImage.size.height)];
-    [self.recordButton setAccessibilityLabel:NSLocalizedString(@"toggle audio recording", nil)];
+    [self.recordButton setAccessibilityLabel:PluginLocalizedString(captureCommand, @"toggle audio recording", nil)];
     [self.recordButton setImage:recordImage forState:UIControlStateNormal];
     [self.recordButton addTarget:self action:@selector(processButton:) forControlEvents:UIControlEventTouchUpInside];
     [tmp addSubview:recordButton];
@@ -809,7 +819,7 @@
         BOOL isUIAccessibilityAnnouncementNotification = (&UIAccessibilityAnnouncementNotification != NULL);
         if (isUIAccessibilityAnnouncementNotification) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500ull * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"timed recording complete", nil));
+                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, PluginLocalizedString(captureCommand, @"timed recording complete", nil));
                 });
         }
     } else {
