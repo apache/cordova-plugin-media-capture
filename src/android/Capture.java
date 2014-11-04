@@ -206,7 +206,7 @@ public class Capture extends CordovaPlugin {
     }
 
     private String getTempDirectoryPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath()
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
     /**
