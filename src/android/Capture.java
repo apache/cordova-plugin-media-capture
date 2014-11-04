@@ -206,14 +206,7 @@ public class Capture extends CordovaPlugin {
     }
 
     private String getTempDirectoryPath() {
-        File cache = null;
-
-        // Use internal storage
-        cache = cordova.getActivity().getCacheDir();
-
-        // Create the cache directory if it doesn't exist
-        cache.mkdirs();
-        return cache.getAbsolutePath();
+        return Environment.getExternalStorageDirectory().getAbsolutePath()
     }
 
     /**
