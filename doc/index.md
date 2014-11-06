@@ -36,6 +36,15 @@ provide just-in-time notice and obtain permission from the user prior
 to accessing the camera or microphone.  For more information, please
 see the Privacy Guide.
 
+This plugin defines global `navigator.device.capture` object.
+
+Although in the global scope, it is not available until after the `deviceready` event.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log(navigator.device.capture);
+    }
+
 ## Installation
 
     cordova plugin add org.apache.cordova.media-capture
