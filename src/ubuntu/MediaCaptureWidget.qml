@@ -51,12 +51,12 @@ Rectangle {
         }
         videoRecorder {
             audioBitRate: 128000
-            mediaContainer: "mp4"
             outputLocation: ui.parent.plugin('Capture').generateLocation("mp4")
             onRecorderStateChanged: {
                if (videoRecorder.recorderState === CameraRecorder.StoppedState) {
                    ui.parent.exec("Capture", "onVideoRecordEnd", [camera.videoRecorder.outputLocation]);
                    shootButton.source = recordOffImagePath
+                   ui.destroy();
                }
             }
         }
@@ -101,6 +101,7 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: {
                         root.exec("Capture", "cancel");
+                        ui.destroy();
                     }
                 }
             }

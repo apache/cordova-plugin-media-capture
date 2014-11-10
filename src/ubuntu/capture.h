@@ -62,6 +62,12 @@ public slots:
                 return path;
         }
     }
+    void renameFile(const QString &old, const QString &n) {
+        QFile::rename(old, n);
+    }
+    void copyFile(const QString &old, const QString &n) {
+        QFile::copy(old, n);
+    }
 private slots:
     void onAudioRecordError(QMediaRecorder::Error);
 private:
