@@ -99,3 +99,7 @@
 * CB-7429 Fixes image capture manual tests on windows
 * CB-7429 Move windows8 and windows Proxies into one file
 * CB-7429 Adds media capture support for windows
+
+### 0.3.5 (Dec 02, 2014)
+* CB-7597 - `Localizable.strings` for Media Capture are in the default template, it should be in the plugin
+* CB-7700 cordova-plugin-media-capture documentation translation: cordova-plugin-media-capture
