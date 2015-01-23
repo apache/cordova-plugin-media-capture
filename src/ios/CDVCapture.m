@@ -90,7 +90,7 @@
 - (void)captureAudio:(CDVInvokedUrlCommand*)command
 {
     NSString* callbackId = command.callbackId;
-    NSDictionary* options = [command.arguments objectAtIndex:0];
+    NSDictionary* options = [command argumentAtIndex:0];
 
     if ([options isKindOfClass:[NSNull class]]) {
         options = [NSDictionary dictionary];
@@ -127,7 +127,7 @@
 - (void)captureImage:(CDVInvokedUrlCommand*)command
 {
     NSString* callbackId = command.callbackId;
-    NSDictionary* options = [command.arguments objectAtIndex:0];
+    NSDictionary* options = [command argumentAtIndex:0];
 
     if ([options isKindOfClass:[NSNull class]]) {
         options = [NSDictionary dictionary];
@@ -218,7 +218,7 @@
 - (void)captureVideo:(CDVInvokedUrlCommand*)command
 {
     NSString* callbackId = command.callbackId;
-    NSDictionary* options = [command.arguments objectAtIndex:0];
+    NSDictionary* options = [command argumentAtIndex:0];
 
     if ([options isKindOfClass:[NSNull class]]) {
         options = [NSDictionary dictionary];
@@ -299,7 +299,7 @@
 
 - (void)getMediaModes:(CDVInvokedUrlCommand*)command
 {
-    // NSString* callbackId = [arguments objectAtIndex:0];
+    // NSString* callbackId = [command argumentAtIndex:0];
     // NSMutableDictionary* imageModes = nil;
     NSArray* imageArray = nil;
     NSArray* movieArray = nil;
@@ -350,12 +350,12 @@
 {
     NSString* callbackId = command.callbackId;
     // existence of fullPath checked on JS side
-    NSString* fullPath = [command.arguments objectAtIndex:0];
+    NSString* fullPath = [command argumentAtIndex:0];
     // mimeType could be null
     NSString* mimeType = nil;
 
     if ([command.arguments count] > 1) {
-        mimeType = [command.arguments objectAtIndex:1];
+        mimeType = [command argumentAtIndex:1];
     }
     BOOL bError = NO;
     CDVCaptureError errorCode = CAPTURE_INTERNAL_ERR;
