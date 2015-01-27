@@ -19,7 +19,6 @@
 
 #import "CDVCapture.h"
 #import "CDVFile.h"
-#import <Cordova/CDVJSON.h>
 #import <Cordova/CDVAvailability.h>
 
 #define kW3CMediaFormatHeight @"height"
@@ -342,7 +341,11 @@
         movieArray ? (NSObject*)                          movieArray:[NSNull null], @"video",
         audioArray ? (NSObject*)                          audioArray:[NSNull null], @"audio",
         nil];
-    NSString* jsString = [NSString stringWithFormat:@"navigator.device.capture.setSupportedModes(%@);", [modes JSONString]];
+    
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:modes options:0 error:nil];
+    NSString* jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    NSString* jsString = [NSString stringWithFormat:@"navigator.device.capture.setSupportedModes(%@);", jsonStr];
     [self.commandDelegate evalJs:jsString];
 }
 
