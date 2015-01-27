@@ -575,7 +575,7 @@
     // if user wants iPhone only app to run on iPad they must remove *~ipad.* images from CDVCapture.bundle
     if (isLessThaniOS4) {
         NSString* iPadResource = [NSString stringWithFormat:@"%@~ipad.png", resource];
-        if (CDV_IsIPad() && [UIImage imageNamed:iPadResource]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad && [UIImage imageNamed:iPadResource]) {
             return iPadResource;
         } else {
             return [NSString stringWithFormat:@"%@.png", resource];
@@ -614,7 +614,8 @@
     // make backgrounds
     NSString* microphoneResource = @"CDVCapture.bundle/microphone";
 
-    if (CDV_IsIPhone5()) {
+    BOOL isIphone5 = ([[UIScreen mainScreen] bounds].size.width == 568 && [[UIScreen mainScreen] bounds].size.height == 320) || ([[UIScreen mainScreen] bounds].size.height == 568 && [[UIScreen mainScreen] bounds].size.width == 320);
+    if (isIphone5) {
         microphoneResource = @"CDVCapture.bundle/microphone-568h";
     }
 
