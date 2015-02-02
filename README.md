@@ -56,6 +56,7 @@ Although in the global scope, it is not available until after the `deviceready` 
 - Amazon Fire OS
 - Android
 - BlackBerry 10
+- Browser
 - iOS
 - Windows Phone 7 and 8
 - Windows 8
@@ -215,6 +216,7 @@ object featuring a `CaptureError.CAPTURE_NO_MEDIA_FILES` error code.
 - Amazon Fire OS
 - Android
 - BlackBerry 10
+- Browser
 - iOS
 - Windows Phone 7 and 8
 - Windows 8
@@ -223,6 +225,15 @@ object featuring a `CaptureError.CAPTURE_NO_MEDIA_FILES` error code.
 
 Invoking the native camera application while your device is connected
 via Zune does not work, and the error callback executes.
+
+### Browser Quirks
+
+Works in Chrome, Firefox and Opera only (since IE and Safari doesn't supports
+navigator.getUserMedia API)
+
+Displaying images using captured file's URL available in Chrome/Opera only. 
+Firefox stores captured images in IndexedDB storage (see File plugin documentation),
+and due to this the only way to show captured image is to read it and show using its DataURL.
 
 ### Example
 

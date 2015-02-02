@@ -239,4 +239,12 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         </js-module>
     </platform>
 
+    <!-- browser -->
+    <platform name="browser">
+        <!-- this overrides navigator.device.capture namespace with browser-specific implementation -->
+        <js-module src="src/browser/CaptureProxy.js" name="CaptureProxy">
+            <runs />
+        </js-module>
+    </platform>
+
 </plugin>
