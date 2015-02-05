@@ -103,3 +103,9 @@
 ### 0.3.5 (Dec 02, 2014)
 * CB-7597 - `Localizable.strings` for Media Capture are in the default template, it should be in the plugin
 * CB-7700 cordova-plugin-media-capture documentation translation: cordova-plugin-media-capture
+
+### 0.3.6 (Feb 04, 2015)
+* CB-8351 ios: Use inline copies of deprecated CDV_IsIpad and CDV_IsIphone5
+* CB-8351 ios: Stop using (newly) deprecated CDVJSON.h
+* CB-8351 ios: Use argumentForIndex rather than NSArray extension
+* CB-7977 Mention deviceready in plugin docs
