@@ -23,9 +23,17 @@ Este plugin proporciona acceso a audio, imagen y las capacidades de captura de v
 
 **ADVERTENCIA**: recopilación y uso de imágenes, video o audio desde el micrófono o cámara del dispositivo plantea cuestiones de privacidad importante. Política de privacidad de su aplicación debe discutir cómo la aplicación utiliza dichos sensores y si los datos registrados se compartieron con cualquiera de las partes. Además, si el uso de la aplicación de la cámara o el micrófono no es aparente en la interfaz de usuario, debe proporcionar un aviso de just-in-time antes de la aplicación tiene acceso a la cámara o el micrófono (si el sistema operativo del dispositivo ya no hacerlo). Que el aviso debe proporcionar la misma información mencionada, además de obtener un permiso del usuario (por ejemplo, presentando opciones para **Aceptar** y **No gracias**). Tenga en cuenta que algunos mercados de aplicación pueden requerir su aplicación para proporcionar aviso just-in-time y obtener permiso del usuario antes de acceder a la cámara o el micrófono. Para obtener más información, por favor consulte a la guía de privacidad.
 
+Este plugin define global `navigator.device.capture` objeto.
+
+Aunque en el ámbito global, no estará disponible hasta después de la `deviceready` evento.
+
+    document.addEventListener ("deviceready", onDeviceReady, false);
+    function onDeviceReady() {console.log(navigator.device.capture)};
+    
+
 ## Instalación
 
-    cordova plugin add org.apache.cordova.media-capture
+    Cordova plugin añade org.apache.cordova.media-captura
     
 
 ## Plataformas soportadas
@@ -68,18 +76,16 @@ Este plugin proporciona acceso a audio, imagen y las capacidades de captura de v
 
 > Iniciar la aplicación grabadora de audio y devolver información acerca de los archivos capturados clip de audio.
 
-    navigator.device.capture.captureAudio(
-        CaptureCB captureSuccess, CaptureErrorCB captureError,  [CaptureAudioOptions options]
-    );
+    navigator.device.capture.captureAudio (CaptureCB captureSuccess, CaptureErrorCB captureError, [CaptureAudioOptions opciones]);
     
 
 ### Descripción
 
 Inicia una operación asincrónica para capturar grabaciones de audio mediante la aplicación de grabación de audio del dispositivo por defecto. La operación permite al usuario del dispositivo capturar varias grabaciones en una sola sesión.
 
-La operación de captura termina cuando el usuario sale del audio grabación de aplicación, o el número máximo de registros especificado por `CaptureAudioOptions.limit` se alcanza. Si no `limit` se especifica el valor del parámetro, el valor predeterminado es de un (1), y la operación de captura termina después de que el usuario registra un solo clip de audio.
+La operación de captura termina cuando el usuario sale del audio grabación de aplicación, o el número máximo de registros especificado por `CaptureAudioOptions.limit` se alcanza. Si no `limit` se especifica el valor del parámetro, por defecto a uno (1), y la operación de captura termina después de que el usuario registra un solo clip de audio.
 
-Cuando finaliza la operación de captura, el `CaptureCallback` se ejecuta con una gran variedad de `MediaFile` objetos describiendo cada uno capturado archivo del clip de audio. Si el usuario finaliza la operación antes de un clip de audio es capturado, el `CaptureErrorCallback` se ejecuta con un `CaptureError` de objetos, con el `CaptureError.CAPTURE_NO_MEDIA_FILES` código de error.
+Cuando finaliza la operación de captura, el `CaptureCallback` se ejecuta con una gran variedad de `MediaFile` objetos describiendo cada uno capturado archivo del clip de audio. Si el usuario finaliza la operación antes de que sea capturado un clip de audio, el `CaptureErrorCallback` se ejecuta con un `CaptureError` de objeto, con el `CaptureError.CAPTURE_NO_MEDIA_FILES` código de error.
 
 ### Plataformas soportadas
 
@@ -92,22 +98,13 @@ Cuando finaliza la operación de captura, el `CaptureCallback` se ejecuta con un
 
 ### Ejemplo
 
-    // capture callback
-    var captureSuccess = function(mediaFiles) {
-        var i, path, len;
-        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-            path = mediaFiles[i].fullPath;
-            // do something interesting with the file
-        }
-    };
+    captura de devolución de llamada var captureSuccess = function(mediaFiles) {var i, camino, len;
+        para (yo = 0, len = mediaFiles.length; i < len; += 1) {path = mediaFiles[i].fullPath;
+            hacer algo interesante con el archivo}};
     
-    // capture error callback
-    var captureError = function(error) {
-        navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
-    };
+    capturar error callback var captureError = function(error) {navigator.notification.alert (' código de Error: ' + error.code, null, "Error de captura");};
     
-    // start audio capture
-    navigator.device.capture.captureAudio(captureSuccess, captureError, {limit:2});
+    Iniciar captura de audio navigator.device.capture.captureAudio (captureSuccess, captureError, {limit:2});
     
 
 ### iOS rarezas
@@ -130,10 +127,9 @@ Cuando finaliza la operación de captura, el `CaptureCallback` se ejecuta con un
 
 ### Ejemplo
 
-    // limit capture operation to 3 media files, no longer than 10 seconds each
-    var options = { limit: 3, duration: 10 };
+    limitar la operación de captura de archivos 3 multimedia, no más de 10 segundos cada opciones var = { limit: 3, duration: 10 };
     
-    navigator.device.capture.captureAudio(captureSuccess, captureError, options);
+    navigator.device.capture.captureAudio (captureSuccess, captureError, opciones);
     
 
 ### Amazon fuego OS rarezas
@@ -157,9 +153,7 @@ Cuando finaliza la operación de captura, el `CaptureCallback` se ejecuta con un
 
 > Iniciar una aplicación de cámara y devolver información acerca de los archivos de imagen capturada.
 
-    navigator.device.capture.captureImage(
-        CaptureCB captureSuccess, CaptureErrorCB captureError, [CaptureImageOptions options]
-    );
+    navigator.device.capture.captureImage (CaptureCB captureSuccess, CaptureErrorCB captureError, [CaptureImageOptions opciones]);
     
 
 ### Descripción
@@ -185,22 +179,13 @@ Invocando la aplicación de cámara nativa mientras el dispositivo está conecta
 
 ### Ejemplo
 
-    // capture callback
-    var captureSuccess = function(mediaFiles) {
-        var i, path, len;
-        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-            path = mediaFiles[i].fullPath;
-            // do something interesting with the file
-        }
-    };
+    captura de devolución de llamada var captureSuccess = function(mediaFiles) {var i, camino, len;
+        para (yo = 0, len = mediaFiles.length; i < len; += 1) {path = mediaFiles[i].fullPath;
+            hacer algo interesante con el archivo}};
     
-    // capture error callback
-    var captureError = function(error) {
-        navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
-    };
+    capturar error callback var captureError = function(error) {navigator.notification.alert (' código de Error: ' + error.code, null, "Error de captura");};
     
-    // start image capture
-    navigator.device.capture.captureImage(captureSuccess, captureError, {limit:2});
+    iniciar navigator.device.capture.captureImage de captura de imagen (captureSuccess, captureError, {limit:2});
     
 
 ## CaptureImageOptions
@@ -213,10 +198,9 @@ Invocando la aplicación de cámara nativa mientras el dispositivo está conecta
 
 ### Ejemplo
 
-    // limit capture operation to 3 images
-    var options = { limit: 3 };
+    limitar la operación de captura a las opciones de var 3 imágenes = { limit: 3 };
     
-    navigator.device.capture.captureImage(captureSuccess, captureError, options);
+    navigator.device.capture.captureImage (captureSuccess, captureError, opciones);
     
 
 ### iOS rarezas
@@ -227,9 +211,7 @@ Invocando la aplicación de cámara nativa mientras el dispositivo está conecta
 
 > Iniciar la aplicación grabadora de vídeo y devolver información acerca de archivos de vídeo capturado.
 
-    navigator.device.capture.captureVideo(
-        CaptureCB captureSuccess, CaptureErrorCB captureError, [CaptureVideoOptions options]
-    );
+    navigator.device.capture.captureVideo (CaptureCB captureSuccess, CaptureErrorCB captureError, [CaptureVideoOptions opciones]);
     
 
 ### Descripción
@@ -251,22 +233,13 @@ Cuando finaliza la operación de captura, es la `CaptureCB` devolución de llama
 
 ### Ejemplo
 
-    // capture callback
-    var captureSuccess = function(mediaFiles) {
-        var i, path, len;
-        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-            path = mediaFiles[i].fullPath;
-            // do something interesting with the file
-        }
-    };
+    captura de devolución de llamada var captureSuccess = function(mediaFiles) {var i, camino, len;
+        para (yo = 0, len = mediaFiles.length; i < len; += 1) {path = mediaFiles[i].fullPath;
+            hacer algo interesante con el archivo}};
     
-    // capture error callback
-    var captureError = function(error) {
-        navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
-    };
+    capturar error callback var captureError = function(error) {navigator.notification.alert (' código de Error: ' + error.code, null, "Error de captura");};
     
-    // start video capture
-    navigator.device.capture.captureVideo(captureSuccess, captureError, {limit:2});
+    iniciar navigator.device.capture.captureVideo de captura de vídeo (captureSuccess, captureError, {limit:2});
     
 
 ### BlackBerry 10 rarezas
@@ -285,10 +258,9 @@ Cuando finaliza la operación de captura, es la `CaptureCB` devolución de llama
 
 ### Ejemplo
 
-    // limit capture operation to 3 video clips
-    var options = { limit: 3 };
+    limitar la operación de captura para 3 opciones de vídeo clips var = { limit: 3 };
     
-    navigator.device.capture.captureVideo(captureSuccess, captureError, options);
+    navigator.device.capture.captureVideo (captureSuccess, captureError, opciones);
     
 
 ### BlackBerry 10 rarezas
@@ -303,7 +275,7 @@ Cuando finaliza la operación de captura, es la `CaptureCB` devolución de llama
 
 > Se invoca en una operación de captura exitosa de los medios de comunicación.
 
-    function captureSuccess( MediaFile[] mediaFiles ) { ... };
+    la función { ... } captureSuccess (MediaFile [] mediaFiles);
     
 
 ### Descripción
@@ -314,14 +286,9 @@ Cada `MediaFile` objeto describe un archivo multimedia capturado.
 
 ### Ejemplo
 
-    // capture callback
-    function captureSuccess(mediaFiles) {
-        var i, path, len;
-        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-            path = mediaFiles[i].fullPath;
-            // do something interesting with the file
-        }
-    };
+    captura de devolución de llamada función captureSuccess(mediaFiles) {var i, camino, len;
+        para (yo = 0, len = mediaFiles.length; i < len; += 1) {path = mediaFiles[i].fullPath;
+            hacer algo interesante con el archivo}};
     
 
 ## CaptureError
@@ -348,7 +315,7 @@ Cada `MediaFile` objeto describe un archivo multimedia capturado.
 
 > Se invoca si se produce un error durante una operación de captura de los medios de comunicación.
 
-    function captureError( CaptureError error ) { ... };
+    función { ... } captureError (error CaptureError);
     
 
 ### Descripción
@@ -359,10 +326,7 @@ Esta función se ejecuta con un `CaptureError` objeto que contiene un error apro
 
 ### Ejemplo
 
-    // capture error callback
-    var captureError = function(error) {
-        navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
-    };
+    capturar error callback var captureError = function(error) {navigator.notification.alert (' código de Error: ' + error.code, null, "Error de captura");};
     
 
 ## ConfigurationData
@@ -393,16 +357,12 @@ Los tipos MIME deben adherirse a [RFC2046][1]. Ejemplos:
 
 ### Ejemplo
 
-    // retrieve supported image modes
-    var imageModes = navigator.device.capture.supportedImageModes;
+    recuperar apoyada imagen modos var imageModes = navigator.device.capture.supportedImageModes;
     
-    // Select mode that has the highest horizontal resolution
-    var width = 0;
+    Seleccione el modo que tiene la más alta resolución horizontal var = 0;
     var selectedmode;
-    for each (var mode in imageModes) {
-        if (mode.width > width) {
-            width = mode.width;
-            selectedmode = mode;
+    para cada (modo var en imageModes) {si (mode.width > anchura) {ancho = mode.width;
+            selectedmode = modo;
         }
     }
     
@@ -413,10 +373,7 @@ No compatible con cualquier plataforma. Todas las matrices de datos configuraci�
 
 > El formato recupera información sobre el archivo de captura de los medios de comunicación.
 
-    mediaFile.getFormatData(
-        MediaFileDataSuccessCB successCallback,
-        [MediaFileDataErrorCB errorCallback]
-    );
+    mediaFile.getFormatData (MediaFileDataSuccessCB successCallback, [MediaFileDataErrorCB errorCallback]);
     
 
 ### Descripción

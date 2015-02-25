@@ -23,6 +23,16 @@ Ten plugin umożliwia dostęp do urządzenia dźwięku, obrazu i możliwości pr
 
 **Ostrzeżenie**: zbierania i wykorzystywania zdjęć, wideo lub audio z urządzenia kamery lub mikrofonu podnosi kwestie prywatności ważne. Polityka prywatności danej aplikacji należy Dyskutować, jak aplikacja używa takich czujników i czy dane zapisane jest współużytkowany z innymi stronami. Ponadto jeśli aplikacji wykorzystanie kamery lub mikrofonu nie jest widoczne w interfejsie użytkownika, powinny zapewnić just-in czas wypowiedzenia przed aplikacji dostęp do kamery lub mikrofonu (jeśli urządzenie system operacyjny nie robi już). Że ogłoszenie powinno zawierać te same informacje, o których wspomniano powyżej, jak również uzyskanie uprawnienia użytkownika (np. poprzez przedstawianie wyborów **OK** i **Nie dzięki**). Należy pamiętać, że niektóre platformy aplikacji może wymagać aplikacji powiadomienia just-in-time oraz uzyskania zgody użytkownika przed dostęp do kamery lub mikrofonu. Aby uzyskać więcej informacji zobacz przewodnik prywatności.
 
+Ten plugin określa globalne `navigator.device.capture` obiektu.
+
+Chociaż w globalnym zasięgu, to nie dostępne dopiero po `deviceready` imprezie.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log(navigator.device.capture);
+    }
+    
+
 ## Instalacja
 
     cordova plugin add org.apache.cordova.media-capture
@@ -39,7 +49,7 @@ Ten plugin umożliwia dostęp do urządzenia dźwięku, obrazu i możliwości pr
 
 ## Obiekty
 
-*   Przechwytywania
+*   Capture
 *   CaptureAudioOptions
 *   CaptureImageOptions
 *   CaptureVideoOptions
@@ -77,9 +87,9 @@ Ten plugin umożliwia dostęp do urządzenia dźwięku, obrazu i możliwości pr
 
 Rozpoczyna operację asynchroniczną do przechwytywania audio nagrania za pomocą urządzenia domyślnej aplikacji do nagrywania dźwięku. Operacja pozwala uchwycić wiele nagrań w jednej sesji użytkownika urządzenia.
 
-Operacji przechwytywania kończy się, gdy użytkownik zamyka nagranie aplikacji, lub maksymalną liczbę nagrań, określony przez `CaptureAudioOptions.limit` jest osiągnięty. Jeśli nie `limit` wartość parametru jest określony, domyślnie do jednego (1), i operacji przechwytywania kończy po użytkownik rejestruje pojedynczy klip audio.
+Operacji przechwytywania kończy się, gdy użytkownik zamyka nagranie aplikacji, lub zostanie osiągnięta Maksymalna liczba nagrań, określony przez `CaptureAudioOptions.limit`. Jeśli wartość parametru nie `spółka z ograniczoną odpowiedzialnością` jest określony, domyślnie do jednego (1), i operacji przechwytywania kończy po użytkownik rejestruje pojedynczy klip audio.
 
-Po zakończeniu operacji przechwytywania, `CaptureCallback` wykonuje z tablicą `MediaFile` obiekty opisujące Każdy złapany plików audio, wideo. Jeśli użytkownik kończy działanie przed klipu audio jest zrobione, `CaptureErrorCallback` wykonuje z `CaptureError` obiekt, dysponujący `CaptureError.CAPTURE_NO_MEDIA_FILES` kod błędu.
+Po zakończeniu operacji przechwytywania, `CaptureCallback` wykonuje się z tablicą obiektów `MediaFile` opisu każdego pliku przechwyconych klip audio. Jeśli użytkownik kończy działanie przed klipu audio jest zrobione, `CaptureErrorCallback` wykonuje z obiektem `CaptureError`, z kodem błędu `CaptureError.CAPTURE_NO_MEDIA_FILES`.
 
 ### Obsługiwane platformy
 
@@ -166,9 +176,9 @@ Po zakończeniu operacji przechwytywania, `CaptureCallback` wykonuje z tablicą 
 
 Rozpoczyna operację asynchroniczną do przechwytywania obrazów przy użyciu urządzenia aparatu. Operacja pozwala użytkownik wobec zawładnięcie więcej niż jeden obraz w jednej sesji.
 
-Operacji przechwytywania kończy albo, gdy użytkownik zamyka aparat aplikacji, lub maksymalną liczbę nagrań określony przez `CaptureAudioOptions.limit` jest osiągnięty. Jeśli nie `limit` wartość jest określona, domyślnie jest to jeden (1) i operacji przechwytywania kończy po użytkownika przechwytuje obraz pojedynczy.
+Kończy operację przechwytywania, albo kiedy użytkownik zamyka aplikację aparatu, lub zostanie osiągnięta Maksymalna liczba nagrań, określony przez `CaptureAudioOptions.limit`. Jeśli nie `limit` wartość jest określona, domyślnie jest to jeden (1), i operacji przechwytywania kończy się po użytkownika przechwytuje jeden obraz.
 
-Po zakończeniu operacji przechwytywania, wywołuje `CaptureCB` wywołania zwrotnego z tablicą `MediaFile` obiekty opisujące każdy plik przechwyconego obrazu. Jeśli użytkownik kończy operację przed zrobieniem zdjęcia, `CaptureErrorCB` wykonuje wywołanie zwrotne z `CaptureError` obiekt oferujący `CaptureError.CAPTURE_NO_MEDIA_FILES` kod błędu.
+Po zakończeniu operacji przechwytywania, wywołuje `CaptureCB` wywołanie zwrotne z tablicą obiektów `MediaFile` opisu każdego pliku przechwyconego obrazu. Jeśli użytkownik kończy operację przed zrobieniem zdjęcia, wywołania zwrotnego `CaptureErrorCB` wykonuje się z obiektu `CaptureError` z kodem błędu `CaptureError.CAPTURE_NO_MEDIA_FILES`.
 
 ### Obsługiwane platformy
 
@@ -209,7 +219,7 @@ Wywoływanie aparat native aplikacji, podczas gdy urządzenie jest podłączone 
 
 ### Właściwości
 
-*   **Limit**: Maksymalna liczba zdjęć, użytkownik puszka metalowa zawładnięcie w operacji przechwytywania pojedynczego. Wartość musi być większa lub równa 1 (domyślnie 1).
+*   **limit**: Maksymalna liczba zdjęć, użytkownik puszka metalowa zawładnięcie w operacji przechwytywania pojedynczego. Wartość musi być większa lub równa 1 (domyślnie 1).
 
 ### Przykład
 
@@ -236,9 +246,9 @@ Wywoływanie aparat native aplikacji, podczas gdy urządzenie jest podłączone 
 
 Rozpoczyna operację asynchroniczną do przechwytywania nagrania wideo za pomocą urządzenia wideo notujący zgłoszenie. Operacja pozwala użytkownik wobec zawładnięcie więcej niż jednego nagrania w pojedynczej sesji.
 
-Operacji przechwytywania kończy się, gdy użytkownik zamyka aplikacji nagrywania wideo, lub maksymalną liczbę nagrań, określony przez `CaptureVideoOptions.limit` jest osiągnięty. Jeśli nie `limit` wartość parametru jest określony, domyślnie do jednego (1) i operacji przechwytywania kończy po użytkownika rekordy jednego klipu wideo.
+Operacji przechwytywania kończy się, gdy użytkownik zamyka aplikację nagrywania wideo, lub zostanie osiągnięta Maksymalna liczba nagrań, określony przez `CaptureVideoOptions.limit`. Jeśli wartość parametru nie `spółka z ograniczoną odpowiedzialnością` jest określony, domyślnie do jednego (1), i operacji przechwytywania kończy po użytkownik rejestruje pojedynczy klip audio.
 
-Po zakończeniu operacji przechwytywania, to `CaptureCB` wykonuje wywołanie zwrotne z tablicą `MediaFile` obiekty opisujące Każdy złapany pliku wideo. Jeśli użytkownik kończy operację przed przechwytywania wideo, `CaptureErrorCB` wykonuje wywołanie zwrotne z `CaptureError` obiekt oferujący `CaptureError.CAPTURE_NO_MEDIA_FILES` kod błędu.
+Po zakończeniu operacji przechwytywania wywołania zwrotnego `CaptureCB` wykonuje z tablicą obiektów `MediaFile` opisu każdego pliku wideo przechwycone. Jeśli użytkownik kończy operację przed przechwytywania wideo, wywołania zwrotnego `CaptureErrorCB` wykonuje się z obiektu `CaptureError` z kodem błędu `CaptureError.CAPTURE_NO_MEDIA_FILES`.
 
 ### Obsługiwane platformy
 
@@ -310,7 +320,7 @@ Po zakończeniu operacji przechwytywania, to `CaptureCB` wykonuje wywołanie zwr
 
 Ta funkcja wykonuje się po zakończeniu operacji wychwytywania sukces. W tym momencie plik multimedialny został złapany, a następnie użytkownik ma zakończony aplikacji przechwytywania mediów, czy osiągnięto limit przechwytywania.
 
-Każdy `MediaFile` obiektu opisuje plik multimedialny przechwycone.
+Każdy obiekt `MediaFile` opisuje plik multimedialny przechwycone.
 
 ### Przykład
 
@@ -355,7 +365,7 @@ Każdy `MediaFile` obiektu opisuje plik multimedialny przechwycone.
 
 Ta funkcja wykonuje, jeśli wystąpi błąd, gdy próbuje uruchomić nośnik przechwytywania operacji. Brak scenariusze podczas aplikacji przechwytywania jest zajęty, operacji przechwytywania jest już miejsce, lub użytkownik nie anuluje operację zanim jakiekolwiek pliki multimedialne są przechwytywane.
 
-Ta funkcja wykonuje z `CaptureError` obiekt zawierający odpowiedni błąd`code`.
+Ta funkcja wykonuje się z obiektem `CaptureError`, zawierające odpowiedni komunikat `Kod`.
 
 ### Przykład
 
@@ -421,7 +431,7 @@ Nie obsługiwane przez każdą platformę. Wszystkie tablice danych konfiguracji
 
 ### Opis
 
-Ta funkcja asynchronicznie podejmie próby pobrania informacji o formacie plik multimedialny. Jeśli powołuje udane, `MediaFileDataSuccessCB` wywołania zwrotnego z `MediaFileData` obiektu. Jeżeli próba nie powiedzie się, funkcja ta wywołuje `MediaFileDataErrorCB` wywołania zwrotnego.
+Ta funkcja asynchronicznie podejmie próby pobrania informacji o formacie plik multimedialny. Jeśli zakończy się sukcesem, to wywołuje `MediaFileDataSuccessCB` wywołanie zwrotne z obiektu `MediaFileData`. Jeżeli próba nie powiedzie się, funkcja ta wywołuje wywołania zwrotnego `MediaFileDataErrorCB`.
 
 ### Obsługiwane platformy
 
@@ -438,7 +448,7 @@ Ten API wobec dostęp do mediów informacji o formacie pliku jest ograniczona, w
 
 ### Jeżyna 10 dziwactwa
 
-Nie dostarcza API dla informacji na temat plików multimedialnych, więc wszystkie `MediaFileData` obiektów zwrotu z wartości domyślnych.
+Zapewnia API dla informacji na temat plików multimedialnych, więc wszystkie obiekty `MediaFileData` zwrotu z wartości domyślnych.
 
 ### Dziwactwa Androida
 
@@ -486,7 +496,7 @@ Ten API wobec dostęp do mediów informacji o formacie pliku jest ograniczona, w
 
 ### Jeżyna 10 dziwactwa
 
-Nie API zapewnia informacje o formatach plików multimedialnych, więc `MediaFileData` Obiekt zwrócony przez `MediaFile.getFormatData` oferuje następujące wartości domyślne:
+Nie API zapewnia informacje o formatach plików multimedialnych, więc obiekt `MediaFileData` zwracane przez funkcje `MediaFile.getFormatData` następujące wartości domyślne:
 
 *   **kodery-dekodery**: nie obsługiwane i zwraca`null`.
 
