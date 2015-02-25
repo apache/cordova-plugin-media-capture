@@ -23,9 +23,17 @@ Ce plugin permet d'accéder à de l'appareil audio, image et capacités de captu
 
 **Avertissement**: collecte et utilisation des images, vidéo ou audio de la caméra ou un microphone de l'appareil soulève des questions importantes de la vie privée. La politique de confidentialité de votre application devrait traiter de la manière dont l'application utilise ces capteurs et du partage des données enregistrées avec d'autres parties ou non. En outre, si l'utilisation de l'application de la caméra ou un microphone n'est pas apparente dans l'interface utilisateur, vous devez fournir un avis juste-à-temps, avant que l'application accède à la caméra ou un microphone (si le système d'exploitation de périphérique n'est pas faire déjà). Cette notice devrait contenir les informations susmentionnées, ainsi que permettre de recueillir l'autorisation de l'utilisateur (par exemple, en offrant les possibilités **OK** et **Non merci**). Notez que certains magasins d'applications peuvent exiger la présence de ce genre de notice avant d'autoriser la distribution de votre application. Pour plus d'informations, consultez le Guide de la vie privée.
 
+Ce plugin définit global `navigator.device.capture` objet.
+
+Bien que dans la portée globale, il n'est pas disponible jusqu'après la `deviceready` événement.
+
+    document.addEventListener (« deviceready », onDeviceReady, false) ;
+    function onDeviceReady() {console.log(navigator.device.capture);}
+    
+
 ## Installation
 
-    cordova plugin add org.apache.cordova.media-capture
+    Cordova plugin ajouter capture d'org.apache.cordova.media
     
 
 ## Plates-formes prises en charge
@@ -68,18 +76,16 @@ Ce plugin permet d'accéder à de l'appareil audio, image et capacités de captu
 
 > Ouvre l'application enregistreur audio et fournit des informations sur les fichiers audio capturés.
 
-    navigator.device.capture.captureAudio(
-        CaptureCB captureSuccess, CaptureErrorCB captureError,  [CaptureAudioOptions options]
-    );
+    navigator.device.capture.captureAudio (CaptureCB captureSuccess, CaptureErrorCB captureError, [CaptureAudioOptions options]) ;
     
 
 ### Description
 
-Débute une opération asynchrone de capture audio via l'application d'enregistrement audio par défaut de l'appareil. Cette opération permet à l'utilisateur de l'appareil d'enregistrer plusieurs prises en une seule séance de capture.
+Commence une opération asynchrone pour capturer les enregistrements audio à l'aide d'application d'enregistrement audio de l'appareil par défaut. L'opération permet à l'utilisateur de l'appareil capturer des enregistrements multiples en une seule séance.
 
-L'opération de capture se termine lorsque l'utilisateur quitte l'application d'enregistrement audio, ou quand le nombre maximal d'enregistrements spécifié par `CaptureAudioOptions.limit` est atteint. Si aucune valeur n'est fournie pour le paramètre `limit` celle utilisée par défaut est un (1), l'opération de capture se terminerait donc après que l'utilisateur ait enregistré un seul clip audio.
+L'opération de capture se termine lorsque l'utilisateur quitte l'enregistrement demande, ou le nombre maximal d'enregistrements spécifié par audio `CaptureAudioOptions.limit` est atteinte. Si aucun `limit` valeur du paramètre est spécifiée, par défaut à un (1), et l'opération de capture se termine après que l'utilisateur enregistre un clip audio unique.
 
-Une fois l'opération de capture terminée, la fonction callback `CaptureCallback` est exécutée et un tableau contenant des objets `MediaFile` décrivant chaque clip audio capturé lui est passé en paramètre. Si l'utilisateur annule l'opération avant qu'un clip audio ne soit capturé, la fonction callback `CaptureErrorCallback` est exécutée et un objet `CaptureError` comprenant le code d'erreur `CaptureError.CAPTURE_NO_MEDIA_FILES` lui est passé en paramètre.
+Fin de l'opération de capture, le `CaptureCallback` s'exécute avec un tableau de `MediaFile` objets décrivant chacune capturé fichiers clip audio. Si l'utilisateur annule l'opération avant un clip audio est capturé, le `CaptureErrorCallback` s'exécute avec un objet `CaptureError`, mettant en vedette le code d'erreur `CaptureError.CAPTURE_NO_MEDIA_FILES`.
 
 ### Plates-formes prises en charge
 
@@ -92,21 +98,21 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCallbac
 
 ### Exemple
 
-    // fonction callback de capture
+    // capture callback
     var captureSuccess = function(mediaFiles) {
         var i, path, len;
         for (i = 0, len = mediaFiles.length; i < len; i += 1) {
             path = mediaFiles[i].fullPath;
-            // faire quelque chose d'intéressant avec le fichier
+            // do something interesting with the file
         }
     };
     
-    // fonction callback d'erreur de capture
+    // capture error callback
     var captureError = function(error) {
-        navigator.notification.alert('Code d\'erreur : ' + error.code, null, 'Erreur de capture');
+        navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
     };
     
-    // débute la capture audio
+    // start audio capture
     navigator.device.capture.captureAudio(captureSuccess, captureError, {limit:2});
     
 
@@ -130,7 +136,7 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCallbac
 
 ### Exemple
 
-    // limite l'operation de capture à 3 fichiers dont la durée ne dépasse pas 10 secondes chaque
+    // limit capture operation to 3 media files, no longer than 10 seconds each
     var options = { limit: 3, duration: 10 };
     
     navigator.device.capture.captureAudio(captureSuccess, captureError, options);
@@ -164,11 +170,11 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCallbac
 
 ### Description
 
-Débute une opération asynchrone de capture d'images via l'application appareil photo par défaut de l'appareil. Cette opération permet à l'utilisateur de l'appareil d'enregistrer plusieurs prises en une seule séance de capture.
+Commence une opération asynchrone pour capturer des images à l'aide d'application caméra de l'appareil. L'opération permet aux utilisateurs de capturer plusieurs images en une seule séance.
 
-L'opération de capture soit termine lorsque l'utilisateur ferme l'application appareil photo, ou le nombre maximal d'enregistrements spécifié par `CaptureAudioOptions.limit` est atteinte. Si aucune valeur n'est fournie pour le paramètre `limit` celle utilisée par défaut est un (1), l'opération de capture se terminerait donc après que l'utilisateur ait enregistré une seule image.
+Les extrémités d'opération de capture lorsque l'utilisateur ferme l'application appareil photo, ou le nombre maximal d'enregistrements spécifié par `CaptureAudioOptions.limit` est atteint. Si aucune valeur `limit` n'est spécifiée, par défaut à un (1), et l'opération de capture s'arrête après l'utilisateur restitue une image unique.
 
-Une fois l'opération de capture terminée, la fonction callback `CaptureCB` est exécutée et un tableau contenant des objets `MediaFile` décrivant chaque image capturée lui est passé en paramètre. Si l'utilisateur annule l'opération avant qu'une image ne soit capturée, la fonction callback `CaptureErrorCB` est exécutée et un objet `CaptureError` comprenant le code d'erreur `CaptureError.CAPTURE_NO_MEDIA_FILES` lui est passé en paramètre.
+Lorsque l'opération de capture terminée, elle appelle le `CaptureCB` rappel avec un tableau de `MediaFile` objets décrivant chaque fichier de l'image capturée. Si l'utilisateur annule l'opération avant la capture d'une image, la `CaptureErrorCB` rappel s'exécute avec un `CaptureError` objet mettant en vedette un `CaptureError.CAPTURE_NO_MEDIA_FILES` code d'erreur.
 
 ### Plates-formes prises en charge
 
@@ -181,26 +187,17 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCB` est
 
 ### Windows Phone 7 Quirks
 
-Ouvrir l'application native appareil photo pendant que l'appareil est connecté via Zune ne fonctionne pas, la fonction callback d'erreur est exécutée dans ce cas.
+Invoquant l'application native caméra alors que votre appareil est connecté via Zune ne fonctionne pas, et exécute le rappel de l'erreur.
 
 ### Exemple
 
-    // fonction callback de capture
-    var captureSuccess = function(mediaFiles) {
-        var i, path, len;
-        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-            path = mediaFiles[i].fullPath;
-            // faire quelque chose d'intéressant avec le fichier
-        }
-    };
+    capture de rappel var captureSuccess = function(mediaFiles) {var i, chemin, len ;
+        pour (i = 0, len = mediaFiles.length; i < len ; j'ai += 1) {chemin d'accès = mediaFiles[i].fullPath ;
+            faire quelque chose d'intéressant avec le fichier}} ;
     
-    // fonction callback d'erreur de capture
-    var captureError = function(error) {
-        navigator.notification.alert('Code d\'erreur : ' + error.code, null, 'Erreur de capture');
-    };
+    capturer l'erreur rappel var captureError = function(error) {navigator.notification.alert (' code d'erreur: ' + error.code, null, « Capture Error »);} ;
     
-    // débute la capture d'image(s)
-    navigator.device.capture.captureImage(captureSuccess, captureError, {limit:2});
+    démarrer l'image capture navigator.device.capture.captureImage (captureSuccess, captureError, {limit:2}) ;
     
 
 ## CaptureImageOptions
@@ -213,10 +210,9 @@ Ouvrir l'application native appareil photo pendant que l'appareil est connecté 
 
 ### Exemple
 
-    // limite l'opération de capture à 3 images
-    var options = { limit: 3 };
+    limiter l'opération de capture aux options de 3 images var = { limit: 3 } ;
     
-    navigator.device.capture.captureImage(captureSuccess, captureError, options);
+    navigator.device.capture.captureImage (captureSuccess, captureError, options) ;
     
 
 ### iOS Quirks
@@ -227,18 +223,16 @@ Ouvrir l'application native appareil photo pendant que l'appareil est connecté 
 
 > Ouvre l'application enregistreur vidéo et fournit des informations sur les clips vidéo capturés.
 
-    navigator.device.capture.captureVideo(
-        CaptureCB captureSuccess, CaptureErrorCB captureError, [CaptureVideoOptions options]
-    );
+    navigator.device.capture.captureVideo (CaptureCB captureSuccess, CaptureErrorCB captureError, [CaptureVideoOptions options]) ;
     
 
 ### Description
 
-Débute une opération asynchrone de capture de vidéos via l'application d'enregistrement de vidéos par défaut de l'appareil. Cette opération permet à l'utilisateur de l'appareil d'enregistrer plusieurs fichiers en une seule séance de capture.
+Commence une opération asynchrone pour capturer des enregistrements vidéo à l'aide de la demande d'enregistrement vidéo de l'appareil. L'opération permet à l'utilisateur de capturer plusieurs enregistrements en une seule séance.
 
-L'opération de capture se termine lorsque l'utilisateur quitte l'application d'enregistrement de vidéos, ou quand le nombre maximal d'enregistrements spécifié par `CaptureVideoOptions.limit` est atteint. Si aucune valeur n'est fournie pour le paramètre `limit` celle utilisée par défaut est un (1), l'opération de capture se terminerait donc après que l'utilisateur ait enregistré un seul clip vidéo.
+L'opération de capture se termine lorsque l'utilisateur quitte l'application de l'enregistrement vidéo, ou le nombre maximal d'enregistrements spécifié par `CaptureVideoOptions.limit` est atteinte. Si aucun `limit` valeur du paramètre est spécifiée, par défaut à un (1), et l'opération de capture se termine après que l'utilisateur enregistre un clip vidéo unique.
 
-Une fois l'opération de capture terminée, la fonction callback `CaptureCB` est exécutée et un tableau contenant des objets `MediaFile` décrivant chaque clip vidéo capturé lui est passé en paramètre. Si l'utilisateur annule l'opération avant qu'un clip vidéo ne soit capturé, la fonction callback `CaptureErrorCB` est exécutée et un objet `CaptureError` comprenant le code d'erreur `CaptureError.CAPTURE_NO_MEDIA_FILES` lui est passé en paramètre.
+Fin de l'opération de capture, il le `CaptureCB` rappel s'exécute avec un tableau de `MediaFile` objets décrivant chacune capturé clip vidéo. Si l'utilisateur annule l'opération avant la capture d'un clip vidéo, le `CaptureErrorCB` rappel s'exécute avec un `CaptureError` objet mettant en vedette un `CaptureError.CAPTURE_NO_MEDIA_FILES` code d'erreur.
 
 ### Plates-formes prises en charge
 
@@ -251,22 +245,13 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCB` est
 
 ### Exemple
 
-    // fonction callback de capture
-    var captureSuccess = function(mediaFiles) {
-        var i, path, len;
-        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-            path = mediaFiles[i].fullPath;
-            // faire quelque chose d'intéressant avec le fichier
-        }
-    };
+    capture de rappel var captureSuccess = function(mediaFiles) {var i, chemin, len ;
+        pour (i = 0, len = mediaFiles.length; i < len ; j'ai += 1) {chemin d'accès = mediaFiles[i].fullPath ;
+            faire quelque chose d'intéressant avec le fichier}} ;
     
-    // fonction callback d'erreur de capture
-    var captureError = function(error) {
-        navigator.notification.alert('Code d\'erreur : ' + error.code, null, 'Erreur de capture');
-    };
+    capturer l'erreur rappel var captureError = function(error) {navigator.notification.alert (' code d'erreur: ' + error.code, null, « Capture Error »);} ;
     
-    // débute la capture de vidéo(s)
-    navigator.device.capture.captureVideo(captureSuccess, captureError, {limit:2});
+    démarrer la capture vidéo navigator.device.capture.captureVideo (captureSuccess, captureError, {limit:2}) ;
     
 
 ### BlackBerry 10 Quirks
@@ -285,10 +270,9 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCB` est
 
 ### Exemple
 
-    // limite l'opération de capture à 3 clips vidéo
-    var options = { limit: 3 };
+    limiter l'opération de capture de 3 options de clips vidéo var = { limit: 3 } ;
     
-    navigator.device.capture.captureVideo(captureSuccess, captureError, options);
+    navigator.device.capture.captureVideo (captureSuccess, captureError, options) ;
     
 
 ### BlackBerry 10 Quirks
@@ -303,25 +287,20 @@ Une fois l'opération de capture terminée, la fonction callback `CaptureCB` est
 
 > Fonction appelée lors d'une opération de capture de médias réussie.
 
-    function captureSuccess( MediaFile[] mediaFiles ) { ... };
+    fonction captureSuccess (MediaFile [] mediaFiles) { ... } ;
     
 
 ### Description
 
-Cette fonction est exécutée après qu'une opération de capture ait été menée à terme avec succès. À ce stade, un fichier média a été capturé et l'utilisateur a quitté l'application de capture ou bien la limite de capture a été atteinte.
+Cette fonction s'exécute après qu'une opération de capture réussie est terminée. À ce point qu'un fichier multimédia a été capturé et soit l'utilisateur a quitté l'application capture de média, ou la limite de capture a été atteinte.
 
-Chaque objet `MediaFile` décrit un fichier média capturé.
+Chaque `MediaFile` objet décrit un fichier multimédia capturés.
 
 ### Exemple
 
-    // fonction callback de capture
-    function captureSuccess(mediaFiles) {
-        var i, path, len;
-        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
-            path = mediaFiles[i].fullPath;
-            // faire quelque chose d'intéressant avec le fichier
-        }
-    };
+    capturer callback function captureSuccess(mediaFiles) {var i, chemin, len ;
+        pour (i = 0, len = mediaFiles.length; i < len ; j'ai += 1) {chemin d'accès = mediaFiles[i].fullPath ;
+            faire quelque chose d'intéressant avec le fichier}} ;
     
 
 ## CaptureError
@@ -348,21 +327,18 @@ Chaque objet `MediaFile` décrit un fichier média capturé.
 
 > Fonction callback appelée si une erreur se produit pendant une opération de capture de médias.
 
-    function captureError( CaptureError error ) { ... };
+    function captureError (erreur CaptureError) { ... } ;
     
 
 ### Description
 
-Cette fonction est exécutée si une erreur se produit lors d'une tentative de lancement d'une opération de capture de médias. Une telle erreur peut survenir lorsque l'application de capture est occupée, quand une opération de capture est déjà en cours, ou encore si l'utilisateur annule l'opération avant qu'un fichier média ait pu être capturé.
+Cette fonction s'exécute si une erreur se produit lorsque vous essayez de lancer un média opération de capture. Scénarios de défaillance incluent lors de l'application capture est occupée, une opération de capture est déjà en cours, ou l'utilisateur annule l'opération avant que tous les fichiers multimédias sont capturés.
 
-Un objet `CaptureError` contenant un `code` d'erreur approprié est transmis à cette fonction callback lors de son exécution.
+Cette fonction s'exécute avec un `CaptureError` objet contenant une erreur appropriée`code`.
 
 ### Exemple
 
-    // fonction callback d'erreur de capture
-    var captureError = function(error) {
-        navigator.notification.alert('Code d\'erreur : ' + error.code, null, 'Erreur de capture');
-    };
+    capturer l'erreur rappel var captureError = function(error) {navigator.notification.alert (' code d'erreur: ' + error.code, null, « Capture Error »);} ;
     
 
 ## ConfigurationData
@@ -371,9 +347,9 @@ Un objet `CaptureError` contenant un `code` d'erreur approprié est transmis à 
 
 ### Description
 
-Décrit les modes de capture de média pris en charge par l'appareil. Les données de configuration incluent le type MIME et les dimensions pour la capture de vidéo ou d'image.
+Décrit les modes de capture de média pris en charge par le périphérique. Les données de configuration incluent le type MIME et dimensions de capture pour la capture vidéo ou image.
 
-Les types MIME doivent respecter la norme [RFC2046][1]. Exemples :
+[RFC2046][1]devraient respecter les types MIME. Exemples :
 
  [1]: http://www.ietf.org/rfc/rfc2046.txt
 
@@ -393,32 +369,31 @@ Les types MIME doivent respecter la norme [RFC2046][1]. Exemples :
 
 ### Exemple
 
-    // récupère des informations sur les modes de capture d'image supportés
-    var imageModes = navigator.device.capture.supportedImageModes;
+    prise en charge de récupérer image modes var imageModes = navigator.device.capture.supportedImageModes ;
     
-    // choisit le mode possédant la résolution horizontale la plus élevée
-    var width = 0;
-    var selectedmode;
-    for each (var mode in imageModes) {
-        if (mode.width > width) {
-            width = mode.width;
-            selectedmode = mode;
+    Sélectionnez le mode qui a la plus haute résolution horizontale var largeur = 0 ;
+    var selectedmode ;
+    pour chaque (mode var imageModes) {si (mode.width > largeur) {largeur = mode.width ;
+            selectedmode = mode ;
         }
     }
     
 
-N'est pas pris en charge par toutes les plates-formes. Tous les tableaux de données de configuration sont vides.
+Pas pris en charge par n'importe quelle plateforme. Tous les tableaux de données de configuration sont vides.
 
 ## MediaFile.getFormatData
 
 > Récupère des informations sur le format du fichier média capturé.
 
-    mediaFile.getFormatData (MediaFileDataSuccessCB successCallback, [MediaFileDataErrorCB errorCallback]) ;
+    mediaFile.getFormatData(
+        MediaFileDataSuccessCB successCallback,
+        [MediaFileDataErrorCB errorCallback]
+    );
     
 
 ### Description
 
-Cette fonction tente de récupérer les informations de format d'un fichier média de façon asynchrone. Si la tentative réussit, la fonction callback `MediaFileDataSuccessCB` est exécutée et un objet `MediaFileData` lui est transmis en paramètre. Si la tentative échoue, la fonction callback `MediaFileDataErrorCB` est appelée.
+Cette fonction de façon asynchrone tente de récupérer les informations de format pour le fichier multimédia. S'il réussit, il appelle le rappel de `MediaFileDataSuccessCB` avec un objet `MediaFileData`. Si la tentative échoue, cette fonction appelle le rappel de `MediaFileDataErrorCB`.
 
 ### Plates-formes prises en charge
 
@@ -431,11 +406,11 @@ Cette fonction tente de récupérer les informations de format d'un fichier méd
 
 ### Amazon Fire OS Quirks
 
-L'API pour accéder aux informations de format des fichiers média est limitée, toutes les propriétés `MediaFileData` ne sont donc pas prises en charge.
+L'API pour accéder aux médias file format informations est limité, donc pas tous les `MediaFileData` propriétés sont prises en charge.
 
 ### BlackBerry 10 Quirks
 
-Aucune API permettant la récupération d'informations sur des fichiers média n'est disponible. Par conséquent, les objets `MediaFileData` contiennent toujours des valeurs par défaut.
+Ne fournit pas une API pour plus d'informations sur les fichiers de médias, tous les objets de `MediaFileData` de retour avec les valeurs par défaut.
 
 ### Quirks Android
 
@@ -483,7 +458,7 @@ L'API pour accéder aux médias file format informations est limité, donc pas t
 
 ### BlackBerry 10 Quirks
 
-Aucune API fournissant des informations sur le format des fichiers média n'est disponible, par conséquent les objets `MediaFileData` retournés par `MediaFile.getFormatData` comportent les valeurs par défaut suivantes :
+Aucune API ne fournit des informations sur le format des fichiers multimédias, donc l'objet de `MediaFileData` retourné par `MediaFile.getFormatData` caractéristiques les valeurs par défaut suivantes :
 
 *   **codecs**: pas pris en charge et retourne`null`.
 
@@ -497,7 +472,7 @@ Aucune API fournissant des informations sur le format des fichiers média n'est 
 
 ### Amazon Fire OS Quirks
 
-Supporte les propriétés `MediaFileData` suivantes :
+Prend en charge ce qui suit `MediaFileData` Propriétés :
 
 *   **codecs** : propriété non prise en charge, sa valeur est `null`.
 

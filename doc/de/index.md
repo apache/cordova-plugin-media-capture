@@ -23,6 +23,16 @@ Dieses Plugin ermöglicht den Zugriff auf des Geräts Audio-, Bild- und video-Ca
 
 **Warnung**: Erfassung und Verwendung von Bildern, Video oder Audio von Kamera oder das Mikrofon des Geräts wirft wichtige Privatsphäre Fragen. Ihre app-Datenschutzerklärung sollten besprechen, wie die app solche Sensoren verwendet und ob die aufgezeichneten Daten mit irgendwelchen anderen Parteien geteilt werden. Zusätzlich wenn die app-Nutzung der Kamera oder Mikrofon in der Benutzeroberfläche nicht offensichtlich ist, sollten Sie eine just-in-Time Ihnen vorher die app die Kamera oder das Mikrofon zugreift (wenn das Betriebssystem des Geräts bereits tun nicht). Diese Benachrichtigung sollte der gleichen Informationen, die vorstehend, sowie die Zustimmung des Benutzers (z.B. durch Präsentation Entscheidungen für das **OK** und **Nein danke**). Beachten Sie, dass einige app-Marktplätze können Ihre app eine Frist von just-in-Time und Erlaubnis des Benutzers vor dem Zugriff auf die Kamera oder das Mikrofon einholen. Weitere Informationen finden Sie in der Datenschutz-Guide.
 
+Dieses Plugin wird global `navigator.device.capture`-Objekt definiert.
+
+Obwohl im globalen Gültigkeitsbereich, steht es nicht bis nach dem `deviceready`-Ereignis.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log(navigator.device.capture);
+    }
+    
+
 ## Installation
 
     cordova plugin add org.apache.cordova.media-capture
@@ -77,9 +87,9 @@ Dieses Plugin ermöglicht den Zugriff auf des Geräts Audio-, Bild- und video-Ca
 
 Beginnt einen asynchronen Vorgang, Audioaufnahmen, die audio-Aufnahme-Standardanwendung des Geräts erfassen. Die Operation erlaubt dem Benutzer des Geräts, mehrere Aufnahmen in einer einzigen Sitzung zu erfassen.
 
-Der Capture-Vorgang endet, wenn entweder vom Benutzer beendet die Audio wird-recording-Anwendung oder die maximale Anzahl der Aufnahmen, die festgelegten `CaptureAudioOptions.limit` erreicht ist. Wenn keine `limit` Parameterwert angegeben ist, wird standardmaessig eins (1) und der Capture-Vorgang beendet, nachdem der Benutzer ein einzelnes audio-Clips aufgezeichnet.
+Der Capture-Vorgang endet, wenn entweder der Benutzer schließt die Anwendung für die Audioaufnahme, oder die maximale Anzahl der Aufnahmen, die von `CaptureAudioOptions.limit` angegebene erreicht ist. Wenn `kein Grenzwert für den` Parameter angegeben ist, wird standardmaessig eins (1) und der Capture-Vorgang beendet, nachdem der Benutzer ein einzelnes audio-Clips aufgezeichnet.
 
-Wenn der Capture-Vorgang abgeschlossen ist, die `CaptureCallback` führt mit einer Reihe von `MediaFile` Objekten beschreiben jedes audio-Clip-Datei erfasst. Wenn der Benutzer den Vorgang beendet wird, bevor ein Audioclip erfasst wird, die `CaptureErrorCallback` führt mit einem `CaptureError` -Objekt, mit der `CaptureError.CAPTURE_NO_MEDIA_FILES` Fehlercode.
+Wenn der Capture-Vorgang abgeschlossen ist, führt die `CaptureCallback` mit einem Array von `MediaFile` Objekten beschreibt jede aufgezeichnete audio-Clip-Datei. Wenn der Benutzer den Vorgang beendet wird, bevor ein Audioclip erfasst wird, führt die `CaptureErrorCallback` mit einem `CaptureError`-Objekt, mit dem Fehlercode `CaptureError.CAPTURE_NO_MEDIA_FILES`.
 
 ### Unterstützte Plattformen
 
@@ -166,9 +176,9 @@ Wenn der Capture-Vorgang abgeschlossen ist, die `CaptureCallback` führt mit ein
 
 Beginnt einen asynchronen Vorgang, um Aufnahmen mit Kamera-Anwendung des Geräts. Die Operation erlaubt Benutzern, mehr als ein Bild in einer einzigen Sitzung zu erfassen.
 
-Der Capture-Vorgang endet entweder, wenn der Benutzer schließt die Kameraanwendung oder die maximale Anzahl an Aufnahmen von angegebenen `CaptureAudioOptions.limit` erreicht ist. Wenn keine `limit` angegeben ist, wird standardmaessig eins (1) und der Capture-Vorgang beendet, nachdem der Benutzer ein einzelnes Bild erfasst.
+Die Capture Betrieb endet, wenn der Benutzer schließt die Kameraanwendung oder die maximale Anzahl der Aufnahmen, die durch `CaptureAudioOptions.limit` angegeben ist erreicht. Wenn `kein Grenzwert` angegeben ist, wird eins (1 standardmaessig) und der Capture-Vorgang beendet nach fängt der Benutzer ein einzelnes Bild.
 
-Wenn der Capture-Vorgang abgeschlossen ist, ruft es die `CaptureCB` Rückruf mit einem Array von `MediaFile` Objekten beschreibt jede aufgenommene Bild-Datei. Wenn der Benutzer den Vorgang vor dem Aufzeichnen eines Abbilds beendet die `CaptureErrorCB` Rückruf führt mit einem `CaptureError` Objekt mit eine `CaptureError.CAPTURE_NO_MEDIA_FILES` Fehlercode.
+Wenn der Capture-Vorgang abgeschlossen ist, ruft es den `CaptureCB`-Rückruf mit einem Array von `MediaFile` Objekten beschreibt jede aufgenommene Bild-Datei. Wenn der Benutzer den Vorgang vor dem Aufzeichnen eines Abbilds beendet wird, führt der `CaptureErrorCB`-Rückruf mit einem `CaptureError`-Objekt mit einem `CaptureError.CAPTURE_NO_MEDIA_FILES`-Fehlercode.
 
 ### Unterstützte Plattformen
 
@@ -236,9 +246,9 @@ Die native Kameraanwendung aufrufen, während Ihr Gerät via Zune angeschlossen 
 
 Beginnt einen asynchronen Vorgang um Videoaufnahmen mit Videoaufzeichnung-Anwendung des Geräts zu erfassen. Die Operation ermöglicht dem Benutzer, mehrere Aufnahmen in einer einzigen Sitzung zu erfassen.
 
-Der Capture-Vorgang endet, wenn entweder vom Benutzer beendet wird, die video-Aufnahme-Anwendung oder die maximale Anzahl an Aufnahmen von angegebenen `CaptureVideoOptions.limit` erreicht ist. Wenn keine `limit` Parameterwert angegeben ist, wird standardmaessig eins (1) und der Capture-Vorgang beendet, nachdem der Benutzer einen einzelnen video Clip aufgezeichnet.
+Der Capture-Vorgang endet, wenn entweder der Benutzer schließt die Anwendung für die Audioaufnahme, oder die maximale Anzahl der Aufnahmen, die von `CaptureAudioOptions.limit` angegebene erreicht ist. Wenn `kein Grenzwert für den Parameter` angegeben ist, wird standardmaessig eins (1) und der Capture-Vorgang beendet, nachdem der Benutzer einen einzelnen video Clip aufgezeichnet.
 
-Wenn der Capture-Vorgang abgeschlossen ist, es der `CaptureCB` Rückruf führt mit einer Reihe von `MediaFile` Objekten beschreiben jedes video-Clip-Datei erfasst. Wenn der Benutzer den Vorgang vor dem Erfassen eines Videoclips, beendet die `CaptureErrorCB` Rückruf führt mit ein `CaptureError` Objekt mit eine `CaptureError.CAPTURE_NO_MEDIA_FILES` Fehlercode.
+Der Capture-Vorgang abgeschlossen ist, führt er der `CaptureCB`-Rückruf mit einem Array von `MediaFile` Objekten beschreibt jede aufgezeichnete video-Clip-Datei. Wenn der Benutzer den Vorgang vor dem Erfassen eines Videoclips beendet wird, führt der `CaptureErrorCB`-Rückruf mit einem `CaptureError`-Objekt mit einem `CaptureError.CAPTURE_NO_MEDIA_FILES`-Fehlercode.
 
 ### Unterstützte Plattformen
 
@@ -310,7 +320,7 @@ Wenn der Capture-Vorgang abgeschlossen ist, es der `CaptureCB` Rückruf führt m
 
 Diese Funktion wird ausgeführt, nachdem ein erfolgreiche Capture-Vorgang abgeschlossen ist. An diesem Punkt kann eine Mediendatei erfasst wurden und entweder der Benutzer die Medien-Capture-Anwendung beendet hat oder die Capture-erreicht.
 
-Jedes `MediaFile` Objekt beschreibt eine aufgenommenen Medien-Datei.
+Jedes `MediaFile`-Objekt beschreibt eine aufgenommenen Medien-Datei.
 
 ### Beispiel
 
@@ -355,7 +365,7 @@ Jedes `MediaFile` Objekt beschreibt eine aufgenommenen Medien-Datei.
 
 Diese Funktion wird ausgeführt, wenn ein Fehler auftritt, wenn Sie versuchen, starten Sie ein Medium capture Betrieb. Fehlerszenarien enthalten, wenn die Sicherungsanwendung beschäftigt, ein Capture-Vorgang ist bereits im Gange, oder der Benutzer den Vorgang abbricht, bevor alle Mediendateien erfasst werden.
 
-Diese Funktion führt mit einem `CaptureError` -Objekt, enthält einen entsprechenden Fehler`code`.
+Diese Funktion führt mit einem `CaptureError`-Objekt enthält einen entsprechenden Fehler-`code`.
 
 ### Beispiel
 
@@ -373,7 +383,7 @@ Diese Funktion führt mit einem `CaptureError` -Objekt, enthält einen entsprech
 
 Beschreibt Medien-Aufnahmemodi, die vom Gerät unterstützt. Die Konfigurationsdaten enthält den MIME-Typ und Capture Dimensionen für die Aufnahme von Video- oder Bilddateien.
 
-Die MIME-Typen sollten [RFC2046][1]einhalten. Beispiele:
+Die MIME-Typen sollten [RFC2046][1] einhalten. Beispiele:
 
  [1]: http://www.ietf.org/rfc/rfc2046.txt
 
@@ -421,7 +431,7 @@ Von jeder Plattform unterstützt nicht. Alle Konfigurations-Daten-Arrays sind le
 
 ### Beschreibung
 
-Diese Funktion versucht asynchron, die Formatierungsinformationen für die Mediendatei abzurufen. Wenn erfolgreich, es ruft die `MediaFileDataSuccessCB` Rückruf mit einem `MediaFileData` Objekt. Wenn der Versuch fehlschlägt, ruft diese Funktion die `MediaFileDataErrorCB` Rückruf.
+Diese Funktion versucht asynchron, die Formatierungsinformationen für die Mediendatei abzurufen. Wenn erfolgreich, wird den `MediaFileDataSuccessCB`-Rückruf mit einem `MediaFileData`-Objekt. Wenn dieser Versuch fehlschlägt, ruft diese Funktion den `MediaFileDataErrorCB`-Rückruf.
 
 ### Unterstützte Plattformen
 
@@ -438,7 +448,7 @@ Die API zum Zugriff Medien Dateiformat-Information ist begrenzt, so dass nicht a
 
 ### BlackBerry 10 Macken
 
-Bietet eine API keine Informationen zum Media-Dateien, so dass alle `MediaFileData` Objekte zurückgeben, mit Standardwerten.
+Bietet keine API Informationen zum Media-Dateien, so dass alle `MediaFileData`-Objekte mit Standardwerten zurück.
 
 ### Android Eigenarten
 
@@ -486,7 +496,7 @@ Die API zum Zugriff Medien Dateiformat-Information ist begrenzt, so dass nicht a
 
 ### BlackBerry 10 Macken
 
-Keine API bietet Informationen für Medien-Dateien, so dass die `MediaFileData` von zurückgegebene Objekt `MediaFile.getFormatData` verfügt über die folgenden Standardwerte:
+Keine API bietet Formatierungsinformationen für Mediendateien, so dass das `MediaFileData`-Objekt durch `MediaFile.getFormatData` Features die folgenden Standardwerte zurückgegeben:
 
 *   **Codecs**: nicht unterstützt, und gibt`null`.
 
