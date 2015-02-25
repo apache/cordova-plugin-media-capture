@@ -333,6 +333,8 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - __duration__: The maximum duration of a video clip, in seconds.
 
+- __quality__: Integer in the range 0-100 indicating the quality to capture video in, 100 being highest possible quality. Currently only supported for iOS.
+
 ### Example
 
     // limit capture operation to 3 video clips
