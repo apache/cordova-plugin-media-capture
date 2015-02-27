@@ -23,6 +23,16 @@ Questo plugin fornisce l'accesso per il dispositivo audio, immagine e funzionali
 
 **Avviso**: raccolta e utilizzo delle immagini, video o audio da videocamera o un microfono del dispositivo solleva questioni di privacy importante. Politica sulla privacy dell'app dovrebbe discutere come app utilizza tali sensori e se i dati registrati sono condivisa con altre parti. Inoltre, se uso dell'app della fotocamera o microfono non è evidente nell'interfaccia utente, è necessario fornire un preavviso di just-in-time prima app accede la videocamera o il microfono (se il sistema operativo del dispositivo non farlo già). Tale comunicazione deve fornire le informazioni stesse notate sopra, oltre ad ottenere l'autorizzazione (ad esempio, presentando scelte per **OK** e **No grazie**). Si noti che alcuni mercati app possono richiedere l'app può fornire preavviso just-in-time e ottenere l'autorizzazione dell'utente prima di accedere la videocamera o il microfono. Per ulteriori informazioni, vedere la guida sulla Privacy.
 
+Questo plugin definisce oggetto global `navigator.device.capture`.
+
+Anche se in ambito globale, non è disponibile fino a dopo l'evento `deviceready`.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log(navigator.device.capture);
+    }
+    
+
 ## Installazione
 
     cordova plugin add org.apache.cordova.media-capture
@@ -77,9 +87,9 @@ Questo plugin fornisce l'accesso per il dispositivo audio, immagine e funzionali
 
 Avvia un'operazione asincrona per acquisire registrazioni audio utilizzando l'applicazione di registrazione audio predefinita del dispositivo. L'operazione consente all'utente di dispositivo acquisire registrazioni multiple in una singola sessione.
 
-L'operazione di acquisizione termina quando l'utente esce l'audio registrazione applicazione, o il numero massimo di registrazioni specificato da `CaptureAudioOptions.limit` è raggiunto. Se non `limit` valore del parametro è specificato, il valore predefinito è uno (1) e l'operazione di acquisizione termina dopo l'utente registra una singola clip audio.
+L'operazione di acquisizione termina quando l'utente esce la domanda di registrazione audio, o viene raggiunto il numero massimo di registrazioni specificato da `CaptureAudioOptions.limit`. Se nessun valore `limit` del parametro è specificato, il valore predefinito è uno (1), e l'operazione di acquisizione termina dopo l'utente registra una singola clip audio.
 
-Quando termina l'operazione di acquisizione, la `CaptureCallback` viene eseguita con una matrice di `MediaFile` oggetti che descrivono ciascuna catturato file clip audio. Se l'utente termina l'operazione prima di un clip audio viene catturato, il `CaptureErrorCallback` viene eseguito con un `CaptureError` oggetto, con il `CaptureError.CAPTURE_NO_MEDIA_FILES` codice di errore.
+Quando termina l'operazione di acquisizione, l' `CaptureCallback` si esegue con una matrice di oggetti `MediaFile` descrive ogni file catturato clip audio. Se l'utente termina l'operazione prima di un clip audio viene catturato, il `CaptureErrorCallback` viene eseguito con un oggetto di `CaptureError`, con il codice di errore `CaptureError.CAPTURE_NO_MEDIA_FILES`.
 
 ### Piattaforme supportate
 
@@ -166,9 +176,9 @@ Quando termina l'operazione di acquisizione, la `CaptureCallback` viene eseguita
 
 Avvia un'operazione asincrona per catturare immagini utilizzando l'applicazione della fotocamera del dispositivo. L'operazione consente agli utenti di catturare più immagini in una sola seduta.
 
-L'operazione di acquisizione o termina quando l'utente chiude l'applicazione fotocamera, o il numero massimo di registrazioni specificato da `CaptureAudioOptions.limit` è raggiunto. Se non `limit` valore è specificato, il valore predefinito è uno (1) e l'operazione di acquisizione termina dopo l'utente acquisisce una singola immagine.
+Le estremità operazione cattura quando l'utente chiude l'applicazione fotocamera, oppure quando viene raggiunto il numero massimo di registrazioni specificato da `CaptureAudioOptions.limit`. Se viene specificato alcun valore `limit`, il valore predefinito è uno (1) e l'operazione di acquisizione termina dopo l'utente acquisisce una singola immagine.
 
-Quando termina l'operazione di acquisizione, richiama il `CaptureCB` callback con una matrice di `MediaFile` oggetti che descrivono ogni file immagine catturata. Se l'utente termina l'operazione prima di catturare un'immagine, la `CaptureErrorCB` callback viene eseguita con un `CaptureError` oggetto con un `CaptureError.CAPTURE_NO_MEDIA_FILES` codice di errore.
+Quando termina l'operazione di acquisizione, richiama il callback di `CaptureCB` con una matrice di oggetti `MediaFile` descrive ogni file immagine catturata. Se l'utente termina l'operazione prima di catturare un'immagine, `CaptureErrorCB` callback viene eseguito con un oggetto `CaptureError` con un codice di errore `CaptureError.CAPTURE_NO_MEDIA_FILES`.
 
 ### Piattaforme supportate
 
@@ -236,9 +246,9 @@ Invocando l'applicazione nativa fotocamera mentre il dispositivo è collegato tr
 
 Avvia un'operazione asincrona per acquisire registrazioni video usando registrazione video applicazione del dispositivo. L'operazione consente all'utente di catturare più registrazioni in una sola seduta.
 
-L'operazione di acquisizione termina quando l'utente chiude l'applicazione di registrazione video, o il numero massimo di registrazioni specificato da `CaptureVideoOptions.limit` è raggiunto. Se non `limit` valore del parametro è specificato, il valore predefinito è uno (1) e l'operazione di acquisizione termina dopo l'utente registra un unico video clip.
+L'operazione di acquisizione termina quando l'utente chiude l'applicazione di registrazione video, o viene raggiunto il numero massimo di registrazioni specificato da `CaptureVideoOptions.limit`. Se nessun valore `limit` del parametro è specificato, il valore predefinito è uno (1) e l'operazione di acquisizione termina dopo l'utente registra un unico video clip.
 
-Quando termina l'operazione di acquisizione, e la `CaptureCB` callback viene eseguita con una matrice di `MediaFile` oggetti che descrivono ciascuna catturato file videoclip. Se l'utente termina l'operazione prima di catturare un video clip, il `CaptureErrorCB` callback viene eseguita con un `CaptureError` oggetto con un `CaptureError.CAPTURE_NO_MEDIA_FILES` codice di errore.
+Quando termina l'operazione di acquisizione, il callback `CaptureCB` esegue con una matrice di oggetti `MediaFile` descrive ogni file videoclip catturati. Se l'utente termina l'operazione prima di catturare un video clip, `CaptureErrorCB` callback viene eseguito con un oggetto `CaptureError` con un codice di errore `CaptureError.CAPTURE_NO_MEDIA_FILES`.
 
 ### Piattaforme supportate
 
@@ -310,7 +320,7 @@ Quando termina l'operazione di acquisizione, e la `CaptureCB` callback viene ese
 
 Questa funzione viene eseguita al termine di un'operazione di acquisizione di successo. A questo punto che è stato catturato un file multimediale e neanche l'utente è stato terminato l'applicazione di cattura di media, o è stato raggiunto il limite di cattura.
 
-Ogni `MediaFile` oggetto descrive un file multimediali catturati.
+Ogni oggetto `MediaFile` descrive un file multimediali catturati.
 
 ### Esempio
 
@@ -355,7 +365,7 @@ Ogni `MediaFile` oggetto descrive un file multimediali catturati.
 
 Questa funzione viene eseguita se si verifica un errore quando si tenta di lanciare un media catturare operazione. Fallimento scenari includono quando l'applicazione di cattura è occupato, un'operazione di acquisizione è già in atto, o l'utente annulla l'operazione prima che tutti i file multimediali vengono catturati.
 
-Questa funzione viene eseguita con un `CaptureError` oggetto contenente un errore appropriato`code`.
+Questa funzione viene eseguita con un oggetto `CaptureError` che contiene un `codice` di errore appropriato.
 
 ### Esempio
 
@@ -413,12 +423,15 @@ Non supportato da qualsiasi piattaforma. Tutte le matrici di dati di configurazi
 
 > Recupera il formato informazioni su cattura file multimediale.
 
-    mediaFile.getFormatData (MediaFileDataSuccessCB successCallback, [MediaFileDataErrorCB errorCallback]);
+    mediaFile.getFormatData(
+        MediaFileDataSuccessCB successCallback,
+        [MediaFileDataErrorCB errorCallback]
+    );
     
 
 ### Descrizione
 
-Questa funzione in modo asincrono tenta di recuperare le informazioni sul formato del file multimediale. Se riuscito, richiama il `MediaFileDataSuccessCB` callback con un `MediaFileData` oggetto. Se il tentativo fallisce, questa funzione richiama il `MediaFileDataErrorCB` callback.
+Questa funzione in modo asincrono tenta di recuperare le informazioni sul formato del file multimediale. Se riuscito, richiama il callback di `MediaFileDataSuccessCB` con un oggetto `MediaFileData`. Se il tentativo fallisce, questa funzione richiama il callback di `MediaFileDataErrorCB`.
 
 ### Piattaforme supportate
 
@@ -435,7 +448,7 @@ L'API per informazioni sul formato dei file multimediali accesso è limitato, qu
 
 ### BlackBerry 10 capricci
 
-Non fornisce un'API per informazioni sui file multimediali, quindi tutti `MediaFileData` oggetti restituiscono con valori predefiniti.
+Non fornisce un'API per informazioni sui file multimediali, quindi tutti gli oggetti di `MediaFileData` restituiscono con valori predefiniti.
 
 ### Stranezze Android
 
@@ -483,7 +496,7 @@ L'API per informazioni sul formato dei file multimediali accesso è limitato, qu
 
 ### BlackBerry 10 capricci
 
-Nessuna API fornisce informazioni sul formato dei file multimediali, quindi il `MediaFileData` oggetto restituito da `MediaFile.getFormatData` presenta i seguenti valori predefiniti:
+Nessuna API fornisce informazioni sul formato dei file multimediali, quindi l'oggetto `MediaFileData` restituito da `MediaFile.getFormatData` caratteristiche i seguenti valori predefiniti:
 
 *   **codec**: non supportato e restituisce`null`.
 

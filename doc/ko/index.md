@@ -23,6 +23,16 @@
 
 **경고**: 수집 및 이미지, 비디오 또는 오디오 장치의 카메라 또는 마이크를 사용 하 여 중요 한 개인 정보 보호 문제를 제기 하고있다. 응용 프로그램의 개인 정보 보호 정책 응용 프로그램 같은 센서를 사용 하는 방법 및 다른 당사자와 함께 기록 된 데이터는 공유 하는 여부를 토론 해야 한다. 또한, 애플 리 케이 션의 카메라 또는 마이크를 사용 하지 않으면 명백한 사용자 인터페이스에서, 제공 해야 그냥--시간 통지 (해당 되는 경우 장치 운영 체제 이렇게 이미 하지 않는) 응용 프로그램 카메라 또는 마이크에 액세스 하기 전에. 그 통지는 (예를 들어, **확인** 및 **아니오**선택 제시) 하 여 사용자의 허가 취득 뿐만 아니라, 위에서 언급 된 동일한 정보를 제공 해야 합니다. Note 일부 애플 리 케이 션 장 터 저스트-인-타임 공지 및 카메라 또는 마이크에 액세스 하기 전에 사용자에 게 허가를 귀하의 응용 프로그램에 필요할 수 있습니다. 자세한 내용은 개인 정보 보호 가이드를 참조 하십시오.
 
+이 플러그인 글로벌 `navigator.device.capture` 개체를 정의합니다.
+
+전역 범위에 있지만 그것은 불가능까지 `deviceready` 이벤트 후.
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log(navigator.device.capture);
+    }
+    
+
 ## 설치
 
     cordova plugin add org.apache.cordova.media-capture
@@ -46,7 +56,7 @@
 *   CaptureCallback
 *   CaptureErrorCB
 *   ConfigurationData
-*   돌아가기
+*   MediaFile
 *   MediaFileData
 
 ## 메서드
@@ -77,9 +87,9 @@
 
 소자의 기본 오디오 녹음 응용 프로그램을 사용 하 여 오디오 녹음을 캡처하는 비동기 작업을 시작 합니다. 작업 장치 사용자를 단일 세션에서 여러 녹화를 캡처할 수 있습니다.
 
-캡처 작업이 종료 사용자 오디오 녹음 응용 프로그램 또는 녹음에 의해 지정 된 최대 수를 종료 하는 경우 `CaptureAudioOptions.limit` 에 도달. 없는 경우 `limit` 매개 변수 값 지정, 하나 (1), 기본 및 캡처 작업이 종료 되 면 사용자는 하나의 오디오 클립을 기록 하는 후.
+캡처 작업 사용자가 오디오 녹음 응용 프로그램을 종료 하거나 녹음 `CaptureAudioOptions.limit`에 의해 지정 된 최대 수에 도달 하면 끝납니다. `limit` 매개 변수 값을 지정 하지, 하나 (1), 기본 및 캡처 작업이 종료 되 면 사용자는 하나의 오디오 클립을 기록 하는 후.
 
-캡처 작업이 완료 되 면은 `CaptureCallback` 의 배열을 실행 `MediaFile` 오디오 클립 파일을 캡처 설명 하는 각 개체. 전에 오디오 클립을 캡처 작업이 종료 되 면 사용자는 `CaptureErrorCallback` 으로 실행 한 `CaptureError` 개체, 특징으로 `CaptureError.CAPTURE_NO_MEDIA_FILES` 오류 코드.
+캡처 작업이 완료 되 면 각 캡처된 오디오 클립 파일 설명 `MediaFile` 개체의 배열과 함께 `CaptureCallback`를 실행 합니다. 사용자 전에 오디오 클립을 캡처 작업이 종료 되 면, `CaptureErrorCallback` `CaptureError.CAPTURE_NO_MEDIA_FILES` 오류 코드를 갖춘 `CaptureError` 개체를 실행 합니다.
 
 ### 지원 되는 플랫폼
 
@@ -166,9 +176,9 @@
 
 디바이스의 카메라 응용 프로그램을 사용 하 여 이미지를 캡처하는 비동기 작업을 시작 합니다. 작업이 단일 세션에서 하나 이상의 이미지를 캡처할 수 있습니다.
 
-캡처 작업이 종료 하거나 사용자가 닫으면 카메라 응용 프로그램 또는 녹음에 의해 지정 된 최대 수 `CaptureAudioOptions.limit` 에 도달. 없는 경우 `limit` 값이 지정 된, 하나 (1), 기본 및 캡처 작업이 종료 되 면 사용자는 단일 이미지 캡처 후.
+캡처 작업 종료 때 카메라 응용 프로그램을 닫으면 또는 `CaptureAudioOptions.limit`에 지정 된 녹음의 최대 수에 도달 합니다. `limit` 값을 지정 하지 경우에, 하나 (1) 기본적으로 캡처 작업 종료 후 사용자 단일 이미지를 캡처합니다.
 
-캡처 작업이 완료 되 면 호출에 `CaptureCB` 의 배열과 콜백 `MediaFile` 각 캡처된 이미지 파일을 설명 하는 개체. 사용자는 이미지를 캡처하기 전에 작업을 종료 하는 경우는 `CaptureErrorCB` 콜백 실행 한 `CaptureError` 개체를 특징으로 `CaptureError.CAPTURE_NO_MEDIA_FILES` 오류 코드.
+캡처 작업이 완료 되 면 각 캡처된 이미지 파일 설명 `MediaFile` 개체의 배열과 함께 `CaptureCB` 콜백을 호출 합니다. 사용자 이미지를 캡처하기 전에 작업이 종료 되 면 `CaptureErrorCB` 콜백 `CaptureError.CAPTURE_NO_MEDIA_FILES` 오류 코드를 특징으로 하는 `CaptureError` 개체를 실행 합니다.
 
 ### 지원 되는 플랫폼
 
@@ -236,9 +246,9 @@
 
 비디오 녹화 장치의 비디오 레코딩 응용 프로그램을 사용 하 여 캡처하는 비동기 작업을 시작 합니다. 작업을 사용 하면 단일 세션에서 하나 이상의 녹음을 캡처할 수 있습니다.
 
-캡처 작업이 끝나면 사용자 종료 비디오 레코딩 응용 프로그램 또는 녹음에 의해 지정 된 최대 수 `CaptureVideoOptions.limit` 에 도달. 없는 경우 `limit` 매개 변수 값 지정, 하나 (1), 기본 및 캡처 작업이 종료 되 면 사용자는 하나의 비디오 클립을 기록 하는 후.
+캡처 작업 사용자가 비디오 레코딩 응용 프로그램 종료 또는 `CaptureVideoOptions.limit`에 지정 된 녹음의 최대 수에 도달 하면 끝납니다. `limit` 매개 변수 값을 지정 하지, 하나 (1), 기본 및 캡처 작업이 종료 되 면 사용자는 하나의 비디오 클립을 기록 하는 후.
 
-캡처 작업이 완료 되 면 그것은 `CaptureCB` 의 배열과 콜백 실행 `MediaFile` 비디오 클립 파일을 캡처 설명 하는 각 개체. 사용자는 비디오 클립을 캡처하기 전에 작업을 종료 하는 경우는 `CaptureErrorCB` 콜백 실행 한 `CaptureError` 개체를 특징으로 `CaptureError.CAPTURE_NO_MEDIA_FILES` 오류 코드.
+캡처 작업이 완료 되 면 `CaptureCB` 콜백 실행 각 캡처된 비디오 클립 파일을 설명 하는 `MediaFile` 개체의 배열을 사용 합니다. 사용자는 비디오 클립을 캡처하기 전에 작업이 종료 되 면 `CaptureErrorCB` 콜백 `CaptureError.CAPTURE_NO_MEDIA_FILES` 오류 코드를 특징으로 하는 `CaptureError` 개체를 실행 합니다.
 
 ### 지원 되는 플랫폼
 
@@ -310,7 +320,7 @@
 
 이 함수는 성공적인 캡처 작업이 완료 된 후 실행 합니다. 미디어 파일을 캡처한이 포인트와 중에 사용자가 미디어 캡처 응용 프로그램 종료 또는 캡처 한계에 도달 했습니다.
 
-각 `MediaFile` 개체 캡처한 미디어 파일에 설명 합니다.
+각 `MediaFile` 개체 캡처한 미디어 파일을 설명합니다.
 
 ### 예를 들어
 
@@ -353,9 +363,9 @@
 
 ### 설명
 
-이 함수는 오류가 발생 하면 실행 하려고 할 때 미디어 캡처 작업을 실행 합니다. 실패 시나리오 등 캡처 응용 프로그램이, 캡처 작업이 이미 일어나 고 있다, 또는 어떤 미디어 파일 캡처 전에 사용자가 작업을 취소 합니다.
+이 함수는 오류가 발생 하면 실행 하려고 할 때 미디어 캡처 작업을 실행 합니다. 실패 시나리오 등 캡처 응용 프로그램이, 캡처 작업은 이미 일어나 고, 또는 어떤 미디어 파일 캡처 전에 사용자가 작업을 취소 합니다.
 
-이 함수를 함께 실행 하는 `CaptureError` 는 적절 한 오류를 포함 하는 개체`code`.
+이 함수를 실행 하는 적절 한 오류 `code`를 포함 하는 `CaptureError` 개체와 함께.
 
 ### 예를 들어
 
@@ -413,12 +423,15 @@ MIME 형식 [RFC2046][1]을 준수 해야 합니다. 예:
 
 > 검색은 미디어 캡처 파일에 대 한 정보를 서식을 지정 합니다.
 
-    mediaFile.getFormatData (MediaFileDataSuccessCB successCallback, [MediaFileDataErrorCB errorCallback]);
+    mediaFile.getFormatData(
+        MediaFileDataSuccessCB successCallback,
+        [MediaFileDataErrorCB errorCallback]
+    );
     
 
 ### 설명
 
-이 함수는 비동기적으로 미디어 파일에 대 한 형식 정보를 검색 하려고 합니다. 경우, 호출 하는 `MediaFileDataSuccessCB` 와 콜백을 `MediaFileData` 개체. 이 함수 호출 하는 시도가 실패 하는 경우는 `MediaFileDataErrorCB` 콜백.
+이 함수는 비동기적으로 미디어 파일에 대 한 형식 정보를 검색 하려고 합니다. 성공 하면 `MediaFileData` 개체와 `MediaFileDataSuccessCB` 콜백을 호출 합니다. 시도가 실패 하는 경우이 함수는 `MediaFileDataErrorCB` 콜백을 호출 합니다.
 
 ### 지원 되는 플랫폼
 
@@ -435,7 +448,7 @@ MIME 형식 [RFC2046][1]을 준수 해야 합니다. 예:
 
 ### 블랙베리 10 단점
 
-그래서 모든 미디어 파일에 대 한 정보에 대 한 API를 제공 하지 않습니다 `MediaFileData` 개체를 기본 값으로 반환 합니다.
+그래서 모든 `MediaFileData` 개체 기본값으로 반환 미디어 파일에 대 한 정보에 대 한 API를 제공 하지 않습니다.
 
 ### 안 드 로이드 단점
 
@@ -445,7 +458,7 @@ MIME 형식 [RFC2046][1]을 준수 해야 합니다. 예:
 
 미디어 파일 형식 정보에 액세스할 수 API는 제한, 그래서 모든 `MediaFileData` 속성이 지원 됩니다.
 
-## 돌아가기
+## MediaFile
 
 > 미디어 캡처 파일의 속성을 캡슐화합니다.
 
@@ -483,7 +496,7 @@ MIME 형식 [RFC2046][1]을 준수 해야 합니다. 예:
 
 ### 블랙베리 10 단점
 
-미디어 파일에 대 한 형식 정보를 제공 하는 없는 API 때문에 `MediaFileData` 에 의해 반환 되는 개체 `MediaFile.getFormatData` 다음과 같은 기본 값을 기능:
+`MediaFileData` 개체 `MediaFile.getFormatData` 기능에 의해 다음 기본 값을 반환 없음 API 미디어 파일에 대 한 형식 정보를 제공 합니다.
 
 *   **코덱**: 안 지원, 및 반환`null`.
 
