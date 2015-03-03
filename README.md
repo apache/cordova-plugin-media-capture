@@ -19,4 +19,7 @@
 
 # org.apache.cordova.media-capture
 
+[![Build Status](https://travis-ci.org/apache/cordova-plugin-media-capture.svg)](https://travis-ci.org/apache/cordova-plugin-media-capture)
+
+
 Plugin documentation: [doc/index.md](doc/index.md)
