@@ -27,6 +27,8 @@ var CaptureVideoOptions = function(){
     this.limit = 1;
     // Maximum duration of a single video clip in seconds.
     this.duration = 0;
+    // Integer in the range 0-100 specifiying quality of captured video
+    this.quality = 50;
 };
 
 module.exports = CaptureVideoOptions;
