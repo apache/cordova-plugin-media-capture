@@ -77,13 +77,9 @@
 @implementation CDVCapture
 @synthesize inUse;
 
-- (id)initWithWebView:(UIWebView*)theWebView
+- (void)pluginInitialize
 {
-    self = (CDVCapture*)[super initWithWebView:theWebView];
-    if (self) {
-        self.inUse = NO;
-    }
-    return self;
+    self.inUse = NO;
 }
 
 - (void)captureAudio:(CDVInvokedUrlCommand*)command
