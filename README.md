@@ -60,6 +60,7 @@ Although in the global scope, it is not available until after the `deviceready` 
 - iOS
 - Windows Phone 7 and 8
 - Windows 8
+- Windows
 
 ## Objects
 
@@ -123,6 +124,7 @@ code.
 - iOS
 - Windows Phone 7 and 8
 - Windows 8
+- Windows
 
 ### Example
 
@@ -220,6 +222,7 @@ object featuring a `CaptureError.CAPTURE_NO_MEDIA_FILES` error code.
 - iOS
 - Windows Phone 7 and 8
 - Windows 8
+- Windows
 
 ### Windows Phone 7 Quirks
 
@@ -310,6 +313,7 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 - iOS
 - Windows Phone 7 and 8
 - Windows 8
+- Windows
 
 ### Example
 
@@ -499,6 +503,7 @@ callback.
 - iOS
 - Windows Phone 7 and 8
 - Windows 8
+- Windows
 
 ### Amazon Fire OS Quirks
 
