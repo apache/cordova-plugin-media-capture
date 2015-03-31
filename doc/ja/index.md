@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.media-capture
+# cordova-plugin-media-capture
 
 このプラグインは、デバイスのオーディオ、イメージ、およびビデオ キャプチャ機能へのアクセスを提供します。
 
@@ -35,7 +35,7 @@
 
 ## インストール
 
-    cordova plugin add org.apache.cordova.media-capture
+    cordova plugin add cordova-plugin-media-capture
     
 
 ## サポートされているプラットフォーム

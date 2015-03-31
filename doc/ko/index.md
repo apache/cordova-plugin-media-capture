@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.media-capture
+# cordova-plugin-media-capture
 
 이 플러그인 디바이스의 오디오, 이미지 및 비디오 캡처 기능에 대 한 액세스를 제공합니다.
 
@@ -35,7 +35,7 @@
 
 ## 설치
 
-    cordova plugin add org.apache.cordova.media-capture
+    cordova plugin add cordova-plugin-media-capture
     
 
 ## 지원 되는 플랫폼

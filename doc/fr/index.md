@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.media-capture
+# cordova-plugin-media-capture
 
 Ce plugin permet d'accéder à de l'appareil audio, image et capacités de capture vidéo.
 
@@ -33,7 +33,7 @@ Bien que dans la portée globale, il n'est pas disponible jusqu'après la `devic
 
 ## Installation
 
-    Cordova plugin ajouter capture d'org.apache.cordova.media
+    Cordova plugin ajouter capture d'cordova-plugin-media
     
 
 ## Plates-formes prises en charge

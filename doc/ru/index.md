@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.media-capture
+# cordova-plugin-media-capture
 
 Этот плагин обеспечивает доступ к аудио, изображения и возможности видео захвата устройства.
 
@@ -25,7 +25,7 @@
 
 ## Установка
 
-    cordova plugin add org.apache.cordova.media-capture
+    cordova plugin add cordova-plugin-media-capture
     
 
 ## Поддерживаемые платформы

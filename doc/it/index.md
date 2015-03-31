@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.media-capture
+# cordova-plugin-media-capture
 
 Questo plugin fornisce l'accesso per il dispositivo audio, immagine e funzionalità di cattura video.
 
@@ -35,7 +35,7 @@ Anche se in ambito globale, non è disponibile fino a dopo l'evento `deviceready
 
 ## Installazione
 
-    cordova plugin add org.apache.cordova.media-capture
+    cordova plugin add cordova-plugin-media-capture
     
 
 ## Piattaforme supportate

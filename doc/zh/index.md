@@ -17,7 +17,7 @@
     under the License.
 -->
 
-# org.apache.cordova.media-capture
+# cordova-plugin-media-capture
 
 這個外掛程式提供了對設備的音訊、 圖像和視頻捕獲功能的訪問。
 
@@ -35,7 +35,7 @@
 
 ## 安裝
 
-    cordova plugin add org.apache.cordova.media-capture
+    cordova plugin add cordova-plugin-media-capture
     
 
 ## 支援的平臺
