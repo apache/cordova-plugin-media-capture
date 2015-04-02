@@ -31,7 +31,7 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
     <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-media-capture.git</repo>
     <issue>https://issues.apache.org/jira/browse/CB/component/12320646</issue>
     
-    <dependency id="org.apache.cordova.file" version=">=1.0.1" />
+    <dependency id="cordova-plugin-file" version=">=1.0.1" />
 
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
