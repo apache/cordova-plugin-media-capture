@@ -21,9 +21,9 @@
 
 /*global require, module*/
 
-var MediaFile = require('org.apache.cordova.media-capture.MediaFile');
-var MediaFileData = require('org.apache.cordova.media-capture.MediaFileData');
-var CaptureError = require('org.apache.cordova.media-capture.CaptureError');
+var MediaFile = require('cordova-plugin-media-capture.MediaFile');
+var MediaFileData = require('cordova-plugin-media-capture.MediaFileData');
+var CaptureError = require('cordova-plugin-media-capture.CaptureError');
 
 /**
  * Helper function that converts data URI to Blob

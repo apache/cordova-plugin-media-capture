@@ -21,12 +21,12 @@
 
 /*global Windows:true */
 
-var MediaFile = require('org.apache.cordova.media-capture.MediaFile');
-var CaptureError = require('org.apache.cordova.media-capture.CaptureError');
-var CaptureAudioOptions = require('org.apache.cordova.media-capture.CaptureAudioOptions');
-var CaptureImageOptions = require('org.apache.cordova.media-capture.CaptureImageOptions');
-var CaptureVideoOptions = require('org.apache.cordova.media-capture.CaptureVideoOptions');
-var MediaFileData = require('org.apache.cordova.media-capture.MediaFileData');
+var MediaFile = require('cordova-plugin-media-capture.MediaFile');
+var CaptureError = require('cordova-plugin-media-capture.CaptureError');
+var CaptureAudioOptions = require('cordova-plugin-media-capture.CaptureAudioOptions');
+var CaptureImageOptions = require('cordova-plugin-media-capture.CaptureImageOptions');
+var CaptureVideoOptions = require('cordova-plugin-media-capture.CaptureVideoOptions');
+var MediaFileData = require('cordova-plugin-media-capture.MediaFileData');
 
 /*
  * Class that combines all logic for capturing picture and video on WP8.1

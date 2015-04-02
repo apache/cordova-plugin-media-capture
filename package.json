@@ -3,7 +3,7 @@
   "version": "0.3.7-dev",
   "description": "Cordova Media Capture Plugin",
   "cordova": {
-    "id": "org.apache.cordova.media-capture",
+    "id": "cordova-plugin-media-capture",
     "platforms": [
       "android",
       "amazon-fireos",
