@@ -73,7 +73,7 @@ public class Capture extends CordovaPlugin {
     private int duration;                           // optional max duration of video recording in seconds
     private JSONArray results;                      // The array of results to be returned to the user
     private int numPics;                            // Number of pictures before capture activity
-
+    private int quality;                            // Quality level for video capture 0 low, 1 high
     //private CordovaInterface cordova;
 
 //    public void setContext(Context mCtx)
@@ -90,11 +90,13 @@ public class Capture extends CordovaPlugin {
         this.limit = 1;
         this.duration = 0;
         this.results = new JSONArray();
+        this.quality = 1;
 
         JSONObject options = args.optJSONObject(0);
         if (options != null) {
             limit = options.optLong("limit", 1);
             duration = options.optInt("duration", 0);
+            quality = options.optInt("quality", 1);
         }
 
         if (action.equals("getFormatData")) {
@@ -109,7 +111,7 @@ public class Capture extends CordovaPlugin {
             this.captureImage();
         }
         else if (action.equals("captureVideo")) {
-            this.captureVideo(duration);
+            this.captureVideo(duration, quality);
         }
         else {
             return false;
@@ -228,7 +230,7 @@ public class Capture extends CordovaPlugin {
         // Specify file so that large image is captured and returned
         File photo = new File(getTempDirectoryPath(), "Capture.jpg");
         try {
-            // the ACTION_IMAGE_CAPTURE is run under different credentials and has to be granted write permissions 
+            // the ACTION_IMAGE_CAPTURE is run under different credentials and has to be granted write permissions
             createWritableFile(photo);
         } catch (IOException ex) {
             this.fail(createErrorObject(CAPTURE_INTERNAL_ERR, ex.toString()));
@@ -247,11 +249,12 @@ public class Capture extends CordovaPlugin {
     /**
      * Sets up an intent to capture video.  Result handled by onActivityResult()
      */
-    private void captureVideo(int duration) {
+    private void captureVideo(int duration, int quality) {
         Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
         if(Build.VERSION.SDK_INT > 7){
             intent.putExtra("android.intent.extra.durationLimit", duration);
+            intent.putExtra("android.intent.extra.videoQuality", quality);
         }
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_VIDEO);
     }
@@ -358,19 +361,19 @@ public class Capture extends CordovaPlugin {
 
                     @Override
                     public void run() {
-                    
+
                         Uri data = null;
-                        
+
                         if (intent != null){
                             // Get the uri of the video clip
                             data = intent.getData();
                         }
-                        
+
                         if( data == null){
                            File movie = new File(getTempDirectoryPath(), "Capture.avi");
                            data = Uri.fromFile(movie);
                         }
-                        
+
                         // create a file object from the uri
                         if(data == null)
                         {
@@ -385,7 +388,7 @@ public class Capture extends CordovaPlugin {
                                 that.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, results));
                             } else {
                                 // still need to capture more video clips
-                                captureVideo(duration);
+                                captureVideo(duration, quality);
                             }
                         }
                     }
