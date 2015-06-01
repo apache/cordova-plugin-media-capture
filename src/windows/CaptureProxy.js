@@ -179,13 +179,18 @@ function MediaCaptureProxy() {
                             localFolder = Windows.Storage.ApplicationData.current.localFolder;
 
                         localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function(capturedFile) {
-                            capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function() {
-                                capturedVideoFile = capturedFile;
-                                captureStarted = true;
-                            }, function(err) {
+                            try {
+                                capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function () {
+                                    capturedVideoFile = capturedFile;
+                                    captureStarted = true;
+                                }, function (err) {
+                                    destroyCameraPreview();
+                                    errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                                });
+                            } catch(err) {
                                 destroyCameraPreview();
-                                errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
-                            });
+                                errorCallback(CaptureError.CAPTURE_NOT_SUPPORTED, err);
+                            }
                         }, function(err) {
                             destroyCameraPreview();
                             errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
