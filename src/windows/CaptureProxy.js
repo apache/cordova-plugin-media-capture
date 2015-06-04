@@ -40,7 +40,9 @@ function MediaCaptureProxy() {
         captureStarted = false,
         capturedPictureFile,
         capturedVideoFile,
-        capture = null;
+        capture = null,
+        takeCallbackFunction,
+        captureGestures;
 
     var CaptureNS = Windows.Media.Capture;
 
@@ -94,44 +96,6 @@ function MediaCaptureProxy() {
     }
 
     /**
-     * This function is called to take the video capture when the tap event is fired.
-     */
-    function takeVideoCapture() {
-        // This callback called twice: whem video capture started and when it ended
-        // so we need to check capture status
-        if (!captureStarted) {
-            // remove cancel button and rename 'Take' button to 'Stop'
-            toggleElements('cancelCapture');
-            document.getElementById('takePicture').text = 'Stop';
-
-            var encodingProperties = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.auto),
-                generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName,
-                localFolder = Windows.Storage.ApplicationData.current.localFolder;
-
-            localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function(capturedFile) {
-                capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function () {
-                    capturedVideoFile = capturedFile;
-                    captureStarted = true;
-                }, function (err) {
-                    destroyCameraPreview();
-                    errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
-                });
-            }, function(err) {
-                destroyCameraPreview();
-                errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
-            });
-        } else {
-            capture.stopRecordAsync().done(function () {
-                destroyCameraPreview();
-                successCallback(capturedVideoFile);
-            }, function(err) {
-                destroyCameraPreview();
-                errorCallback(CaptureError.CAPTURE_NOT_SUPPORTED, err);
-            });
-        }
-    }
-
-    /**
      * Starts camera preview and binds provided callbacks to controls
      * @param  {function} takeCallback   Callback for Take button
      * @param  {function} errorCallback  Callback for Cancel button + default error callback
@@ -163,11 +127,13 @@ function MediaCaptureProxy() {
                     previewContainer.style.display = 'block';
 
                     // Bind events to controls
-                    //capturePreview.onclick = takeCallback;
-
-                    var videoGesture = new MSGesture();
-                    videoGesture.target = capturePreview;
+                    captureGestures = new MSGesture();
+                    captureGestures.target = capturePreview;
+                    takeCallbackFunction = takeCallback;
                     capturePreview.addEventListener("MSGestureTap",takeCallback,false);
+                    capturePreview.addEventListener('pointerdown',function(evt) {
+                       captureGestures.addPointer(evt.pointerId);
+                    });
 
                     document.getElementById('takePicture').onclick = takeCallback;
                     document.getElementById('cancelCapture').onclick = function () {
@@ -193,7 +159,10 @@ function MediaCaptureProxy() {
     function destroyCameraPreview() {
         capturePreview.pause();
         capturePreview.src = null;
-        capturePreview.removeEventListener("MSGestureTap",takeVideoCapture);
+        capturePreview.removeEventListener("MSGestureTap",takeCallbackFunction);
+        capturePreview.removeEventListener('pointerdown', function(evt) {
+            captureGestures.addPointer(evt.pointerId);
+        });
         previewContainer && document.body.removeChild(previewContainer);
         if (capture) {
             capture.stopRecordAsync();
@@ -211,7 +180,40 @@ function MediaCaptureProxy() {
         captureVideo: function (successCallback, errorCallback) {
             try {
                 createCameraUI();
-                startCameraPreview(takeVideoCapture, errorCallback);
+                startCameraPreview(function() {
+                        // This callback called twice: whem video capture started and when it ended
+                        // so we need to check capture status
+                        if (!captureStarted) {
+                            // remove cancel button and rename 'Take' button to 'Stop'
+                            toggleElements('cancelCapture');
+                            document.getElementById('takePicture').text = 'Stop';
+
+                            var encodingProperties = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.auto),
+                                generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName,
+                                localFolder = Windows.Storage.ApplicationData.current.localFolder;
+
+                            localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function(capturedFile) {
+                                capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function () {
+                                    capturedVideoFile = capturedFile;
+                                    captureStarted = true;
+                                }, function (err) {
+                                    destroyCameraPreview();
+                                    errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                                });
+                            }, function(err) {
+                                destroyCameraPreview();
+                                errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                            });
+                        } else {
+                            capture.stopRecordAsync().done(function () {
+                                destroyCameraPreview();
+                                successCallback(capturedVideoFile);
+                            }, function(err) {
+                                destroyCameraPreview();
+                                errorCallback(CaptureError.CAPTURE_NOT_SUPPORTED, err);
+                            });
+                        }
+                    }, errorCallback);
             } catch (ex) {
                 destroyCameraPreview();
                 errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, ex);
