@@ -48,7 +48,7 @@ function MediaCaptureProxy() {
 
     /**
      * Helper function that toggles visibility of DOM elements with provided ids
-     * @param {String} variable number of elements' ids which visibility needs to be toggled 
+     * @param {String} variable number of elements' ids which visibility needs to be toggled
      */
     function toggleElements() {
         // convert arguments to array
@@ -131,6 +131,9 @@ function MediaCaptureProxy() {
                     captureGestures.target = capturePreview;
                     takeCallbackFunction = takeCallback;
                     capturePreview.addEventListener("MSGestureTap",takeCallback,false);
+                    capturePreview.addEventListener("MSGestureDoubleTap", function () {
+                        //Do Nothing
+                    }, false);
                     capturePreview.addEventListener('pointerdown',function(evt) {
                        captureGestures.addPointer(evt.pointerId);
                     });
@@ -160,6 +163,9 @@ function MediaCaptureProxy() {
         capturePreview.pause();
         capturePreview.src = null;
         capturePreview.removeEventListener("MSGestureTap",takeCallbackFunction);
+        capturePreview.removeEventListener("MSGestureDoubleTap", function () {
+            //Do Nothing
+        });
         capturePreview.removeEventListener('pointerdown', function(evt) {
             captureGestures.addPointer(evt.pointerId);
         });
