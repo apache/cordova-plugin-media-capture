@@ -131,7 +131,7 @@ function MediaCaptureProxy() {
                     captureGestures.target = capturePreview;
                     takeCallbackFunction = takeCallback;
                     capturePreview.addEventListener("MSGestureTap",takeCallback,false);
-                    capturePreview.addEventListener("MSGestureDoubleTap", function () {
+                    capturePreview.addEventListener("MSGestureChange", function () {
                         //Do Nothing
                     }, false);
                     capturePreview.addEventListener('pointerdown',function(evt) {
@@ -163,7 +163,7 @@ function MediaCaptureProxy() {
         capturePreview.pause();
         capturePreview.src = null;
         capturePreview.removeEventListener("MSGestureTap",takeCallbackFunction);
-        capturePreview.removeEventListener("MSGestureDoubleTap", function () {
+        capturePreview.removeEventListener("MSGestureChange", function () {
             //Do Nothing
         });
         capturePreview.removeEventListener('pointerdown', function(evt) {
