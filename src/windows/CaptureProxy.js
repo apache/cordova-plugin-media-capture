@@ -41,9 +41,7 @@ function MediaCaptureProxy() {
         stoppingCapture = false,
         capturedPictureFile,
         capturedVideoFile,
-        capture = null,
-        takeCallbackFunction,
-        captureGestures;
+        capture = null;
 
     var CaptureNS = Windows.Media.Capture;
 
@@ -74,7 +72,7 @@ function MediaCaptureProxy() {
         previewContainer = document.createElement('div');
         previewContainer.style.cssText = "background-position: 50% 50%; background-repeat: no-repeat; background-size: contain; background-color: black; left: 0px; top: 0px; width: 100%; height: 100%; position: fixed; z-index: 9999";
         previewContainer.innerHTML =
-            '<video id="capturePreview" style="width: 100%; height: 100%; touch-action: none; -ms-touch-action: none;"></video>' +
+            '<video id="capturePreview" style="width: 100%; height: 100%"></video>' +
             '<div id="previewButtons" style="width: 100%; bottom: 0px; display: flex; position: absolute; justify-content: space-around; background-color: black;">' +
                 '<button id="takePicture" style="' + buttonStyle + '">Capture</button>' +
                 '<button id="cancelCapture" style="' + buttonStyle + '">Cancel</button>' +
@@ -128,17 +126,7 @@ function MediaCaptureProxy() {
                     previewContainer.style.display = 'block';
 
                     // Bind events to controls
-                    captureGestures = new MSGesture();
-                    captureGestures.target = capturePreview;
-                    takeCallbackFunction = takeCallback;
-                    capturePreview.addEventListener("MSGestureTap",takeCallback,false);
-                    capturePreview.addEventListener("MSGestureChange", function () {
-                        //Do Nothing
-                    }, false);
-                    capturePreview.addEventListener('pointerdown',function(evt) {
-                       captureGestures.addPointer(evt.pointerId);
-                    });
-
+                    capturePreview.onclick = takeCallback;
                     document.getElementById('takePicture').onclick = takeCallback;
                     document.getElementById('cancelCapture').onclick = function () {
                         errorCallback(CaptureError.CAPTURE_NO_MEDIA_FILES);
@@ -163,20 +151,12 @@ function MediaCaptureProxy() {
     function destroyCameraPreview() {
         capturePreview.pause();
         capturePreview.src = null;
-        capturePreview.removeEventListener("MSGestureTap",takeCallbackFunction);
-        capturePreview.removeEventListener("MSGestureChange", function () {
-            //Do Nothing
-        });
-        capturePreview.removeEventListener('pointerdown', function(evt) {
-            captureGestures.addPointer(evt.pointerId);
-        });
         previewContainer && document.body.removeChild(previewContainer);
         if (capture) {
             capture.stopRecordAsync();
             capture = null;
         }
     }
-
 
     return {
         /**
