@@ -198,29 +198,34 @@ function MediaCaptureProxy() {
                                 generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName,
                                 localFolder = Windows.Storage.ApplicationData.current.localFolder;
 
+                            captureStarted = true;
                             localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function(capturedFile) {
                                 capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function () {
                                     capturedVideoFile = capturedFile;
-                                    captureStarted = true;
                                 }, function (err) {
+                                    captureStarted = false;
                                     destroyCameraPreview();
                                     errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
                                 });
                             }, function(err) {
+                                captureStarted = false;
                                 destroyCameraPreview();
                                 errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
                             });
                         } else {
                             capture.stopRecordAsync().done(function () {
+                                captureStarted = false;
                                 destroyCameraPreview();
                                 successCallback(capturedVideoFile);
                             }, function(err) {
+                                captureStarted = false;
                                 destroyCameraPreview();
                                 errorCallback(CaptureError.CAPTURE_NOT_SUPPORTED, err);
                             });
                         }
                     }, errorCallback);
             } catch (ex) {
+                captureStarted = false;
                 destroyCameraPreview();
                 errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, ex);
             }
