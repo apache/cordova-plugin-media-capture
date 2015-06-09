@@ -38,6 +38,7 @@ function MediaCaptureProxy() {
         captureCancelButton = null,
         captureSettings = null,
         captureStarted = false,
+        stoppingCapture = false,
         capturedPictureFile,
         capturedVideoFile,
         capture = null,
@@ -204,21 +205,26 @@ function MediaCaptureProxy() {
                                     capturedVideoFile = capturedFile;
                                 }, function (err) {
                                     captureStarted = false;
+                                    stoppingCapture = false;
                                     destroyCameraPreview();
                                     errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
                                 });
                             }, function(err) {
                                 captureStarted = false;
+                                stoppingCapture = false;
                                 destroyCameraPreview();
                                 errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
                             });
-                        } else {
+                        } else if (!stoppingCapture) {
+                            stoppingCapture = true;
                             capture.stopRecordAsync().done(function () {
                                 captureStarted = false;
+                                stoppingCapture = false;
                                 destroyCameraPreview();
                                 successCallback(capturedVideoFile);
                             }, function(err) {
                                 captureStarted = false;
+                                stoppingCapture = false;
                                 destroyCameraPreview();
                                 errorCallback(CaptureError.CAPTURE_NOT_SUPPORTED, err);
                             });
@@ -226,6 +232,7 @@ function MediaCaptureProxy() {
                     }, errorCallback);
             } catch (ex) {
                 captureStarted = false;
+                stoppingCapture = false;
                 destroyCameraPreview();
                 errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, ex);
             }
