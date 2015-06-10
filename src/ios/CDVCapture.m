@@ -285,11 +285,57 @@
         UISaveVideoAtPathToSavedPhotosAlbum(moviePath, nil, nil, nil);
         NSLog(@"finished saving movie");
     }*/
-    // create MediaFile object
-    NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
-    NSArray* fileArray = [NSArray arrayWithObject:fileDict];
 
-    return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
+    AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:moviePath] options:nil];
+    NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
+
+    if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
+    {
+        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString* theFileName = [[moviePath lastPathComponent] stringByDeletingPathExtension];
+        theFileName = [theFileName stringByAppendingString:@".mp4"];
+        NSString *videoPath = [NSString stringWithFormat:@"%@/%@", [paths objectAtIndex:0], theFileName];
+        exportSession.outputURL = [NSURL fileURLWithPath:videoPath];
+        NSLog(@"videoPath of your mp4 file = %@",videoPath);  // PATH OF YOUR .mp4 FILE
+        exportSession.outputFileType = AVFileTypeMPEG4;
+
+
+        //  UNCOMMENT ABOVE LINES FOR CROP VIDEO
+        [exportSession exportAsynchronouslyWithCompletionHandler:^{
+
+            switch ([exportSession status]) {
+
+                case AVAssetExportSessionStatusFailed:
+                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+
+                    break;
+
+                case AVAssetExportSessionStatusCancelled:
+
+                    NSLog(@"Export canceled");
+
+                    break;
+
+                default:
+
+                    break;
+
+            }
+            UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, nil, nil);
+        }];
+        // create MediaFile object
+            NSDictionary* fileDict = [self getMediaDictionaryFromPath:videoPath ofType:nil];
+            NSArray* fileArray = [NSArray arrayWithObject:fileDict];
+            return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
+    } else {
+        // create MediaFile object
+        NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
+        NSArray* fileArray = [NSArray arrayWithObject:fileDict];
+        return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
+    }
+
+
 }
 
 - (void)getMediaModes:(CDVInvokedUrlCommand*)command
