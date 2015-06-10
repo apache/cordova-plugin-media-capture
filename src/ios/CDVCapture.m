@@ -278,24 +278,25 @@
 {
     // save the movie to photo album (only avail as of iOS 3.1)
 
-    /* don't need, it should automatically get saved
-     NSLog(@"can save %@: %d ?", moviePath, UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath));
-    if (&UIVideoAtPathIsCompatibleWithSavedPhotosAlbum != NULL && UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath) == YES) {
-        NSLog(@"try to save movie");
-        UISaveVideoAtPathToSavedPhotosAlbum(moviePath, nil, nil, nil);
-        NSLog(@"finished saving movie");
-    }*/
-
     AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:moviePath] options:nil];
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
 
     if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
     {
         AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString* path = NSTemporaryDirectory();
         NSString* theFileName = [[moviePath lastPathComponent] stringByDeletingPathExtension];
         theFileName = [theFileName stringByAppendingString:@".mp4"];
-        NSString *videoPath = [NSString stringWithFormat:@"%@/%@", [paths objectAtIndex:0], theFileName];
+        NSString *videoPath = [ path stringByAppendingString:theFileName ];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:videoPath])
+        {
+            NSError *removeError = nil;
+            [[NSFileManager defaultManager] removeItemAtPath:videoPath error:&removeError];
+            if (removeError)
+            {
+                NSLog(@"Error removing existing file = %@", removeError);
+            }
+        }
         exportSession.outputURL = [NSURL fileURLWithPath:videoPath];
         NSLog(@"videoPath of your mp4 file = %@",videoPath);  // PATH OF YOUR .mp4 FILE
         exportSession.outputFileType = AVFileTypeMPEG4;
@@ -329,6 +330,14 @@
             NSArray* fileArray = [NSArray arrayWithObject:fileDict];
             return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
     } else {
+
+        /* don't need, it should automatically get saved
+        NSLog(@"can save %@: %d ?", moviePath, UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath));
+        if (&UIVideoAtPathIsCompatibleWithSavedPhotosAlbum != NULL && UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath) == YES) {
+            NSLog(@"try to save movie");
+            UISaveVideoAtPathToSavedPhotosAlbum(moviePath, nil, nil, nil);
+            NSLog(@"finished saving movie");
+        }*/
         // create MediaFile object
         NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
         NSArray* fileArray = [NSArray arrayWithObject:fileDict];
