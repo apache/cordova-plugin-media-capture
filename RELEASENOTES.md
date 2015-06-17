@@ -126,3 +126,7 @@
 * CB-8571 Integrate TravisCI
 * CB-8438 cordova-plugin-media-capture documentation translation: cordova-plugin-media-capture
 * CB-8538 Added package.json file
+
+### 1.0.1 (Jun 17, 2015)
+* CB-9128 cordova-plugin-media-capture documentation translation: cordova-plugin-media-capture
+* fix npm md issue
