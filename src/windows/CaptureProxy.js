@@ -138,7 +138,6 @@ function MediaCaptureProxy() {
 
                     document.getElementById('takePicture').onclick = takeCallback;
                     document.getElementById('cancelCapture').onclick = function () {
-                        destroyCameraPreview();
                         errorCallback(CaptureError.CAPTURE_NO_MEDIA_FILES);
                     };
                     document.getElementById('selectPicture').onclick = selectCallback;
@@ -223,7 +222,12 @@ function MediaCaptureProxy() {
                                 errorCallback(CaptureError.CAPTURE_NOT_SUPPORTED, err);
                             });
                         }
-                    }, errorCallback);
+                    },
+                    // error + cancel callback
+                    function (err) {
+                        destroyCameraPreview();
+                        errorCallback(err);
+                    });
             } catch (ex) {
                 captureStarted = false;
                 stoppingCapture = false;
