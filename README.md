@@ -19,8 +19,6 @@
 
 # cordova-plugin-media-capture
 
-[![Build Status](https://travis-ci.org/apache/cordova-plugin-media-capture.svg)](https://travis-ci.org/apache/cordova-plugin-media-capture)
-
 This plugin provides access to the device's audio, image, and video capture capabilities.
 
 __WARNING__: Collection and use of images, video, or
