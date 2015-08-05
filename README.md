@@ -357,11 +357,22 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 ### BlackBerry 10 Quirks
 
-- The __duration__ parameter is not supported, so the length of recordings can't be limited programmatically.
+- The __duration__ property is ignored, so the length of recordings can't be limited programmatically.
 
 ### iOS Quirks
 
-- The __limit__ parameter is not supported.  Only one video is recorded per invocation.
+- The __limit__ property is ignored.  Only one video is recorded per invocation.
+
+### Android Quirks
+
+- Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages. 
+  See http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY for more details.
+
+### Example ( Android w/ quality )
+
+    // limit capture operation to 1 video clip of low quality
+    var options = { limit: 1, quality: 0 };
+    navigator.device.capture.captureVideo(captureSuccess, captureError, options);
 
 
 ## CaptureCB
