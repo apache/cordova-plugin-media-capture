@@ -27,6 +27,8 @@ var CaptureVideoOptions = function(){
     this.limit = 1;
     // Maximum duration of a single video clip in seconds.
     this.duration = 0;
+    // Video quality parameter, 0 means low quality, suitable for MMS messages, and value 1 means high quality.
+    this.quality = 1;
 };
 
 module.exports = CaptureVideoOptions;
