@@ -181,7 +181,8 @@ NSNumber *globalSaveToPhotoAlbum;
     CDVPluginResult* result = nil;
     
     // save the image to photo album
-    if (!globalSaveToPhotoAlbum || (int)globalSaveToPhotoAlbum == 1) {
+    
+    if([globalSaveToPhotoAlbum isEqual:@1]) {
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
     }
     
