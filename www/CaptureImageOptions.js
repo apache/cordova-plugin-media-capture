@@ -27,6 +27,8 @@ var CaptureImageOptions = function(){
     this.limit = 1;
     // Image quality (0-100)
     this.quality = 50;
+    // Save photos to album/camera roll
+    this.saveToPhotoAlbum = true;
 };
 
 module.exports = CaptureImageOptions;
