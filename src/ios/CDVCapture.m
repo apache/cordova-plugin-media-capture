@@ -127,11 +127,11 @@
     if ([options isKindOfClass:[NSNull class]]) {
         options = [NSDictionary dictionary];
     }
-
+    
     // options could contain limit and mode neither of which are supported at this time
     // taking more than one picture (limit) is only supported if provide own controls via cameraOverlayView property
     // can support mode in OS
-
+    
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         NSLog(@"Capture.imageCapture: camera not available.");
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_NOT_SUPPORTED];
@@ -178,6 +178,7 @@
     if (mimeType && [mimeType isEqualToString:@"image/png"]) {
         data = UIImagePNGRepresentation(image);
     } else {
+        NSLog(@"ImageQuality: %@", [quality]);
         data = UIImageJPEGRepresentation(image, 0.5);
     }
 
@@ -222,6 +223,7 @@
     // options could contain limit, duration and mode
     // taking more than one video (limit) is only supported if provide own controls via cameraOverlayView property
     NSNumber* duration = [options objectForKey:@"duration"];
+    NSNumber* quality = [options objectForKey:@"quality"];
     NSString* mediaType = nil;
 
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
@@ -250,6 +252,18 @@
         pickerController.delegate = self;
         pickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
         pickerController.allowsEditing = NO;
+        
+        // Set quality of captured video
+        if (quality) {
+            if ([quality intValue] == 1) {
+                pickerController.videoQuality = UIImagePickerControllerQualityTypeLow;
+            } else if ([quality intValue] == 1) {
+                pickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+            } else {
+                pickerController.videoQuality = UIImagePickerControllerQualityTypeMedium;
+            }
+        }
+
         // iOS 3.0
         pickerController.mediaTypes = [NSArray arrayWithObjects:mediaType, nil];
 
