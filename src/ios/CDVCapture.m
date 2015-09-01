@@ -544,12 +544,18 @@
 
 @implementation CDVAudioNavigationController
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
-    - (NSUInteger)supportedInterfaceOrientations
-    {
-        // delegate to CVDAudioRecorderViewController
-        return [self.topViewController supportedInterfaceOrientations];
-    }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    // delegate to CVDAudioRecorderViewController
+    return [self.topViewController supportedInterfaceOrientations];
+}
+#else
+- (NSUInteger)supportedInterfaceOrientations
+{
+    // delegate to CVDAudioRecorderViewController
+    return [self.topViewController supportedInterfaceOrientations];
+}
 #endif
 
 @end
@@ -709,7 +715,8 @@
     NSURL* fileURL = [NSURL fileURLWithPath:filePath isDirectory:NO];
 
     // create AVAudioPlayer
-    self.avRecorder = [[AVAudioRecorder alloc] initWithURL:fileURL settings:nil error:&err];
+    NSDictionary *recordSetting = [[NSMutableDictionary alloc] init];
+    self.avRecorder = [[AVAudioRecorder alloc] initWithURL:fileURL settings:recordSetting error:&err];
     if (err) {
         NSLog(@"Failed to initialize AVAudioRecorder: %@\n", [err localizedDescription]);
         self.avRecorder = nil;
@@ -724,15 +731,24 @@
     }
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
-    - (NSUInteger)supportedInterfaceOrientations
-    {
-        NSUInteger orientation = UIInterfaceOrientationMaskPortrait; // must support portrait
-        NSUInteger supported = [captureCommand.viewController supportedInterfaceOrientations];
-
-        orientation = orientation | (supported & UIInterfaceOrientationMaskPortraitUpsideDown);
-        return orientation;
-    }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    UIInterfaceOrientationMask orientation = UIInterfaceOrientationMaskPortrait;
+    UIInterfaceOrientationMask supported = [captureCommand.viewController supportedInterfaceOrientations];
+    
+    orientation = orientation | (supported & UIInterfaceOrientationMaskPortraitUpsideDown);
+    return orientation;
+}
+#else
+- (NSUInteger)supportedInterfaceOrientations
+{
+    NSUInteger orientation = UIInterfaceOrientationMaskPortrait; // must support portrait
+    NSUInteger supported = [captureCommand.viewController supportedInterfaceOrientations];
+    
+    orientation = orientation | (supported & UIInterfaceOrientationMaskPortraitUpsideDown);
+    return orientation;
+}
 #endif
 
 - (void)viewDidUnload
@@ -816,8 +832,8 @@
     }
     if (self.duration && self.isTimed) {
         // VoiceOver announcement so user knows timed recording has finished
-        BOOL isUIAccessibilityAnnouncementNotification = (&UIAccessibilityAnnouncementNotification != NULL);
-        if (isUIAccessibilityAnnouncementNotification) {
+        //BOOL isUIAccessibilityAnnouncementNotification = (&UIAccessibilityAnnouncementNotification != NULL);
+        if (UIAccessibilityAnnouncementNotification) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500ull * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
                     UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, PluginLocalizedString(captureCommand, @"timed recording complete", nil));
                 });
