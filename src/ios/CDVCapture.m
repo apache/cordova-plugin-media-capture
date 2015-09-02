@@ -516,7 +516,7 @@
         result = [self processImage:image type:cameraPicker.mimeType forCallbackId:callbackId];
     } else if ([mediaType isEqualToString:(NSString*)kUTTypeMovie]) {
         // process video
-        NSString* moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
+        NSString* moviePath = [(NSURL *)[info objectForKey:UIImagePickerControllerMediaURL] path];
         if (moviePath) {
             result = [self processVideo:moviePath forCallbackId:callbackId];
         }
