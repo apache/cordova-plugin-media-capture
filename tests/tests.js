@@ -160,7 +160,12 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     function getImage() {
         clearStatus();
         var options = { limit: 1 };
-        navigator.device.capture.captureImage(captureImageWin, captureImageFail, options);
+        navigator.device.capture.captureImage(function (mediaFiles) {
+            captureImageWin(mediaFiles);
+            resolveMediaFile(mediaFiles[0], function () {
+                resolveMediaFileURL(mediaFiles[0]);
+            });
+        }, captureImageFail, options);
     }
 
     function captureVideoWin(mediaFiles) {
