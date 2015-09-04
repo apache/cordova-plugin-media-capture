@@ -143,9 +143,9 @@ NSNumber *globalHeight;
     NSNumber* saveToPhotoAlbum = [options objectForKey:@"saveToPhotoAlbum"];
     globalSaveToPhotoAlbum = saveToPhotoAlbum;
     
-    globalWidth = [options objectForKey:@"width"];
-    globalHeight = [options objectForKey:@"height"];
-    
+    globalWidth = [options objectForKey:@"targetWidth"];
+    globalHeight = [options objectForKey:@"targetHeight"];
+
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         NSLog(@"Capture.imageCapture: camera not available.");
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_NOT_SUPPORTED];
@@ -191,10 +191,7 @@ NSNumber *globalHeight;
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
     }
     
-    NSLog(@"Width: %f", [globalWidth floatValue]);
-    NSLog(@"Height: %f", [globalHeight floatValue]);
-    
-    if(![globalWidth isEqual:@0] && ![globalHeight isEqual:@0]) {
+    if(!([globalWidth isEqual:@0] || [globalHeight isEqual:@0])) {
         struct CGSize newScale;
         newScale.width = [globalWidth floatValue];
         newScale.height = [globalHeight floatValue];

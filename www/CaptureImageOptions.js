@@ -30,9 +30,9 @@ var CaptureImageOptions = function(){
     // Save photos to album/camera roll
     this.saveToPhotoAlbum = true;
     // Width of the saved image, this must be used with height to take effect
-    this.width = 0;
+    this.targetWidth = 0;
     // Height of the saved image, this must be used with width to take effect
-    this.height = 0;
+    this.targetHeight = 0;
 };
 
 module.exports = CaptureImageOptions;
