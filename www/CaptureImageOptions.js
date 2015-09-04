@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * Encapsulates all image capture operation configuration options.
@@ -29,6 +29,10 @@ var CaptureImageOptions = function(){
     this.quality = 50;
     // Save photos to album/camera roll
     this.saveToPhotoAlbum = true;
+    // Width of the saved image, this must be used with height to take effect
+    this.width = 0;
+    // Height of the saved image, this must be used with width to take effect
+    this.height = 0;
 };
 
 module.exports = CaptureImageOptions;

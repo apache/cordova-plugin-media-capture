@@ -61,7 +61,7 @@ typedef NSUInteger CDVCaptureError;
 - (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary*)info;
 - (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingImage:(UIImage*)image editingInfo:(NSDictionary*)editingInfo;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController*)picker;
-
+- (UIImage*)imageByScalingNotCroppingForSize:(UIImage*)sourceImage targetSize:(CGSize)targetSize;
 @end
 
 @interface CDVAudioNavigationController : UINavigationController
