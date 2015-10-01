@@ -58,17 +58,17 @@
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
-    
+
 - (UIViewController*)childViewControllerForStatusBarHidden {
     return nil;
 }
-    
+
 - (void)viewWillAppear:(BOOL)animated {
     SEL sel = NSSelectorFromString(@"setNeedsStatusBarAppearanceUpdate");
     if ([self respondsToSelector:sel]) {
         [self performSelector:sel withObject:nil afterDelay:0];
     }
-    
+
     [super viewWillAppear:animated];
 }
 
@@ -223,6 +223,7 @@
     // taking more than one video (limit) is only supported if provide own controls via cameraOverlayView property
     NSNumber* duration = [options objectForKey:@"duration"];
     NSString* mediaType = nil;
+    NSNumber* quality = [options objectForKey:@"quality"];
 
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         // there is a camera, it is available, make sure it can do movies
@@ -263,7 +264,13 @@
         // iOS 4.0
         if ([pickerController respondsToSelector:@selector(cameraCaptureMode)]) {
             pickerController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
-            // pickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+
+            if ([quality intValue] == 0) {
+                pickerController.videoQuality = UIImagePickerControllerQualityTypeLow;
+            } else {
+                pickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+            }
+
             // pickerController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
             // pickerController.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
         }
@@ -337,7 +344,7 @@
         movieArray ? (NSObject*)                          movieArray:[NSNull null], @"video",
         audioArray ? (NSObject*)                          audioArray:[NSNull null], @"audio",
         nil];
-    
+
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject:modes options:0 error:nil];
     NSString* jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 
@@ -608,7 +615,7 @@
 	if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
-    
+
     // create view and display
     CGRect viewRect = [[UIScreen mainScreen] applicationFrame];
     UIView* tmp = [[UIView alloc] initWithFrame:viewRect];
@@ -736,7 +743,7 @@
 {
     UIInterfaceOrientationMask orientation = UIInterfaceOrientationMaskPortrait;
     UIInterfaceOrientationMask supported = [captureCommand.viewController supportedInterfaceOrientations];
-    
+
     orientation = orientation | (supported & UIInterfaceOrientationMaskPortraitUpsideDown);
     return orientation;
 }
@@ -745,7 +752,7 @@
 {
     NSUInteger orientation = UIInterfaceOrientationMaskPortrait; // must support portrait
     NSUInteger supported = [captureCommand.viewController supportedInterfaceOrientations];
-    
+
     orientation = orientation | (supported & UIInterfaceOrientationMaskPortraitUpsideDown);
     return orientation;
 }
@@ -791,7 +798,7 @@
             }
             UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         };
-        
+
         SEL rrpSel = NSSelectorFromString(@"requestRecordPermission:");
         if ([self.avSession respondsToSelector:rrpSel])
         {

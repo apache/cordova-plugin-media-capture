@@ -232,7 +232,7 @@ via Zune does not work, and the error callback executes.
 Works in Chrome, Firefox and Opera only (since IE and Safari doesn't supports
 navigator.getUserMedia API)
 
-Displaying images using captured file's URL available in Chrome/Opera only. 
+Displaying images using captured file's URL available in Chrome/Opera only.
 Firefox stores captured images in IndexedDB storage (see File plugin documentation),
 and due to this the only way to show captured image is to read it and show using its DataURL.
 
@@ -363,9 +363,12 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - The __limit__ property is ignored.  Only one video is recorded per invocation.
 
+- iOS supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
+  See [Apple documentation](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIImagePickerController_Class/#//apple_ref/c/tdef/UIImagePickerControllerQualityType) for more details.
+
 ### Android Quirks
 
-- Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages. 
+- Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
   See http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY for more details.
 
 ### Example ( Android w/ quality )
