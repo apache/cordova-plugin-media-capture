@@ -20,6 +20,13 @@
 -->
 # Release Notes
 
+### 1.1.0 (Nov 18, 2015)
+* CB-10035 Updated `RELEASENOTES` to be newest to oldest
+* Fixing contribute link.
+* CB-9249 Fix **iOS** warnings in Media Capture plugin
+* Document the quality property in **Android** quirks
+* Add `CaptureVideoOption` for quality
+
 ### 1.0.1 (Jun 17, 2015)
 * CB-9128 cordova-plugin-media-capture documentation translation: cordova-plugin-media-capture
 * fix npm md issue
