@@ -770,24 +770,26 @@
         self.recordButton.accessibilityTraits &= ~[self accessibilityTraits];
         [self.recordingView setHidden:NO];
         __block NSError* error = nil;
+
+        __weak CDVAudioRecorderViewController* weakSelf = self;
         
         void (^startRecording)(void) = ^{
-            [self.avSession setCategory:AVAudioSessionCategoryRecord error:&error];
-            [self.avSession setActive:YES error:&error];
+            [weakSelf.avSession setCategory:AVAudioSessionCategoryRecord error:&error];
+            [weakSelf.avSession setActive:YES error:&error];
             if (error) {
                 // can't continue without active audio session
-                self.errorCode = CAPTURE_INTERNAL_ERR;
-                [self dismissAudioView:nil];
+                weakSelf.errorCode = CAPTURE_INTERNAL_ERR;
+                [weakSelf dismissAudioView:nil];
             } else {
-                if (self.duration) {
-                    self.isTimed = true;
-                    [self.avRecorder recordForDuration:[duration doubleValue]];
+                if (weakSelf.duration) {
+                    weakSelf.isTimed = true;
+                    [weakSelf.avRecorder recordForDuration:[duration doubleValue]];
                 } else {
-                    [self.avRecorder record];
+                    [weakSelf.avRecorder record];
                 }
-                [self.timerLabel setText:@"0.00"];
-                self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-                self.doneButton.enabled = NO;
+                [weakSelf.timerLabel setText:@"0.00"];
+                weakSelf.timer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:weakSelf selector:@selector(updateTime) userInfo:nil repeats:YES];
+                weakSelf.doneButton.enabled = NO;
             }
             UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
         };
@@ -802,8 +804,8 @@
                     startRecording();
                 } else {
                     NSLog(@"Error creating audio session, microphone permission denied.");
-                    self.errorCode = CAPTURE_INTERNAL_ERR;
-                    [self dismissAudioView:nil];
+                    weakSelf.errorCode = CAPTURE_INTERNAL_ERR;
+                    [weakSelf dismissAudioView:nil];
                 }
             }];
 #pragma clang diagnostic pop
