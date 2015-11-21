@@ -38,15 +38,18 @@ function MediaCaptureProxy() {
         captureCancelButton = null,
         captureSettings = null,
         captureStarted = false,
+        stoppingCapture = false,
         capturedPictureFile,
         capturedVideoFile,
-        capture = null;
+        capture = null,
+        takeCallbackFunction,
+        captureGestures;
 
     var CaptureNS = Windows.Media.Capture;
 
     /**
      * Helper function that toggles visibility of DOM elements with provided ids
-     * @param {String} variable number of elements' ids which visibility needs to be toggled 
+     * @param {String} variable number of elements' ids which visibility needs to be toggled
      */
     function toggleElements() {
         // convert arguments to array
@@ -71,7 +74,7 @@ function MediaCaptureProxy() {
         previewContainer = document.createElement('div');
         previewContainer.style.cssText = "background-position: 50% 50%; background-repeat: no-repeat; background-size: contain; background-color: black; left: 0px; top: 0px; width: 100%; height: 100%; position: fixed; z-index: 9999";
         previewContainer.innerHTML =
-            '<video id="capturePreview" style="width: 100%; height: 100%"></video>' +
+            '<video id="capturePreview" style="width: 100%; height: 100%; touch-action: none; -ms-touch-action: none;"></video>' +
             '<div id="previewButtons" style="width: 100%; bottom: 0px; display: flex; position: absolute; justify-content: space-around; background-color: black;">' +
                 '<button id="takePicture" style="' + buttonStyle + '">Capture</button>' +
                 '<button id="cancelCapture" style="' + buttonStyle + '">Cancel</button>' +
@@ -125,7 +128,14 @@ function MediaCaptureProxy() {
                     previewContainer.style.display = 'block';
 
                     // Bind events to controls
-                    capturePreview.onclick = takeCallback;
+                    captureGestures = new MSGesture();
+                    captureGestures.target = capturePreview;
+                    takeCallbackFunction = takeCallback;
+                    capturePreview.addEventListener("MSGestureTap",takeCallback,false);
+                    capturePreview.addEventListener('pointerdown',function(evt) {
+                       captureGestures.addPointer(evt.pointerId);
+                    });
+
                     document.getElementById('takePicture').onclick = takeCallback;
                     document.getElementById('cancelCapture').onclick = function () {
                         errorCallback(CaptureError.CAPTURE_NO_MEDIA_FILES);
@@ -150,6 +160,10 @@ function MediaCaptureProxy() {
     function destroyCameraPreview() {
         capturePreview.pause();
         capturePreview.src = null;
+        capturePreview.removeEventListener("MSGestureTap",takeCallbackFunction);
+        capturePreview.removeEventListener('pointerdown', function(evt) {
+            captureGestures.addPointer(evt.pointerId);
+        });
         previewContainer && document.body.removeChild(previewContainer);
         if (capture) {
             capture.stopRecordAsync();
@@ -166,38 +180,57 @@ function MediaCaptureProxy() {
         captureVideo: function (successCallback, errorCallback) {
             try {
                 createCameraUI();
-                startCameraPreview(function () {
-                    // This callback called twice: whem video capture started and when it ended
-                    // so we need to check capture status
-                    if (!captureStarted) {
-                        // remove cancel button and rename 'Take' button to 'Stop'
-                        toggleElements('cancelCapture');
-                        document.getElementById('takePicture').text = 'Stop';
+                startCameraPreview(function() {
+                        // This callback called twice: whem video capture started and when it ended
+                        // so we need to check capture status
+                        if (!captureStarted) {
+                            // remove cancel button and rename 'Take' button to 'Stop'
+                            toggleElements('cancelCapture');
+                            document.getElementById('takePicture').text = 'Stop';
 
-                        var encodingProperties = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.auto),
-                            generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName,
-                            localFolder = Windows.Storage.ApplicationData.current.localFolder;
+                            var encodingProperties = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.auto),
+                                generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName,
+                                localFolder = Windows.Storage.ApplicationData.current.localFolder;
 
-                        localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function(capturedFile) {
-                            capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function() {
-                                capturedVideoFile = capturedFile;
-                                captureStarted = true;
+                            captureStarted = true;
+                            localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function(capturedFile) {
+                                capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function () {
+                                    capturedVideoFile = capturedFile;
+                                }, function (err) {
+                                    captureStarted = false;
+                                    stoppingCapture = false;
+                                    destroyCameraPreview();
+                                    errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
+                                });
                             }, function(err) {
+                                captureStarted = false;
+                                stoppingCapture = false;
                                 destroyCameraPreview();
                                 errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
                             });
-                        }, function(err) {
-                            destroyCameraPreview();
-                            errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, err);
-                        });
-                    } else {
-                        capture.stopRecordAsync().done(function () {
-                            destroyCameraPreview();
-                            successCallback(capturedVideoFile);
-                        });
-                    }
-                }, errorCallback);
+                        } else if (!stoppingCapture) {
+                            stoppingCapture = true;
+                            capture.stopRecordAsync().done(function () {
+                                captureStarted = false;
+                                stoppingCapture = false;
+                                destroyCameraPreview();
+                                successCallback(capturedVideoFile);
+                            }, function(err) {
+                                captureStarted = false;
+                                stoppingCapture = false;
+                                destroyCameraPreview();
+                                errorCallback(CaptureError.CAPTURE_NOT_SUPPORTED, err);
+                            });
+                        }
+                    },
+                    // error + cancel callback
+                    function (err) {
+                        destroyCameraPreview();
+                        errorCallback(err);
+                    });
             } catch (ex) {
+                captureStarted = false;
+                stoppingCapture = false;
                 destroyCameraPreview();
                 errorCallback(CaptureError.CAPTURE_INTERNAL_ERR, ex);
             }
@@ -375,17 +408,21 @@ module.exports = {
             cameraCaptureUI.photoSettings.maxResolution = Windows.Media.Capture.CameraCaptureUIMaxPhotoResolution.highestAvailable;
             cameraCaptureUI.photoSettings.format = Windows.Media.Capture.CameraCaptureUIPhotoFormat.jpeg;
             cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.photo).done(function (file) {
-                file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureImage.jpg", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
-                    file.getBasicPropertiesAsync().then(function (basicProperties) {
-                        var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
-                        result.fullPath = file.path;
-                        successCallback([result]);
+                if (file) {
+                    file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureImage.jpg", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
+                        file.getBasicPropertiesAsync().then(function (basicProperties) {
+                            var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
+                            result.fullPath = file.path;
+                            successCallback([result]);
+                        }, function () {
+                            errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                        });
                     }, function () {
                         errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                     });
-                }, function () {
+                } else {
                     errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
-                });
+                }
             }, function () {
                 errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
             });
@@ -433,17 +470,21 @@ module.exports = {
             cameraCaptureUI.videoSettings.format = Windows.Media.Capture.CameraCaptureUIVideoFormat.mp4;
             cameraCaptureUI.videoSettings.maxDurationInSeconds = videoOptions.duration;
             cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.video).then(function(file) {
-                file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureVideo.mp4", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
-                    file.getBasicPropertiesAsync().then(function(basicProperties) {
-                        var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
-                        result.fullPath = file.path;
-                        successCallback([result]);
-                    }, function() {
+                if (file) {
+                    file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureVideo.mp4", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
+                        file.getBasicPropertiesAsync().then(function (basicProperties) {
+                            var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
+                            result.fullPath = file.path;
+                            successCallback([result]);
+                        }, function () {
+                            errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                        });
+                    }, function () {
                         errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                     });
-                }, function() {
+                } else {
                     errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
-                });
+                }
             }, function() { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
         }
     },
