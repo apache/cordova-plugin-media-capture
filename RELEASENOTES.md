@@ -20,6 +20,10 @@
 -->
 # Release Notes
 
+### 1.2.0 (Jan 15, 2016)
+* CB-10100 updated file dependency to not grab new majors
+* CB-8863 Fix block usage of self
+
 ### 1.1.0 (Nov 18, 2015)
 * [CB-10035](https://issues.apache.org/jira/browse/CB-10035) Updated `RELEASENOTES` to be newest to oldest
 * Fixing contribute link.

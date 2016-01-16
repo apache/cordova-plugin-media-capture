@@ -22,7 +22,7 @@
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:rim="http://www.blackberry.com/ns/widgets"
            id="cordova-plugin-media-capture"
-      version="1.1.1-dev">
+      version="1.2.0">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -31,7 +31,7 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
     <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-media-capture.git</repo>
     <issue>https://issues.apache.org/jira/browse/CB/component/12320646</issue>
     
-    <dependency id="cordova-plugin-file" version="^3.0.0" />
+    <dependency id="cordova-plugin-file" version="^4.0.0" />
 
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
