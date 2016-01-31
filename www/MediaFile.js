@@ -48,7 +48,7 @@ MediaFile.prototype.getFormatData = function(successCallback, errorCallback) {
     if (typeof this.fullPath === "undefined" || this.fullPath === null) {
         errorCallback(new CaptureError(CaptureError.CAPTURE_INVALID_ARGUMENT));
     } else {
-        exec(successCallback, errorCallback, "Capture", "getFormatData", [this.localURL, this.type]);
+        exec(successCallback, errorCallback, "Capture", "getFormatData", [this.fullPath, this.type]);
     }
 };
 
