@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import android.os.Build;
 
@@ -56,6 +57,7 @@ public class Capture extends CordovaPlugin {
     private static final String VIDEO_3GPP = "video/3gpp";
     private static final String VIDEO_MP4 = "video/mp4";
     private static final String AUDIO_3GPP = "audio/3gpp";
+    private static final String[] AUDIO_TYPES = new String[] {"audio/3gpp", "audio/aac", "audio/amr", "audio/wav"};
     private static final String IMAGE_JPEG = "image/jpeg";
 
     private static final int CAPTURE_AUDIO = 0;     // Constant for capture audio
@@ -147,7 +149,7 @@ public class Capture extends CordovaPlugin {
         if (mimeType.equals(IMAGE_JPEG) || filePath.endsWith(".jpg")) {
             obj = getImageData(fileUrl, obj);
         }
-        else if (mimeType.endsWith(AUDIO_3GPP)) {
+        else if (Arrays.asList(AUDIO_TYPES).contains(mimeType)) {
             obj = getAudioVideoData(filePath, obj, false);
         }
         else if (mimeType.equals(VIDEO_3GPP) || mimeType.equals(VIDEO_MP4)) {
@@ -454,7 +456,7 @@ public class Capture extends CordovaPlugin {
         try {
             // File properties
             obj.put("name", fp.getName());
-            obj.put("fullPath", fp.toURI().toString());
+            obj.put("fullPath", Uri.fromFile(fp));
             if (url != null) {
                 obj.put("localURL", url.toString());
             }
