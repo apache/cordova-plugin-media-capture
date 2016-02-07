@@ -47,6 +47,7 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -159,7 +160,7 @@ public class Capture extends CordovaPlugin {
     /**
      * Get the Image specific attributes
      *
-     * @param filePath path to the file
+     * @param fileUrl path to the file
      * @param obj represents the Media File Data
      * @return a JSONObject that represents the Media File Data
      * @throws JSONException
@@ -256,7 +257,7 @@ public class Capture extends CordovaPlugin {
             intent.putExtra("android.intent.extra.durationLimit", duration);
             intent.putExtra("android.intent.extra.videoQuality", quality);
         }
-        this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_VIDEO);
+        this.cordova.startActivityForResult(this, intent, CAPTURE_VIDEO);
     }
 
     /**
@@ -418,6 +419,28 @@ public class Capture extends CordovaPlugin {
                 this.fail(createErrorObject(CAPTURE_NO_MEDIA_FILES, "Did not complete!"));
             }
         }
+    }
+
+    public Bundle onSaveInstanceState() {
+        Bundle state = new Bundle();
+
+        state.putLong("limit", this.limit);
+        state.putInt("duration", this.duration);
+        state.putInt("quality", this.quality);
+        state.putInt("numPics", this.numPics);
+
+        return state;
+    }
+
+    public void onRestoreStateForActivityResult(Bundle state, CallbackContext callbackContext) {
+        this.results = new JSONArray();
+
+        this.limit = state.getLong("limit");
+        this.duration = state.getInt("duration");
+        this.quality = state.getInt("quality");
+        this.numPics = state.getInt("numPics");
+
+        this.callbackContext = callbackContext;
     }
 
     /**
