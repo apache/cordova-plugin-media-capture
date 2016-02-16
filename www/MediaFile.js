@@ -27,7 +27,7 @@ var utils = require('cordova/utils'),
  * Represents a single file.
  *
  * name {DOMString} name of the file, without path information
- * fullPath {DOMString} the full path of the file, including the name
+ * localURL {DOMString} the full path of the file, including the name
  * type {DOMString} mime type
  * lastModifiedDate {Date} last modified date
  * size {Number} size of the file in bytes
@@ -45,7 +45,7 @@ utils.extend(MediaFile, File);
  * @param {Function} errorCB
  */
 MediaFile.prototype.getFormatData = function(successCallback, errorCallback) {
-    if (typeof this.fullPath === "undefined" || this.fullPath === null) {
+    if (typeof this.localURL === "undefined" || this.localURL === null) {
         errorCallback(new CaptureError(CaptureError.CAPTURE_INVALID_ARGUMENT));
     } else {
         exec(successCallback, errorCallback, "Capture", "getFormatData", [this.localURL, this.type]);
