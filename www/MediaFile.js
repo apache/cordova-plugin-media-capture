@@ -45,10 +45,20 @@ utils.extend(MediaFile, File);
  * @param {Function} errorCB
  */
 MediaFile.prototype.getFormatData = function(successCallback, errorCallback) {
-    if (typeof this.localURL === "undefined" || this.localURL === null) {
+
+	//case when MediaFile is manually created, not a result of media-capture
+	if (typeof this.fullPath === "undefined" && this.localURL !== null) {
+        this.fullPath = this.localURL;
+
+        if (device.platform.toLowerCase() == 'ios' && this.fullPath.indexOf('file://') != -1) {
+            this.fullPath = this.fullPath.replace('file://', '');
+        }
+    }
+
+    if (typeof this.fullPath === "undefined" || this.fullPath === null) {
         errorCallback(new CaptureError(CaptureError.CAPTURE_INVALID_ARGUMENT));
     } else {
-        exec(successCallback, errorCallback, "Capture", "getFormatData", [this.localURL, this.type]);
+        exec(successCallback, errorCallback, "Capture", "getFormatData", [this.fullPath, this.type]);
     }
 };
 
