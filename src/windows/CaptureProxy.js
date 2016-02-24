@@ -375,17 +375,21 @@ module.exports = {
             cameraCaptureUI.photoSettings.maxResolution = Windows.Media.Capture.CameraCaptureUIMaxPhotoResolution.highestAvailable;
             cameraCaptureUI.photoSettings.format = Windows.Media.Capture.CameraCaptureUIPhotoFormat.jpeg;
             cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.photo).done(function (file) {
-                file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureImage.jpg", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
-                    file.getBasicPropertiesAsync().then(function (basicProperties) {
-                        var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
-                        result.fullPath = file.path;
-                        successCallback([result]);
+                if (file) {
+                    file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureImage.jpg", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
+                        file.getBasicPropertiesAsync().then(function (basicProperties) {
+                            var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
+                            result.fullPath = file.path;
+                            successCallback([result]);
+                        }, function () {
+                            errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                        });
                     }, function () {
                         errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                     });
-                }, function () {
+                } else {
                     errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
-                });
+                }
             }, function () {
                 errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
             });
@@ -433,17 +437,21 @@ module.exports = {
             cameraCaptureUI.videoSettings.format = Windows.Media.Capture.CameraCaptureUIVideoFormat.mp4;
             cameraCaptureUI.videoSettings.maxDurationInSeconds = videoOptions.duration;
             cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.video).then(function(file) {
-                file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureVideo.mp4", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
-                    file.getBasicPropertiesAsync().then(function(basicProperties) {
-                        var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
-                        result.fullPath = file.path;
-                        successCallback([result]);
+                if (file) {
+                    file.moveAsync(Windows.Storage.ApplicationData.current.localFolder, "cameraCaptureVideo.mp4", Windows.Storage.NameCollisionOption.generateUniqueName).then(function () {
+                        file.getBasicPropertiesAsync().then(function(basicProperties) {
+                            var result = new MediaFile(file.name, 'ms-appdata:///local/' + file.name, file.contentType, basicProperties.dateModified, basicProperties.size);
+                            result.fullPath = file.path;
+                            successCallback([result]);
+                        }, function() {
+                            errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                        });
                     }, function() {
                         errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                     });
-                }, function() {
+                } else {
                     errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
-                });
+                }
             }, function() { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
         }
     },
