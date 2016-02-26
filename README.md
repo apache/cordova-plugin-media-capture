@@ -45,6 +45,8 @@ Although in the global scope, it is not available until after the `deviceready` 
         console.log(navigator.device.capture);
     }
 
+:warning: Report issues on the [Apache Cordova issue tracker](https://issues.apache.org/jira/issues/?jql=project%20%3D%20CB%20AND%20status%20in%20%28Open%2C%20%22In%20Progress%22%2C%20Reopened%29%20AND%20resolution%20%3D%20Unresolved%20AND%20component%20%3D%20%22Plugin%20Media%20Capture%22%20ORDER%20BY%20priority%20DESC%2C%20summary%20ASC%2C%20updatedDate%20DESC)
+
 ## Installation
 
     cordova plugin add cordova-plugin-media-capture
@@ -232,7 +234,7 @@ via Zune does not work, and the error callback executes.
 Works in Chrome, Firefox and Opera only (since IE and Safari doesn't supports
 navigator.getUserMedia API)
 
-Displaying images using captured file's URL available in Chrome/Opera only. 
+Displaying images using captured file's URL available in Chrome/Opera only.
 Firefox stores captured images in IndexedDB storage (see File plugin documentation),
 and due to this the only way to show captured image is to read it and show using its DataURL.
 
@@ -365,7 +367,7 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 ### Android Quirks
 
-- Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages. 
+- Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
   See http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY for more details.
 
 ### Example ( Android w/ quality )
