@@ -64,8 +64,6 @@ public class Capture extends CordovaPlugin {
     private static final String LOG_TAG = "Capture";
 
     private static final int CAPTURE_INTERNAL_ERR = 0;
-//    private static final int CAPTURE_APPLICATION_BUSY = 1;
-//    private static final int CAPTURE_INVALID_ARGUMENT = 2;
     private static final int CAPTURE_NO_MEDIA_FILES = 3;
 
     private CallbackContext callbackContext;        // The callback context from which we were invoked.
@@ -74,15 +72,6 @@ public class Capture extends CordovaPlugin {
     private JSONArray results;                      // The array of results to be returned to the user
     private int numPics;                            // Number of pictures before capture activity
     private int quality;                            // Quality level for video capture 0 low, 1 high
-    //private CordovaInterface cordova;
-
-//    public void setContext(Context mCtx)
-//    {
-//        if (CordovaInterface.class.isInstance(mCtx))
-//            cordova = (CordovaInterface) mCtx;
-//        else
-//            LOG.d(LOG_TAG, "ERROR: You must use the CordovaInterface for this to work correctly. Please implement it in your activity");
-//    }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -454,7 +443,7 @@ public class Capture extends CordovaPlugin {
         try {
             // File properties
             obj.put("name", fp.getName());
-            obj.put("fullPath", fp.toURI().toString());
+            obj.put("fullPath", "file://" + fp.getAbsolutePath());
             if (url != null) {
                 obj.put("localURL", url.toString());
             }
