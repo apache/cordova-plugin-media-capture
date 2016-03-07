@@ -175,6 +175,14 @@ code.
 ### Android Quirks
 
 - The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
+- Android uses intents to launch the camera activity on the device to capture
+images, and on phones with low memory, the Cordova activity may be killed.  In this
+scenario, the result from the plugin call will be delivered via the resume event.
+See [the Android Lifecycle guide][android_lifecycle]
+for more information. The `pendingResult.result` value will contain the value that
+would be passed to the callbacks (either the URI/URL or an error message). Check
+the `pendingResult.pluginStatus` to determine whether or not the call was
+successful.
 
 ### BlackBerry 10 Quirks
 
