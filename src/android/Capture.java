@@ -208,14 +208,7 @@ public class Capture extends CordovaPlugin {
     }
 
     private String getTempDirectoryPath() {
-        File cache = null;
-
-        // Use internal storage
-        cache = cordova.getActivity().getCacheDir();
-
-        // Create the cache directory if it doesn't exist
-        cache.mkdirs();
-        return cache.getAbsolutePath();
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
     /**
@@ -256,6 +249,18 @@ public class Capture extends CordovaPlugin {
             intent.putExtra("android.intent.extra.durationLimit", duration);
             intent.putExtra("android.intent.extra.videoQuality", quality);
         }
+
+        // Specify file so video is captured and returned
+        File video = new File(getTempDirectoryPath(), "Capture.mp4");
+        try {
+            // the ACTION_IMAGE_CAPTURE is run under different credentials and has to be granted write permissions 
+            createWritableFile(video);
+        } catch (IOException ex) {
+            this.fail(createErrorObject(CAPTURE_INTERNAL_ERR, ex.toString()));
+            return;
+        }
+        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(video));
+
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_VIDEO);
     }
 
@@ -370,7 +375,7 @@ public class Capture extends CordovaPlugin {
                         }
 
                         if( data == null){
-                           File movie = new File(getTempDirectoryPath(), "Capture.avi");
+                           File movie = new File(getTempDirectoryPath(), "Capture.mp4");
                            data = Uri.fromFile(movie);
                         }
 
