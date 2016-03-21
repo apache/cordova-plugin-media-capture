@@ -40,9 +40,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.PermissionInfo;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -67,6 +71,12 @@ public class Capture extends CordovaPlugin {
 //    private static final int CAPTURE_APPLICATION_BUSY = 1;
 //    private static final int CAPTURE_INVALID_ARGUMENT = 2;
     private static final int CAPTURE_NO_MEDIA_FILES = 3;
+    private static final int CAPTURE_PERMISSION_DENIED = 4;
+
+    private static final int CAPTURE_IMAGE_SEC = 0;
+    private static final int CAPTURE_VIDEO_SEC = 1;
+
+    private boolean cameraPermissionInManifest;     // Whether or not the CAMERA permission is declared in AndroidManifest.xml
 
     private CallbackContext callbackContext;        // The callback context from which we were invoked.
     private long limit;                             // the number of pics/vids/clips to take
@@ -83,6 +93,33 @@ public class Capture extends CordovaPlugin {
 //        else
 //            LOG.d(LOG_TAG, "ERROR: You must use the CordovaInterface for this to work correctly. Please implement it in your activity");
 //    }
+
+    @Override
+    protected void pluginInitialize() {
+        super.pluginInitialize();
+
+        // CB-10670: The CAMERA permission does not need to be requested unless it is declared
+        // in AndroidManifest.xml. This plugin does not declare it, but others may and so we must
+        // check the package info to determine if the permission is present.
+
+        cameraPermissionInManifest = false;
+        try {
+            PackageManager packageManager = this.cordova.getActivity().getPackageManager();
+            String[] permissionsInPackage = packageManager.getPackageInfo(this.cordova.getActivity().getPackageName(), PackageManager.GET_PERMISSIONS).requestedPermissions;
+            if (permissionsInPackage != null) {
+                for (String permission : permissionsInPackage) {
+                    if (permission.equals(Manifest.permission.CAMERA)) {
+                        cameraPermissionInManifest = true;
+                        break;
+                    }
+                }
+            }
+        } catch (NameNotFoundException e) {
+            // We are requesting the info for our package, so this should
+            // never be caught
+            LOG.e(LOG_TAG, "Failed checking for CAMERA permission in manifest", e);
+        }
+    }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -111,7 +148,7 @@ public class Capture extends CordovaPlugin {
             this.captureImage();
         }
         else if (action.equals("captureVideo")) {
-            this.captureVideo(duration, quality);
+            this.captureVideo(this.duration, this.quality);
         }
         else {
             return false;
@@ -222,23 +259,40 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture images.  Result handled by onActivityResult()
      */
     private void captureImage() {
-        // Save the number of images currently on disk for later
-        this.numPics = queryImgDB(whichContentStore()).getCount();
+        boolean needExternalStoragePermission =
+            !PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        boolean needCameraPermission = cameraPermissionInManifest &&
+            !PermissionHelper.hasPermission(this, Manifest.permission.CAMERA);
 
-        // Specify file so that large image is captured and returned
-        File photo = new File(getTempDirectoryPath(), "Capture.jpg");
-        try {
-            // the ACTION_IMAGE_CAPTURE is run under different credentials and has to be granted write permissions
-            createWritableFile(photo);
-        } catch (IOException ex) {
-            this.fail(createErrorObject(CAPTURE_INTERNAL_ERR, ex.toString()));
-            return;
+        if (needExternalStoragePermission || needCameraPermission) {
+            if (needExternalStoragePermission && needCameraPermission) {
+                PermissionHelper.requestPermissions(this, CAPTURE_IMAGE_SEC,
+                    new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA });
+            } else if (needExternalStoragePermission) {
+                PermissionHelper.requestPermission(this, CAPTURE_IMAGE_SEC, Manifest.permission.READ_EXTERNAL_STORAGE);
+            } else {
+                PermissionHelper.requestPermission(this, CAPTURE_IMAGE_SEC, Manifest.permission.CAMERA);
+            }
+        } else {
+            // Save the number of images currently on disk for later
+            this.numPics = queryImgDB(whichContentStore()).getCount();
+
+            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+            // Specify file so that large image is captured and returned
+            File photo = new File(getTempDirectoryPath(), "Capture.jpg");
+            try {
+                // the ACTION_IMAGE_CAPTURE is run under different credentials and has to be granted write permissions
+                createWritableFile(photo);
+            } catch (IOException ex) {
+                this.fail(createErrorObject(CAPTURE_INTERNAL_ERR, ex.toString()));
+                return;
+            }
+            intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_IMAGE);
         }
-        intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-
-        this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_IMAGE);
     }
 
     private static void createWritableFile(File file) throws IOException {
@@ -250,13 +304,17 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture video.  Result handled by onActivityResult()
      */
     private void captureVideo(int duration, int quality) {
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
+        if(cameraPermissionInManifest && !PermissionHelper.hasPermission(this, Manifest.permission.CAMERA)) {
+            PermissionHelper.requestPermission(this, CAPTURE_VIDEO_SEC, Manifest.permission.CAMERA);
+        } else {
+            Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
-        if(Build.VERSION.SDK_INT > 7){
-            intent.putExtra("android.intent.extra.durationLimit", duration);
-            intent.putExtra("android.intent.extra.videoQuality", quality);
+            if(Build.VERSION.SDK_INT > 7){
+                intent.putExtra("android.intent.extra.durationLimit", duration);
+                intent.putExtra("android.intent.extra.videoQuality", quality);
+            }
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_VIDEO);
         }
-        this.cordova.startActivityForResult((CordovaPlugin) this, intent, CAPTURE_VIDEO);
     }
 
     /**
@@ -388,7 +446,7 @@ public class Capture extends CordovaPlugin {
                                 that.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, results));
                             } else {
                                 // still need to capture more video clips
-                                captureVideo(duration, quality);
+                                captureVideo(that.duration, that.quality);
                             }
                         }
                     }
@@ -417,6 +475,24 @@ public class Capture extends CordovaPlugin {
             else {
                 this.fail(createErrorObject(CAPTURE_NO_MEDIA_FILES, "Did not complete!"));
             }
+        }
+    }
+
+    public void onRequestPermissionResult(int requestCode, String[] permissions,
+                                          int[] grantResults) throws JSONException {
+        for(int r:grantResults) {
+            if(r == PackageManager.PERMISSION_DENIED) {
+                this.fail(createErrorObject(CAPTURE_PERMISSION_DENIED, "Permission denied."));
+                return;
+            }
+        }
+        switch(requestCode) {
+            case CAPTURE_IMAGE_SEC:
+                this.captureImage();
+                break;
+            case CAPTURE_VIDEO_SEC:
+                this.captureVideo(this.duration, this.quality);
+                break;
         }
     }
 
