@@ -78,6 +78,7 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
         <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
         <source-file src="src/android/PermissionHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
+        <source-file src="src/android/PendingRequests.java" target-dir="src/org/apache/cordova/mediacapture" />
     </platform>
 
     <!-- amazon-fireos -->
