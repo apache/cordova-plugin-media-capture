@@ -34,6 +34,7 @@ import org.apache.cordova.file.LocalFilesystemURL;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
+import org.apache.cordova.PermissionHelper;
 import org.apache.cordova.PluginManager;
 import org.apache.cordova.mediacapture.PendingRequests.Request;
 import org.json.JSONArray;
