@@ -20,6 +20,13 @@
 -->
 # Release Notes
 
+### 1.3.0 (Apr 15, 2016)
+* Replace `PermissionHelper.java` with `cordova-plugin-compat`
+* CB-10670, CB-10994 **Android**, Marshmallow permissions
+* CB-10720: Fixing README for display on Cordova website
+* CB-10636 Add `JSHint` for plugins
+* CB-10690 **windows**, fix crash when user cancels/closes photo app
+
 ### 1.2.0 (Jan 15, 2016)
 * CB-10100 updated file dependency to not grab new majors
 * CB-8863 Fix block usage of self
