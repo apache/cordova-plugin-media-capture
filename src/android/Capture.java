@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import android.os.Build;
+import android.os.Bundle;
 
 import org.apache.cordova.file.FileUtils;
 import org.apache.cordova.file.LocalFilesystemURL;
@@ -602,5 +603,13 @@ public class Capture extends CordovaPlugin {
                 pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_PERMISSION_DENIED, "Permission denied."));
             }
         }
+    }
+
+    public Bundle onSaveInstanceState() {
+        return pendingRequests.toBundle();
+    }
+
+    public void onRestoreStateForActivityResult(Bundle state, CallbackContext callbackContext) {
+        pendingRequests.setLastSavedState(state, callbackContext);
     }
 }
