@@ -20,7 +20,7 @@
 */
 
 var exec = require('cordova/exec'),
-    MediaFile = require('./MediaFile');
+    helpers = require('./helpers');
 
 /**
  * Launches a capture of different types.
@@ -32,24 +32,12 @@ var exec = require('cordova/exec'),
  */
 function _capture(type, successCallback, errorCallback, options) {
     var win = function(pluginResult) {
-        var mediaFiles = [];
-        var i;
-        for (i = 0; i < pluginResult.length; i++) {
-            var mediaFile = new MediaFile();
-            mediaFile.name = pluginResult[i].name;
-
-            // Backwards compatibility
-            mediaFile.localURL = pluginResult[i].localURL || pluginResult[i].fullPath;
-            mediaFile.fullPath = pluginResult[i].fullPath;
-            mediaFile.type = pluginResult[i].type;
-            mediaFile.lastModifiedDate = pluginResult[i].lastModifiedDate;
-            mediaFile.size = pluginResult[i].size;
-            mediaFiles.push(mediaFile);
-        }
-        successCallback(mediaFiles);
+        successCallback(helpers.wrapMediaFiles(pluginResult));
     };
     exec(win, errorCallback, "Capture", type, [options]);
 }
+
+
 /**
  * The Capture interface exposes an interface to the camera and microphone of the hosting device.
  */

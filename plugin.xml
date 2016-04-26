@@ -58,6 +58,10 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         <clobbers target="MediaFile" />
     </js-module>
 
+    <js-module src="www/helpers.js" name="helpers">
+        <runs />
+    </js-module>
+
     <js-module src="www/capture.js" name="capture">
         <clobbers target="navigator.device.capture" />
     </js-module>
@@ -79,6 +83,10 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
         <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
         <source-file src="src/android/PendingRequests.java" target-dir="src/org/apache/cordova/mediacapture" />
+
+        <js-module src="www/android/init.js" name="init">
+            <runs />
+        </js-module>
     </platform>
 
     <!-- amazon-fireos -->
