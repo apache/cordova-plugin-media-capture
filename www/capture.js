@@ -20,9 +20,7 @@
 */
 
 var exec = require('cordova/exec'),
-    cordova = require('cordova'),
-    helpers = require('./helpers'),
-    MediaFile = require('./MediaFile');
+    helpers = require('./helpers');
 
 /**
  * Launches a capture of different types.

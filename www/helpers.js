@@ -19,7 +19,7 @@
  *
 */
 
-var MediaFile = require('./MediaFile')
+var MediaFile = require('./MediaFile');
 
 function wrapMediaFiles(pluginResult) {
     var mediaFiles = [];

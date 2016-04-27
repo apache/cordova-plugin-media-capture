@@ -20,8 +20,7 @@
 */
 
 var cordova = require('cordova'),
-    helpers = require('./helpers'),
-    MediaFile = require('./MediaFile');
+    helpers = require('./helpers');
 
 var SUCCESS_EVENT = "pendingcaptureresult";
 var FAILURE_EVENT = "pendingcaptureerror";
