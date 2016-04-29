@@ -19,16 +19,16 @@
  *
 */
 
+/* global PluginResult */
+
 //cordova-js/lib/common/plugin/CaptureError.js
 var INTERNAL_ERROR_CODE = 0,
     APPLICATION_BUSY_ERROR_CODE = 1,
     INVALID_ARGUMENT_ERROR_CODE = 2,
-    NO_MEDIA_FILES_ERROR_CODE = 3,
-    NOT_SUPPORTED_ERROR_CODE = 20;
+    NO_MEDIA_FILES_ERROR_CODE = 3;
 
 function capture(action, options, result, webview) {
-    var noop = function () {},
-        limit = options.limit || 1,
+    var limit = options.limit || 1,
         fail = function (error) {
             result.callbackError({code: INTERNAL_ERROR_CODE});
         },
@@ -52,7 +52,7 @@ function capture(action, options, result, webview) {
             } else {
                 result.callbackError({code: NO_MEDIA_FILES_ERROR_CODE });
             }
-        }
+        },
         onCancelled = function () {
             result.callbackError({code: NO_MEDIA_FILES_ERROR_CODE });
         },

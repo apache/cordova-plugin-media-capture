@@ -19,6 +19,10 @@
  *
 */
 
+/* jshint jasmine: true */
+/* global CaptureAudioOptions, CaptureImageOptions, CaptureVideoOptions, CaptureError */
+/* global Media, MediaFile, MediaFileData, resolveLocalFileSystemURL */
+
 exports.defineAutoTests = function () {
     describe('Capture (navigator.device.capture)', function () {
         it("capture.spec.1 should exist", function () {
@@ -118,7 +122,6 @@ exports.defineAutoTests = function () {
 /******************************************************************************/
 
 exports.defineManualTests = function (contentEl, createActionButton) {
-    var platformId = cordova.require('cordova/platform').id;
     var pageStartTime = +new Date();
 
     function log(value) {

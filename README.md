@@ -17,6 +17,8 @@
 #         under the License.
 -->
 
+[![Build Status](https://travis-ci.org/apache/cordova-plugin-media-capture.svg?branch=master)](https://travis-ci.org/apache/cordova-plugin-media-capture)
+
 # cordova-plugin-media-capture
 
 This plugin provides access to the device's audio, image, and video capture capabilities.
@@ -44,6 +46,8 @@ Although in the global scope, it is not available until after the `deviceready` 
     function onDeviceReady() {
         console.log(navigator.device.capture);
     }
+
+Report issues with this plugin on the [Apache Cordova issue tracker](https://issues.apache.org/jira/issues/?jql=project%20%3D%20CB%20AND%20status%20in%20%28Open%2C%20%22In%20Progress%22%2C%20Reopened%29%20AND%20resolution%20%3D%20Unresolved%20AND%20component%20%3D%20%22Plugin%20Media%20Capture%22%20ORDER%20BY%20priority%20DESC%2C%20summary%20ASC%2C%20updatedDate%20DESC)
 
 ## Installation
 
@@ -151,40 +155,6 @@ code.
 
 - Windows Phone 7 does not have a default audio recording application, so a simple user interface is provided.
 
-## CaptureAudioOptions
-
-> Encapsulates audio capture configuration options.
-
-### Properties
-
-- __limit__: The maximum number of audio clips the device user can record in a single capture operation.  The value must be greater than or equal to 1 (defaults to 1).
-
-- __duration__: The maximum duration of an audio sound clip, in seconds.
-
-### Example
-
-    // limit capture operation to 3 media files, no longer than 10 seconds each
-    var options = { limit: 3, duration: 10 };
-
-    navigator.device.capture.captureAudio(captureSuccess, captureError, options);
-
-### Amazon Fire OS Quirks
-
-- The `duration` parameter is not supported.  Recording lengths cannot be limited programmatically.
-
-### Android Quirks
-
-- The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
-
-### BlackBerry 10 Quirks
-
-- The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
-- The `limit` parameter is not supported, so only one recording can be created for each invocation.
-
-### iOS Quirks
-
-- The `limit` parameter is not supported, so only one recording can be created for each invocation.
-
 ## capture.captureImage
 
 > Start the camera application and return information about captured image files.
@@ -201,7 +171,7 @@ one image in a single session.
 
 The capture operation ends either when the user closes the camera
 application, or the maximum number of recordings specified by
-`CaptureAudioOptions.limit` is reached.  If no `limit` value is
+`CaptureImageOptions.limit` is reached.  If no `limit` value is
 specified, it defaults to one (1), and the capture operation
 terminates after the user captures a single image.
 
@@ -254,27 +224,6 @@ and due to this the only way to show captured image is to read it and show using
 
     // start image capture
     navigator.device.capture.captureImage(captureSuccess, captureError, {limit:2});
-
-
-
-## CaptureImageOptions
-
-> Encapsulates image capture configuration options.
-
-### Properties
-
-- __limit__: The maximum number of images the user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
-
-### Example
-
-    // limit capture operation to 3 images
-    var options = { limit: 3 };
-
-    navigator.device.capture.captureImage(captureSuccess, captureError, options);
-
-### iOS Quirks
-
-- The __limit__ parameter is not supported, and only one image is taken per invocation.
 
 ## capture.captureVideo
 
@@ -338,6 +287,61 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 - Cordova for BlackBerry 10 attempts to launch the __Video Recorder__ application, provided by RIM, to capture video recordings. The app receives a `CaptureError.CAPTURE_NOT_SUPPORTED` error code if the application is not installed on the device.
 
 
+## CaptureAudioOptions
+
+> Encapsulates audio capture configuration options.
+
+### Properties
+
+- __limit__: The maximum number of audio clips the device user can record in a single capture operation.  The value must be greater than or equal to 1 (defaults to 1).
+
+- __duration__: The maximum duration of an audio sound clip, in seconds.
+
+### Example
+
+    // limit capture operation to 3 media files, no longer than 10 seconds each
+    var options = { limit: 3, duration: 10 };
+
+    navigator.device.capture.captureAudio(captureSuccess, captureError, options);
+
+### Amazon Fire OS Quirks
+
+- The `duration` parameter is not supported.  Recording lengths cannot be limited programmatically.
+
+### Android Quirks
+
+- The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
+
+### BlackBerry 10 Quirks
+
+- The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
+- The `limit` parameter is not supported, so only one recording can be created for each invocation.
+
+### iOS Quirks
+
+- The `limit` parameter is not supported, so only one recording can be created for each invocation.
+
+
+## CaptureImageOptions
+
+> Encapsulates image capture configuration options.
+
+### Properties
+
+- __limit__: The maximum number of images the user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+
+### Example
+
+    // limit capture operation to 3 images
+    var options = { limit: 3 };
+
+    navigator.device.capture.captureImage(captureSuccess, captureError, options);
+
+### iOS Quirks
+
+- The __limit__ parameter is not supported, and only one image is taken per invocation.
+
+
 ## CaptureVideoOptions
 
 > Encapsulates video capture configuration options.
@@ -369,7 +373,7 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 ### Android Quirks
 
 - Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
-  See http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY for more details.
+  See [here](http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY) for more details.
 
 ### Example ( Android w/ quality )
 
@@ -421,6 +425,8 @@ Each `MediaFile` object describes a captured media file.
 - `CaptureError.CAPTURE_INVALID_ARGUMENT`: Invalid use of the API (e.g., the value of `limit` is less than one).
 
 - `CaptureError.CAPTURE_NO_MEDIA_FILES`: The user exits the camera or audio capture application before capturing anything.
+
+- `CaptureError.CAPTURE_PERMISSION_DENIED`: The user denied a permission required to perform the given capture request.
 
 - `CaptureError.CAPTURE_NOT_SUPPORTED`: The requested capture operation is not supported.
 
