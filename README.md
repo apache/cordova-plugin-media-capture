@@ -335,6 +335,7 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 ### Properties
 
 - __limit__: The maximum number of images the user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+- __cameraDirection__: Direction of the camera (Camera.CAMERA_FRONT|Camera.CAMERA_BACK) (defaults to Camera.CAMERA_BACK) **This only works on iOS**
 
 ### Example
 
@@ -357,6 +358,7 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 - __limit__: The maximum number of video clips the device's user can capture in a single capture operation.  The value must be greater than or equal to 1 (defaults to 1).
 
 - __duration__: The maximum duration of a video clip, in seconds.
+- __cameraDirection__: Direction of the camera (Camera.CAMERA_FRONT|Camera.CAMERA_BACK) (defaults to Camera.CAMERA_BACK) **This only works on iOS**
 
 ### Example
 
