@@ -48,8 +48,10 @@ typedef NSUInteger CDVCaptureError;
 {
     CDVImagePicker* pickerController;
     BOOL inUse;
+    BOOL isAnimated;
 }
 @property BOOL inUse;
+@property BOOL isAnimated;
 - (void)captureAudio:(CDVInvokedUrlCommand*)command;
 - (void)captureImage:(CDVInvokedUrlCommand*)command;
 - (CDVPluginResult*)processImage:(UIImage*)image type:(NSString*)mimeType forCallbackId:(NSString*)callbackId;
@@ -92,6 +94,7 @@ typedef NSUInteger CDVCaptureError;
     CDVPluginResult* pluginResult;
     NSTimer* timer;
     BOOL isTimed;
+    BOOL isAnimated;
 }
 @property (nonatomic) CDVCaptureError errorCode;
 @property (nonatomic, copy) NSString* callbackId;
@@ -108,6 +111,7 @@ typedef NSUInteger CDVCaptureError;
 @property (nonatomic, strong) CDVPluginResult* pluginResult;
 @property (nonatomic, strong) NSTimer* timer;
 @property (nonatomic) BOOL isTimed;
+@property (nonatomic) BOOL isAnimated;
 
 - (id)initWithCommand:(CDVPlugin*)theCommand duration:(NSNumber*)theDuration callbackId:(NSString*)theCallbackId;
 - (void)processButton:(id)sender;

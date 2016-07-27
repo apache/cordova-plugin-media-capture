@@ -299,6 +299,8 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 ### Properties
 
+- __animated__: Whether or not the audio recording interface shows and hides using an animatied transition. (defaults to true).
+
 - __limit__: The maximum number of audio clips the device user can record in a single capture operation.  The value must be greater than or equal to 1 (defaults to 1).
 
 - __duration__: The maximum duration of an audio sound clip, in seconds.
@@ -312,14 +314,17 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 ### Amazon Fire OS Quirks
 
+- The __animated__ property is not supported.
 - The `duration` parameter is not supported.  Recording lengths cannot be limited programmatically.
 
 ### Android Quirks
 
+- The __animated__ property is not supported.
 - The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
 
 ### BlackBerry 10 Quirks
 
+- The __animated__ property is not supported.
 - The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
 - The `limit` parameter is not supported, so only one recording can be created for each invocation.
 
@@ -327,12 +332,16 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - The `limit` parameter is not supported, so only one recording can be created for each invocation.
 
+### Windows Quirks
+- The __animated__ property is not supported.
 
 ## CaptureImageOptions
 
 > Encapsulates image capture configuration options.
 
 ### Properties
+
+- __animated__: Whether or not the camera interface shows and hides using an animatied transition. (defaults to true).
 
 - __limit__: The maximum number of images the user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
 
@@ -343,16 +352,33 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
     navigator.device.capture.captureImage(captureSuccess, captureError, options);
 
+### Amazon Fire OS Quirks
+
+- The __animated__ property is not supported.
+
+### Android Quirks
+
+- The __animated__ property is not supported.
+
+### BlackBerry 10 Quirks
+
+- The __animated__ property is not supported.
+
 ### iOS Quirks
 
 - The __limit__ parameter is not supported, and only one image is taken per invocation.
 
+### Windows Quirks
+
+- The __animated__ property is not supported.
 
 ## CaptureVideoOptions
 
 > Encapsulates video capture configuration options.
 
 ### Properties
+
+- __animated__: Whether or not the camera interface shows and hides using an animatied transition. (defaults to true).
 
 - __limit__: The maximum number of video clips the device's user can capture in a single capture operation.  The value must be greater than or equal to 1 (defaults to 1).
 
@@ -365,16 +391,26 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
     navigator.device.capture.captureVideo(captureSuccess, captureError, options);
 
+### Amazon Fire OS Quirks
+
+- The __animated__ property is not supported.
+
 ### BlackBerry 10 Quirks
 
+- The __animated__ property is not supported.
 - The __duration__ property is ignored, so the length of recordings can't be limited programmatically.
 
 ### iOS Quirks
 
 - The __limit__ property is ignored.  Only one video is recorded per invocation.
 
+### Windows Quirks
+
+- The __animated__ property is not supported.
+
 ### Android Quirks
 
+- The __animated__ property is not supported.
 - Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
   See [here](http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY) for more details.
 
