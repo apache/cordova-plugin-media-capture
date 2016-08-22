@@ -54,7 +54,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 
 public class Capture extends CordovaPlugin {
 
@@ -163,7 +162,7 @@ public class Capture extends CordovaPlugin {
         if (mimeType == null || mimeType.equals("") || "null".equals(mimeType)) {
             mimeType = FileHelper.getMimeType(fileUrl, cordova);
         }
-        Log.d(LOG_TAG, "Mime type = " + mimeType);
+        LOG.d(LOG_TAG, "Mime type = " + mimeType);
 
         if (mimeType.equals(IMAGE_JPEG) || filePath.endsWith(".jpg")) {
             obj = getImageData(fileUrl, obj);
@@ -214,7 +213,7 @@ public class Capture extends CordovaPlugin {
                 obj.put("width", player.getVideoWidth());
             }
         } catch (IOException e) {
-            Log.d(LOG_TAG, "Error: loading video file");
+            LOG.d(LOG_TAG, "Error: loading video file");
         }
         return obj;
     }
