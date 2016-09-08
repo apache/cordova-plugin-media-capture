@@ -200,9 +200,10 @@ object featuring a `CaptureError.CAPTURE_NO_MEDIA_FILES` error code.
 
 ### iOS Quirks
 
-Since iOS 10 it's mandatory to add a `NSCameraUsageDescription` and `NSPhotoLibraryUsageDescriptionentry` in the info.plist.
+Since iOS 10 it's mandatory to add a `NSCameraUsageDescription`, `NSMicrophoneUsageDescription` and `NSPhotoLibraryUsageDescriptionentry` in the info.plist.
 
 * `NSCameraUsageDescription` describes the reason that the app accesses the user’s camera.
+* `NSMicrophoneUsageDescription` describes the reason that the app accesses the user’s microphone.
 * `NSPhotoLibraryUsageDescriptionentry` describes the reason the app accesses the user's photo library.
 
 When the system prompts the user to allow access, this string is displayed as part of the dialog box.
@@ -210,6 +211,7 @@ When the system prompts the user to allow access, this string is displayed as pa
 To add this entry you can pass the following variables on plugin install.
 
 * `CAMERA_USAGE_DESCRIPTION` for `NSCameraUsageDescription`
+* `MICROPHONE_USAGE_DESCRIPTION` for `NSMicrophoneUsageDescription`
 * `PHOTOLIBRARY_USAGE_DESCRIPTION` for `NSPhotoLibraryUsageDescriptionentry`
 
 -
