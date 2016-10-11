@@ -156,6 +156,30 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         document.getElementById('camera_image').src = path;
     }
 
+    function captureImagesWin(mediaFiles) {
+        var path = mediaFiles[0].fullPath;
+        // Necessary since windows doesn't allow file URLs for <img> elements
+        if (cordova.platformId == 'windows' || cordova.platformId == 'windows8' || cordova.platformId === 'browser') {
+            path = mediaFiles[0].localURL;
+        }
+        var path2 = mediaFiles[1].fullPath;
+        // Necessary since windows doesn't allow file URLs for <img> elements
+        if (cordova.platformId == 'windows' || cordova.platformId == 'windows8' || cordova.platformId === 'browser') {
+            path = mediaFiles[1].localURL;
+        }
+        var path3 = mediaFiles[2].fullPath;
+        // Necessary since windows doesn't allow file URLs for <img> elements
+        if (cordova.platformId == 'windows' || cordova.platformId == 'windows8' || cordova.platformId === 'browser') {
+            path = mediaFiles[2].localURL;
+        }
+        log('Image captured: ' + path);
+        log('Image captured: ' + path2);
+        log('Image captured: ' + path3);
+        document.getElementById('camera_image').src = path;
+        document.getElementById('camera_image2').src = path2;
+        document.getElementById('camera_image3').src = path3;
+    }
+
     function captureImageFail(e) {
         log('Error getting image: ' + e.code);
     }
@@ -164,6 +188,12 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         clearStatus();
         var options = { limit: 1 };
         navigator.device.capture.captureImage(captureImageWin, captureImageFail, options);
+    }
+
+    function getImages() {
+        clearStatus();
+        var options = { limit: 3 };
+        navigator.device.capture.captureImage(captureImagesWin, captureImageFail, options);
     }
 
     function captureVideoWin(mediaFiles) {
@@ -231,18 +261,24 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     function clearStatus() {
         document.getElementById('camera_status').innerHTML = '';
         document.getElementById('camera_image').src = 'about:blank';
+        document.getElementById('camera_image2').src = 'about:blank';
+        document.getElementById('camera_image3').src = 'about:blank';
     }
 
     /******************************************************************************/
 
     contentEl.innerHTML = '<div id="info" style="white-space: pre-wrap">' +
         '<b>Status:</b> <div id="camera_status"></div>' +
-        'img: <img width="100" id="camera_image">' +
+        'img1: <img width="100" id="camera_image">' +
+        'img2: <img width="100" id="camera_image2">' +
+        'img3: <img width="100" id="camera_image3">' +
         'video: <div id="video_container"></div>' +
         '</div><div id="audio"></div>' +
         'Expected result: Audio recorder will come up. Press record button to record for 10 seconds. Press Done. Status box will update with audio file and automatically play recording.' +
         '<p/> <div id="image"></div>' +
         'Expected result: Status box will update with image just taken.' +
+        '<p/> <div id="images"></div>' +
+        'Expected result: Status box will update with images just taken.' +
         '<p/> <div id="video"></div>' +
         'Expected result: Record 10 second video. Status box will update with video file that you can play.' +
         '<p/> <div id="video_and_resolve"></div>' +
@@ -255,6 +291,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     createActionButton('Capture 1 image', function () {
         getImage();
     }, 'image');
+
+    createActionButton('Capture 3 images', function () {
+        getImages();
+    }, 'images');
 
     createActionButton('Capture 10 sec of video', function () {
         getVideo();
