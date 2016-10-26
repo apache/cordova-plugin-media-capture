@@ -134,6 +134,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         log('Audio captured: ' + path);
         var m = new Media(path);
         m.play();
+        getFileMetadata(mediaFiles[0]);
     }
 
     function captureAudioFail(e) {
@@ -213,6 +214,23 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         source_vid.src = path;
         vid.appendChild(source_vid);
         document.getElementById('video_container').appendChild(vid);
+        getFileMetadata(mediaFiles[0]);
+    }
+
+    function getFileMetadata(mediaFile) {
+        mediaFile.getFormatData(getMetadataWin, getMetadataFail);
+    }
+
+    function getMetadataWin(metadata) {
+        var strMetadata =
+        "duration = " + metadata.duration + '\n' +
+        "width = " + metadata.width + '\n' +
+        "height = " + metadata.height;
+        log(strMetadata);
+    }
+
+    function getMetadataFail(e) {
+        log("Error getting metadata: " + e.code);
     }
 
     function captureVideoFail(e) {
