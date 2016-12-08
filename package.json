@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-media-capture",
-  "version": "1.4.1",
+  "version": "1.4.2-dev",
   "description": "Cordova Media Capture Plugin",
   "cordova": {
     "id": "cordova-plugin-media-capture",
