@@ -235,7 +235,7 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         </js-module>
 
         <js-module src="src/windows/CaptureProxy.js" name="CaptureProxy">
-            <merges target="" />
+            <runs />
         </js-module>
     </platform>
 
@@ -252,7 +252,7 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         </js-module>
 
         <js-module src="src/windows/CaptureProxy.js" name="CaptureProxy">
-            <merges target="" />
+            <runs />
         </js-module>
     </platform>
 
