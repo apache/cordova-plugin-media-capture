@@ -404,7 +404,7 @@ module.exports = {
         } else {
             var imageOptions = new CaptureImageOptions();
             var cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
-            cameraCaptureUI.photoSettings.allowCropping = true;
+            cameraCaptureUI.photoSettings.allowCropping = false;
             cameraCaptureUI.photoSettings.maxResolution = Windows.Media.Capture.CameraCaptureUIMaxPhotoResolution.highestAvailable;
             cameraCaptureUI.photoSettings.format = Windows.Media.Capture.CameraCaptureUIPhotoFormat.jpeg;
             cameraCaptureUI.captureFileAsync(Windows.Media.Capture.CameraCaptureUIMode.photo).done(function (file) {
