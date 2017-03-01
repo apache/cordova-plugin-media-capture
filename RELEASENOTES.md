@@ -20,6 +20,12 @@
 -->
 # Release Notes
 
+### 1.4.2 (Feb 28, 2017)
+* [CB-12353](https://issues.apache.org/jira/browse/CB-12353) Corrected merges usage in `plugin.xml`
+* [CB-12369](https://issues.apache.org/jira/browse/CB-12369) Add plugin typings from `DefinitelyTyped` 
+* [CB-12363](https://issues.apache.org/jira/browse/CB-12363) Added build badges for **iOS 9.3** and **iOS 10.0** 
+* [CB-12230](https://issues.apache.org/jira/browse/CB-12230) Removed **Windows 8.1** build badges
+
 ### 1.4.1 (Dec 07, 2016)
 * [CB-12224](https://issues.apache.org/jira/browse/CB-12224) Updated version and RELEASENOTES.md for release 1.4.1
 * [CB-10701](https://issues.apache.org/jira/browse/CB-10701) [CB-7117](https://issues.apache.org/jira/browse/CB-7117) android: Add manual test to check getting metadata
@@ -99,7 +105,7 @@
 * [CB-7429](https://issues.apache.org/jira/browse/CB-7429) Adds media capture support for windows
 
 ### 0.3.3 (Sep 17, 2014)
-* Renamed test dir, added nested plugin.xml
+* Renamed test dir, added nested `plugin.xml`
 * added documentation for manual tests
 * [CB-6959](https://issues.apache.org/jira/browse/CB-6959) Added manual tests
 * [CB-6959](https://issues.apache.org/jira/browse/CB-6959) Port capture tests to plugin-test-framework
@@ -150,11 +156,11 @@
 
 ### 0.2.4 (Oct 28, 2013)
 * [CB-5199](https://issues.apache.org/jira/browse/CB-5199) - ios - Media Capture - UI issues under iOS 7
-* [CB-5128](https://issues.apache.org/jira/browse/CB-5128): added repo + issue tag to plugin.xml for media capture plugin
+* [CB-5128](https://issues.apache.org/jira/browse/CB-5128): added repo + issue tag to `plugin.xml` for media capture plugin
 * [CB-5010](https://issues.apache.org/jira/browse/CB-5010) Incremented plugin version on dev branch. 
 
 ### 0.2.3 (Oct 9, 2013)
-* [CB-4720](https://issues.apache.org/jira/browse/CB-4720): fixed incorrect feature tag in plugin.xml for wp
+* [CB-4720](https://issues.apache.org/jira/browse/CB-4720): fixed incorrect feature tag in `plugin.xml` for wp
 * [CB-4915](https://issues.apache.org/jira/browse/CB-4915) Incremented plugin version on dev branch.
 
 ### 0.2.2 (Sept 25, 2013)
