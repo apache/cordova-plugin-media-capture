@@ -20,6 +20,7 @@
 #import "CDVCapture.h"
 #import "CDVFile.h"
 #import <Cordova/CDVAvailability.h>
+#import <Cordova/CDVAvailability.h>
 
 #define kW3CMediaFormatHeight @"height"
 #define kW3CMediaFormatWidth @"width"
@@ -620,6 +621,17 @@
     if (isIphone5) {
         microphoneResource = @"CDVCapture.bundle/microphone-568h";
     }
+    // iPhone 6, iPhone 6s, iPhone 7: 375 × 667
+	BOOL isIphone6 = ([[UIScreen mainScreen] bounds].size.width == 667 && [[UIScreen mainScreen] bounds].size.height == 375) || ([[UIScreen mainScreen] bounds].size.height == 667 && [[UIScreen mainScreen] bounds].size.width == 375);
+	if (isIphone6) {
+	    microphoneResource = @"CDVCapture.bundle/microphone-667h";
+	}
+	    
+	// iPhone 6 Plus, iPhone 6s Plus, iPhone 7 Plus: 414 × 736
+	BOOL isIphone6Plus = ([[UIScreen mainScreen] bounds].size.width == 736 && [[UIScreen mainScreen] bounds].size.height == 414) || ([[UIScreen mainScreen] bounds].size.height == 736 && [[UIScreen mainScreen] bounds].size.width == 414);
+	if (isIphone6Plus) {
+	    microphoneResource = @"CDVCapture.bundle/microphone-736h";
+	}
 
     NSBundle* cdvBundle = [NSBundle bundleForClass:[CDVCapture class]];
     UIImage* microphone = [UIImage imageNamed:[self resolveImageResource:microphoneResource] inBundle:cdvBundle compatibleWithTraitCollection:nil];
