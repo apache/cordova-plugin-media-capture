@@ -615,10 +615,21 @@
 
     // make backgrounds
     NSString* microphoneResource = @"CDVCapture.bundle/microphone";
-
-    BOOL isIphone5 = ([[UIScreen mainScreen] bounds].size.width == 568 && [[UIScreen mainScreen] bounds].size.height == 320) || ([[UIScreen mainScreen] bounds].size.height == 568 && [[UIScreen mainScreen] bounds].size.width == 320);
-    if (isIphone5) {
+    int maxLength = MAX([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
+    
+    BOOL isIphone5 = maxLength == 568;
+    if ( isIphone5 ) {
         microphoneResource = @"CDVCapture.bundle/microphone-568h";
+    }
+    
+    BOOL isIphone6 = maxLength == 667;
+    if ( isIphone6 ) {
+        microphoneResource = @"CDVCapture.bundle/microphone-667h";
+    }
+    
+    BOOL isIphone6p = maxLength == 736;
+    if ( isIphone6p ) {
+        microphoneResource = @"CDVCapture.bundle/microphone-736h";
     }
 
     NSBundle* cdvBundle = [NSBundle bundleForClass:[CDVCapture class]];
