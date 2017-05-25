@@ -28,6 +28,11 @@
 #define kW3CMediaFormatDuration @"duration"
 #define kW3CMediaModeType @"type"
 
+NSNumber *globalQuality;
+NSNumber *globalSaveToPhotoAlbum;
+NSNumber *globalWidth;
+NSNumber *globalHeight;
+
 @implementation NSBundle (PluginExtensions)
 
 + (NSBundle*) pluginBundle:(CDVPlugin*)plugin {
@@ -131,6 +136,15 @@
     // options could contain limit and mode neither of which are supported at this time
     // taking more than one picture (limit) is only supported if provide own controls via cameraOverlayView property
     // can support mode in OS
+    
+    NSNumber* quality = [options objectForKey:@"quality"];
+    globalQuality = quality;
+    
+    NSNumber* saveToPhotoAlbum = [options objectForKey:@"saveToPhotoAlbum"];
+    globalSaveToPhotoAlbum = saveToPhotoAlbum;
+    
+    globalWidth = [options objectForKey:@"targetWidth"];
+    globalHeight = [options objectForKey:@"targetHeight"];
 
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         NSLog(@"Capture.imageCapture: camera not available.");
@@ -172,13 +186,24 @@
     CDVPluginResult* result = nil;
 
     // save the image to photo album
-    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+    
+    if([globalSaveToPhotoAlbum isEqual:@1]) {
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+    }
+    
+    if(!([globalWidth isEqual:@0] || [globalHeight isEqual:@0])) {
+        struct CGSize newScale;
+        newScale.width = [globalWidth floatValue];
+        newScale.height = [globalHeight floatValue];
+        
+        image = [self imageByScalingNotCroppingForSize:image targetSize:newScale];
+    }
 
     NSData* data = nil;
     if (mimeType && [mimeType isEqualToString:@"image/png"]) {
         data = UIImagePNGRepresentation(image);
     } else {
-        data = UIImageJPEGRepresentation(image, 0.5);
+        data = UIImageJPEGRepresentation(image, ((int)globalQuality / 100));
     }
 
     // write to temp directory and return URI
@@ -210,6 +235,48 @@
     return result;
 }
 
+- (UIImage*)imageByScalingNotCroppingForSize:(UIImage*)sourceImage targetSize:(CGSize)targetSize
+{
+    UIImage* newImage = nil;
+    CGSize imageSize = sourceImage.size;
+    CGFloat width = imageSize.width;
+    CGFloat height = imageSize.height;
+    CGFloat targetWidth = targetSize.width;
+    CGFloat targetHeight = targetSize.height;
+    CGFloat scaleFactor = 0.0;
+    CGSize scaledSize = targetSize;
+    
+    if (CGSizeEqualToSize(imageSize, targetSize) == NO) {
+        CGFloat widthFactor = targetWidth / width;
+        CGFloat heightFactor = targetHeight / height;
+        
+        // opposite comparison to imageByScalingAndCroppingForSize in order to contain the image within the given bounds
+        if (widthFactor > heightFactor) {
+            scaleFactor = heightFactor; // scale to fit height
+        } else {
+            scaleFactor = widthFactor; // scale to fit width
+        }
+        scaledSize = CGSizeMake(MIN(width * scaleFactor, targetWidth), MIN(height * scaleFactor, targetHeight));
+    }
+    
+    // If the pixels are floats, it causes a white line in iOS8 and probably other versions too
+    scaledSize.width = (int)scaledSize.width;
+    scaledSize.height = (int)scaledSize.height;
+    
+    UIGraphicsBeginImageContext(scaledSize); // this will resize
+    
+    [sourceImage drawInRect:CGRectMake(0, 0, scaledSize.width, scaledSize.height)];
+    
+    newImage = UIGraphicsGetImageFromCurrentImageContext();
+    if (newImage == nil) {
+        NSLog(@"could not scale image");
+    }
+    
+    // pop the context to get back to the default
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 - (void)captureVideo:(CDVInvokedUrlCommand*)command
 {
     NSString* callbackId = command.callbackId;
@@ -222,6 +289,7 @@
     // options could contain limit, duration and mode
     // taking more than one video (limit) is only supported if provide own controls via cameraOverlayView property
     NSNumber* duration = [options objectForKey:@"duration"];
+    NSNumber* quality = [options objectForKey:@"quality"];
     NSString* mediaType = nil;
 
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
@@ -250,6 +318,18 @@
         pickerController.delegate = self;
         pickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
         pickerController.allowsEditing = NO;
+        
+        // Set quality of captured video
+        if (quality) {
+            if ([quality intValue] == 1) {
+                pickerController.videoQuality = UIImagePickerControllerQualityTypeLow;
+            } else if ([quality intValue] == 1) {
+                pickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
+            } else {
+                pickerController.videoQuality = UIImagePickerControllerQualityTypeMedium;
+            }
+        }
+        
         // iOS 3.0
         pickerController.mediaTypes = [NSArray arrayWithObjects:mediaType, nil];
 
