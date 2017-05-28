@@ -27,6 +27,8 @@ description: Capture audio, video, and images.
 
 # cordova-plugin-media-capture
 
+DUMMY ENTRY
+
 This plugin provides access to the device's audio, image, and video capture capabilities.
 
 __WARNING__: Collection and use of images, video, or
