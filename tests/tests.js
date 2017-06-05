@@ -243,6 +243,28 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         navigator.device.capture.captureVideo(captureVideoWin, captureVideoFail, options);
     }
 
+    function permissionWasNotAllowed() {
+        log('Media has been captured. Have you forgotten to disallow camera for this app?');
+    }
+
+    function catchPermissionError(error) {
+        if (CaptureError.CAPTURE_PERMISSION_DENIED === error.code) {
+            log('Sucess: permission error has been detected!');
+        } else {
+            log('Error: another error with code: ' + error.code);
+        }
+    }
+
+    function getVideoPermissionError() {
+        var options = { limit: 1, duration: 10 };
+        navigator.device.capture.captureVideo(permissionWasNotAllowed, catchPermissionError, options);
+    }
+
+    function getImagePermissionError() {
+        var options = { limit: 1 };
+        navigator.device.capture.captureImage(permissionWasNotAllowed, catchPermissionError, options);
+    }
+
     function resolveMediaFileURL(mediaFile, callback) {
         resolveLocalFileSystemURL(mediaFile.localURL, function (entry) {
             log("Resolved by URL: " + mediaFile.localURL);
@@ -300,7 +322,11 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         '<p/> <div id="video"></div>' +
         'Expected result: Record 10 second video. Status box will update with video file that you can play.' +
         '<p/> <div id="video_and_resolve"></div>' +
-        'Expected result: Record 5 second video. Status box will show that URL was resolved and video will get added at the bottom of the status box for playback.';
+        'Expected result: Record 5 second video. Status box will show that URL was resolved and video will get added at the bottom of the status box for playback.' +
+        '<p/> <div id="prohibited_camera_video"></div>' +
+        'Expected result (iOS only): camera picker and alert with message that camera access is prohibited are shown. The alert has 2 buttons: OK and Settings. By click on "OK" camera is hidden, by pressing Settings it shows privacy settings for the app' +
+        '<p/> <div id="prohibited_camera_image"></div>' +
+        'Expected result (iOS only): camera picker and alert with message that camera access is prohibited are shown. The alert has 2 buttons: OK and Settings. By click on "OK" camera is hidden, by pressing Settings it shows privacy settings for the app';
 
     createActionButton('Capture 10 sec of audio and play', function () {
         getAudio();
@@ -321,4 +347,12 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     createActionButton('Capture 5 sec of video and resolve', function () {
         resolveVideo();
     }, 'video_and_resolve');
+
+    createActionButton('Disable access to Camera and click to capture video', function() {
+      getVideoPermissionError();
+    }, 'prohibited_camera_video');
+
+    createActionButton('Disable access to Camera and click to capture image', function() {
+      getImagePermissionError();
+    }, 'prohibited_camera_image');
 };
