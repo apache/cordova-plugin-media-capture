@@ -21,60 +21,60 @@
 
 /* global PluginResult */
 
-//cordova-js/lib/common/plugin/CaptureError.js
-var INTERNAL_ERROR_CODE = 0,
-    APPLICATION_BUSY_ERROR_CODE = 1,
-    INVALID_ARGUMENT_ERROR_CODE = 2,
-    NO_MEDIA_FILES_ERROR_CODE = 3;
+// cordova-js/lib/common/plugin/CaptureError.js
+var INTERNAL_ERROR_CODE = 0;
+var APPLICATION_BUSY_ERROR_CODE = 1;
+var INVALID_ARGUMENT_ERROR_CODE = 2;
+var NO_MEDIA_FILES_ERROR_CODE = 3;
 
-function capture(action, options, result, webview) {
-    var limit = options.limit || 1,
-        fail = function (error) {
-            result.callbackError({code: INTERNAL_ERROR_CODE});
-        },
-        onCaptured = function (path) {
-            var sb = webview.setFileSystemSandbox;
-            webview.setFileSystemSandbox = false;
-            window.webkitRequestFileSystem(window.PERSISTENT, 1024, function (fs) {
-                fs.root.getFile(path, {}, function (fe) {
-                    fe.file(function (file) {
-                        file.fullPath = fe.fullPath;
-                        webview.setFileSystemSandbox = sb;
-                        result.callbackOk([file]);
-                    }, fail);
+function capture (action, options, result, webview) {
+    var limit = options.limit || 1;
+    var fail = function (error) { // eslint-disable-line handle-callback-err
+        result.callbackError({code: INTERNAL_ERROR_CODE});
+    };
+    var onCaptured = function (path) {
+        var sb = webview.setFileSystemSandbox;
+        webview.setFileSystemSandbox = false;
+        window.webkitRequestFileSystem(window.PERSISTENT, 1024, function (fs) {
+            fs.root.getFile(path, {}, function (fe) {
+                fe.file(function (file) {
+                    file.fullPath = fe.fullPath;
+                    webview.setFileSystemSandbox = sb;
+                    result.callbackOk([file]);
                 }, fail);
             }, fail);
-        },
-        onAudioCaptured = function (response) {
-            window.qnx.webplatform.getApplication().invocation.removeEventListener("childCardClosed", onAudioCaptured);
-            if (response.data && response.data !== "") {
-                onCaptured(response.data);
-            } else {
-                result.callbackError({code: NO_MEDIA_FILES_ERROR_CODE });
-            }
-        },
-        onCancelled = function () {
-            result.callbackError({code: NO_MEDIA_FILES_ERROR_CODE });
-        },
-        onInvoked = function (error) {
-            if (error) {
-                result.callbackError({code: APPLICATION_BUSY_ERROR_CODE});
-            }
-        };
+        }, fail);
+    };
+    var onAudioCaptured = function (response) {
+        window.qnx.webplatform.getApplication().invocation.removeEventListener('childCardClosed', onAudioCaptured);
+        if (response.data && response.data !== '') {
+            onCaptured(response.data);
+        } else {
+            result.callbackError({ code: NO_MEDIA_FILES_ERROR_CODE });
+        }
+    };
+    var onCancelled = function () {
+        result.callbackError({ code: NO_MEDIA_FILES_ERROR_CODE });
+    };
+    var onInvoked = function (error) {
+        if (error) {
+            result.callbackError({ code: APPLICATION_BUSY_ERROR_CODE });
+        }
+    };
 
     if (limit < 0) {
         result.error({code: INVALID_ARGUMENT_ERROR_CODE});
-    } else if (action === "audio") {
+    } else if (action === 'audio') {
         window.qnx.webplatform.getApplication().invocation.invoke(
-            { 
-                target: "sys.apps.audiorecorder",
-                action: "bb.action.CAPTURE"
+            {
+                target: 'sys.apps.audiorecorder',
+                action: 'bb.action.CAPTURE'
             },
             function (error) {
                 if (error) {
                     console.log(error);
                 } else {
-                    window.qnx.webplatform.getApplication().invocation.addEventListener("childCardClosed", onAudioCaptured);
+                    window.qnx.webplatform.getApplication().invocation.addEventListener('childCardClosed', onAudioCaptured);
                 }
             });
         result.noResult(true);
@@ -98,19 +98,19 @@ module.exports = {
         result.ok([]);
     },
     captureImage: function (win, fail, args, env) {
-        var result = new PluginResult(args, env),
-            options = args[0] === "undefined" ? {} : JSON.parse(decodeURIComponent(args[0]));
+        var result = new PluginResult(args, env);
+        var options = args[0] === 'undefined' ? {} : JSON.parse(decodeURIComponent(args[0]));
 
-        capture("photo", options,  result, env.webview);
+        capture('photo', options, result, env.webview);
     },
     captureVideo: function (win, fail, args, env) {
-        var result = new PluginResult(args, env),
-            options = args[0] === "undefined" ? {} : JSON.parse(decodeURIComponent(args[0]));
+        var result = new PluginResult(args, env);
+        var options = args[0] === 'undefined' ? {} : JSON.parse(decodeURIComponent(args[0]));
 
-        capture("video", options, result, env.webview);
+        capture('video', options, result, env.webview);
     },
     captureAudio: function (win, fail, args, env) {
         var result = new PluginResult(args, env);
-        capture("audio", {}, result, env.webview);
+        capture('audio', {}, result, env.webview);
     }
 };

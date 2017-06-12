@@ -22,7 +22,7 @@
 /**
  * Encapsulates a set of parameters that the capture device supports.
  */
-function ConfigurationData() {
+function ConfigurationData () {
     // The ASCII-encoded string in lower case representing the media type.
     this.type = null;
     // The height attribute represents height of the image or video in pixels.

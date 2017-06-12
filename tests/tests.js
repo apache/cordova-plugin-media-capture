@@ -19,40 +19,40 @@
  *
 */
 
-/* jshint jasmine: true */
+/* eslint-env jasmine */
 /* global CaptureAudioOptions, CaptureImageOptions, CaptureVideoOptions, CaptureError */
 /* global Media, MediaFile, MediaFileData, resolveLocalFileSystemURL */
 
 exports.defineAutoTests = function () {
     describe('Capture (navigator.device.capture)', function () {
-        it("capture.spec.1 should exist", function () {
+        it('capture.spec.1 should exist', function () {
             expect(navigator.device).toBeDefined();
             expect(navigator.device.capture).toBeDefined();
         });
 
-        it("capture.spec.2 should have the correct properties ", function () {
+        it('capture.spec.2 should have the correct properties ', function () {
             expect(navigator.device.capture.supportedAudioModes).toBeDefined();
             expect(navigator.device.capture.supportedImageModes).toBeDefined();
             expect(navigator.device.capture.supportedVideoModes).toBeDefined();
         });
 
-        it("capture.spec.3 should contain a captureAudio function", function () {
+        it('capture.spec.3 should contain a captureAudio function', function () {
             expect(navigator.device.capture.captureAudio).toBeDefined();
-            expect(typeof navigator.device.capture.captureAudio == 'function').toBe(true);
+            expect(typeof navigator.device.capture.captureAudio === 'function').toBe(true);
         });
 
-        it("capture.spec.4 should contain a captureImage function", function () {
+        it('capture.spec.4 should contain a captureImage function', function () {
             expect(navigator.device.capture.captureImage).toBeDefined();
-            expect(typeof navigator.device.capture.captureImage == 'function').toBe(true);
+            expect(typeof navigator.device.capture.captureImage === 'function').toBe(true);
         });
 
-        it("capture.spec.5 should contain a captureVideo function", function () {
+        it('capture.spec.5 should contain a captureVideo function', function () {
             expect(navigator.device.capture.captureVideo).toBeDefined();
-            expect(typeof navigator.device.capture.captureVideo == 'function').toBe(true);
+            expect(typeof navigator.device.capture.captureVideo === 'function').toBe(true);
         });
 
         describe('CaptureAudioOptions', function () {
-            it("capture.spec.6 CaptureAudioOptions constructor should exist", function () {
+            it('capture.spec.6 CaptureAudioOptions constructor should exist', function () {
                 var options = new CaptureAudioOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
@@ -61,7 +61,7 @@ exports.defineAutoTests = function () {
         });
 
         describe('CaptureImageOptions', function () {
-            it("capture.spec.7 CaptureImageOptions constructor should exist", function () {
+            it('capture.spec.7 CaptureImageOptions constructor should exist', function () {
                 var options = new CaptureImageOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
@@ -69,7 +69,7 @@ exports.defineAutoTests = function () {
         });
 
         describe('CaptureVideoOptions', function () {
-            it("capture.spec.8 CaptureVideoOptions constructor should exist", function () {
+            it('capture.spec.8 CaptureVideoOptions constructor should exist', function () {
                 var options = new CaptureVideoOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
@@ -78,14 +78,14 @@ exports.defineAutoTests = function () {
         });
 
         describe('CaptureError interface', function () {
-            it("capture.spec.9 CaptureError constants should be defined", function () {
+            it('capture.spec.9 CaptureError constants should be defined', function () {
                 expect(CaptureError.CAPTURE_INTERNAL_ERR).toBe(0);
                 expect(CaptureError.CAPTURE_APPLICATION_BUSY).toBe(1);
                 expect(CaptureError.CAPTURE_INVALID_ARGUMENT).toBe(2);
                 expect(CaptureError.CAPTURE_NO_MEDIA_FILES).toBe(3);
             });
 
-            it("capture.spec.10 CaptureError properties should exist", function () {
+            it('capture.spec.10 CaptureError properties should exist', function () {
                 var error = new CaptureError();
                 expect(error).toBeDefined();
                 expect(error.code).toBeDefined();
@@ -93,7 +93,7 @@ exports.defineAutoTests = function () {
         });
 
         describe('MediaFileData', function () {
-            it("capture.spec.11 MediaFileData constructor should exist", function () {
+            it('capture.spec.11 MediaFileData constructor should exist', function () {
                 var fileData = new MediaFileData();
                 expect(fileData).toBeDefined();
                 expect(fileData.bitrate).toBeDefined();
@@ -105,7 +105,7 @@ exports.defineAutoTests = function () {
         });
 
         describe('MediaFile', function () {
-            it("capture.spec.12 MediaFile constructor should exist", function () {
+            it('capture.spec.12 MediaFile constructor should exist', function () {
                 var fileData = new MediaFile();
                 expect(fileData).toBeDefined();
                 expect(fileData.name).toBeDefined();
@@ -124,12 +124,12 @@ exports.defineAutoTests = function () {
 exports.defineManualTests = function (contentEl, createActionButton) {
     var pageStartTime = +new Date();
 
-    function log(value) {
+    function log (value) {
         document.getElementById('camera_status').textContent += (new Date() - pageStartTime) / 1000 + ': ' + value + '\n';
         console.log(value);
     }
 
-    function captureAudioWin(mediaFiles) {
+    function captureAudioWin (mediaFiles) {
         var path = mediaFiles[0].fullPath;
         log('Audio captured: ' + path);
         var m = new Media(path);
@@ -137,40 +137,40 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         getFileMetadata(mediaFiles[0]);
     }
 
-    function captureAudioFail(e) {
+    function captureAudioFail (e) {
         log('Error getting audio: ' + e.code);
     }
 
-    function getAudio() {
+    function getAudio () {
         clearStatus();
         var options = { limit: 1, duration: 10 };
         navigator.device.capture.captureAudio(captureAudioWin, captureAudioFail, options);
     }
 
-    function captureImageWin(mediaFiles) {
+    function captureImageWin (mediaFiles) {
         var path = mediaFiles[0].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
-        if (cordova.platformId == 'windows' || cordova.platformId == 'windows8' || cordova.platformId === 'browser') {
+        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') { // eslint-disable-line no-undef
             path = mediaFiles[0].localURL;
         }
         log('Image captured: ' + path);
         document.getElementById('camera_image').src = path;
     }
 
-    function captureImagesWin(mediaFiles) {
+    function captureImagesWin (mediaFiles) {
         var path = mediaFiles[0].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
-        if (cordova.platformId == 'windows' || cordova.platformId == 'windows8' || cordova.platformId === 'browser') {
+        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') { // eslint-disable-line no-undef
             path = mediaFiles[0].localURL;
         }
         var path2 = mediaFiles[1].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
-        if (cordova.platformId == 'windows' || cordova.platformId == 'windows8' || cordova.platformId === 'browser') {
+        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') { // eslint-disable-line no-undef
             path = mediaFiles[1].localURL;
         }
         var path3 = mediaFiles[2].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
-        if (cordova.platformId == 'windows' || cordova.platformId == 'windows8' || cordova.platformId === 'browser') {
+        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') { // eslint-disable-line no-undef
             path = mediaFiles[2].localURL;
         }
         log('Image captured: ' + path);
@@ -181,23 +181,23 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         document.getElementById('camera_image3').src = path3;
     }
 
-    function captureImageFail(e) {
+    function captureImageFail (e) {
         log('Error getting image: ' + e.code);
     }
 
-    function getImage() {
+    function getImage () {
         clearStatus();
         var options = { limit: 1 };
         navigator.device.capture.captureImage(captureImageWin, captureImageFail, options);
     }
 
-    function getImages() {
+    function getImages () {
         clearStatus();
         var options = { limit: 3 };
         navigator.device.capture.captureImage(captureImagesWin, captureImageFail, options);
     }
 
-    function captureVideoWin(mediaFiles) {
+    function captureVideoWin (mediaFiles) {
         var path = mediaFiles[0].fullPath;
         log('Video captured: ' + path);
 
@@ -205,49 +205,49 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         // doesn't seem to work if you have a pre-existing video element and
         // add in a source tag
         var vid = document.createElement('video');
-        vid.id = "theVideo";
-        vid.width = "320";
-        vid.height = "240";
-        vid.controls = "true";
+        vid.id = 'theVideo';
+        vid.width = '320';
+        vid.height = '240';
+        vid.controls = 'true';
         var source_vid = document.createElement('source');
-        source_vid.id = "theSource";
+        source_vid.id = 'theSource';
         source_vid.src = path;
         vid.appendChild(source_vid);
         document.getElementById('video_container').appendChild(vid);
         getFileMetadata(mediaFiles[0]);
     }
 
-    function getFileMetadata(mediaFile) {
+    function getFileMetadata (mediaFile) {
         mediaFile.getFormatData(getMetadataWin, getMetadataFail);
     }
 
-    function getMetadataWin(metadata) {
+    function getMetadataWin (metadata) {
         var strMetadata =
-        "duration = " + metadata.duration + '\n' +
-        "width = " + metadata.width + '\n' +
-        "height = " + metadata.height;
+        'duration = ' + metadata.duration + '\n' +
+        'width = ' + metadata.width + '\n' +
+        'height = ' + metadata.height;
         log(strMetadata);
     }
 
-    function getMetadataFail(e) {
-        log("Error getting metadata: " + e.code);
+    function getMetadataFail (e) {
+        log('Error getting metadata: ' + e.code);
     }
 
-    function captureVideoFail(e) {
+    function captureVideoFail (e) {
         log('Error getting video: ' + e.code);
     }
 
-    function getVideo() {
+    function getVideo () {
         clearStatus();
         var options = { limit: 1, duration: 10 };
         navigator.device.capture.captureVideo(captureVideoWin, captureVideoFail, options);
     }
 
-    function permissionWasNotAllowed() {
+    function permissionWasNotAllowed () {
         log('Media has been captured. Have you forgotten to disallow camera for this app?');
     }
 
-    function catchPermissionError(error) {
+    function catchPermissionError (error) {
         if (CaptureError.CAPTURE_PERMISSION_DENIED === error.code) {
             log('Sucess: permission error has been detected!');
         } else {
@@ -255,39 +255,39 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         }
     }
 
-    function getVideoPermissionError() {
+    function getVideoPermissionError () {
         var options = { limit: 1, duration: 10 };
         navigator.device.capture.captureVideo(permissionWasNotAllowed, catchPermissionError, options);
     }
 
-    function getImagePermissionError() {
+    function getImagePermissionError () {
         var options = { limit: 1 };
         navigator.device.capture.captureImage(permissionWasNotAllowed, catchPermissionError, options);
     }
 
-    function resolveMediaFileURL(mediaFile, callback) {
+    function resolveMediaFileURL (mediaFile, callback) {
         resolveLocalFileSystemURL(mediaFile.localURL, function (entry) {
-            log("Resolved by URL: " + mediaFile.localURL);
+            log('Resolved by URL: ' + mediaFile.localURL);
             if (callback) callback();
         }, function (err) {
-            log("Failed to resolve by URL: " + mediaFile.localURL);
-            log("Error: " + JSON.stringify(err));
+            log('Failed to resolve by URL: ' + mediaFile.localURL);
+            log('Error: ' + JSON.stringify(err));
             if (callback) callback();
         });
     }
 
-    function resolveMediaFile(mediaFile, callback) {
+    function resolveMediaFile (mediaFile, callback) {
         resolveLocalFileSystemURL(mediaFile.fullPath, function (entry) {
-            log("Resolved by path: " + mediaFile.fullPath);
+            log('Resolved by path: ' + mediaFile.fullPath);
             if (callback) callback();
         }, function (err) {
-            log("Failed to resolve by path: " + mediaFile.fullPath);
-            log("Error: " + JSON.stringify(err));
+            log('Failed to resolve by path: ' + mediaFile.fullPath);
+            log('Error: ' + JSON.stringify(err));
             if (callback) callback();
         });
     }
 
-    function resolveVideo() {
+    function resolveVideo () {
         clearStatus();
         var options = { limit: 1, duration: 5 };
         navigator.device.capture.captureVideo(function (mediaFiles) {
@@ -298,7 +298,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         }, captureVideoFail, options);
     }
 
-    function clearStatus() {
+    function clearStatus () {
         document.getElementById('camera_status').innerHTML = '';
         document.getElementById('camera_image').src = 'about:blank';
         document.getElementById('camera_image2').src = 'about:blank';
@@ -348,11 +348,11 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         resolveVideo();
     }, 'video_and_resolve');
 
-    createActionButton('Disable access to Camera and click to capture video', function() {
-      getVideoPermissionError();
+    createActionButton('Disable access to Camera and click to capture video', function () {
+        getVideoPermissionError();
     }, 'prohibited_camera_video');
 
-    createActionButton('Disable access to Camera and click to capture image', function() {
-      getImagePermissionError();
+    createActionButton('Disable access to Camera and click to capture image', function () {
+        getImagePermissionError();
     }, 'prohibited_camera_image');
 };

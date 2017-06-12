@@ -21,7 +21,7 @@
 
 var MediaFile = require('./MediaFile');
 
-function wrapMediaFiles(pluginResult) {
+function wrapMediaFiles (pluginResult) {
     var mediaFiles = [];
     var i;
     for (i = 0; i < pluginResult.length; i++) {

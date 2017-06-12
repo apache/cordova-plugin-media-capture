@@ -22,8 +22,8 @@
 /**
  * The CaptureError interface encapsulates all errors in the Capture API.
  */
-var CaptureError = function(c) {
-   this.code = c || null;
+var CaptureError = function (c) {
+    this.code = c || null;
 };
 
 // Camera or microphone failed to capture image or sound.
