@@ -39,7 +39,8 @@ function MediaCaptureProxy() {
         captureStarted = false,
         capturedPictureFile,
         capturedVideoFile,
-        capture = null;
+        capture = null,
+        displayInformation;
 
     var CaptureNS = Windows.Media.Capture;
 
@@ -112,10 +113,11 @@ function MediaCaptureProxy() {
                 });
 
                 capture.initializeAsync(captureSettings).done(function () {
-                    // This is necessary since WP8.1 MediaCapture outputs video stream rotated 90 degrees CCW
-                    // TODO: This can be not consistent across devices, need additional testing on various devices
-                    // msdn.microsoft.com/en-us/library/windows/apps/hh452807.aspx
-                    capture.setPreviewRotation(Windows.Media.Capture.VideoRotation.clockwise90Degrees);
+                    displayInformation = Windows.Graphics.Display.DisplayInformation.getForCurrentView();
+                    var orientation = deviceInformation.currentOrientation;
+                    setRotation(orientation);
+
+                    deviceInformation.onorientationchanged = orientationChangedHandler;
                     capturePreview.msZoom = true;
 
                     capturePreview.src = URL.createObjectURL(capture);
@@ -143,6 +145,41 @@ function MediaCaptureProxy() {
         });
     }
 
+    function orientationChangedHandler(ev) {
+        setRotation(ev.target.currentOrientation);
+    }
+
+    function setRotation(orientation) {
+        switch (orientation) {
+            case Windows.Graphics.Display.DisplayOrientations.none:
+                capture.setPreviewRotation(Windows.Media.Capture.VideoRotation.clockwise90Degrees);
+                capture.setRecordRotation(Windows.Media.Capture.VideoRotation.clockwise90Degrees);
+                break;
+            case Windows.Graphics.Display.DisplayOrientations.landscape:
+                capture.setPreviewRotation(Windows.Media.Capture.VideoRotation.none);
+                capture.setRecordRotation(Windows.Media.Capture.VideoRotation.none);
+                break;
+            case Windows.Graphics.Display.DisplayOrientations.portrait:
+                capture.setPreviewRotation(Windows.Media.Capture.VideoRotation.clockwise90Degrees);
+                capture.setRecordRotation(Windows.Media.Capture.VideoRotation.clockwise90Degrees);
+                break;
+            case Windows.Graphics.Display.DisplayOrientations.landscapeFlipped:
+                capture.setPreviewRotation(Windows.Media.Capture.VideoRotation.clockwise180Degrees);
+                capture.setRecordRotation(Windows.Media.Capture.VideoRotation.clockwise180Degrees);
+                break;
+            case Windows.Graphics.Display.DisplayOrientations.portraitFlipped:
+                capture.setPreviewRotation(Windows.Media.Capture.VideoRotation.clockwise270Degrees);
+                capture.setRecordRotation(Windows.Media.Capture.VideoRotation.clockwise270Degrees);
+                break;
+        }
+
+    }
+
+    function lockRotation() {
+        Windows.Graphics.Display.DisplayInformation.autoRotationPreferences = displayInformation.currentOrientation;
+    }
+
+
     /**
      * Destroys camera preview, removes all elements created
      */
@@ -154,6 +191,7 @@ function MediaCaptureProxy() {
         }
         if (capture) {
             capture.stopRecordAsync();
+            displayInformation.onorientationchanged = null;
             capture = null;
         }
     }
@@ -179,7 +217,8 @@ function MediaCaptureProxy() {
                             generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName,
                             localFolder = Windows.Storage.ApplicationData.current.localFolder;
 
-                        localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function(capturedFile) {
+                        localFolder.createFileAsync("cameraCaptureVideo.mp4", generateUniqueCollisionOption).done(function (capturedFile) {
+                            lockRotation();
                             capture.startRecordToStorageFileAsync(encodingProperties, capturedFile).done(function() {
                                 capturedVideoFile = capturedFile;
                                 captureStarted = true;
