@@ -25,6 +25,7 @@
 var CaptureImageOptions = function () {
     // Upper limit of images user can take. Value must be equal or greater than 1.
     this.limit = 1;
+    this.confirmCapture = true;
 };
 
 module.exports = CaptureImageOptions;

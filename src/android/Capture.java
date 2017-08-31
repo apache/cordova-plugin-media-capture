@@ -269,6 +269,8 @@ public class Capture extends CordovaPlugin {
             this.numPics = queryImgDB(whichContentStore()).getCount();
 
             Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            if(!req.confirmCapture)
+                intent.putExtra("android.intent.extra.quickCapture",true);
 
             ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
             ContentValues cv = new ContentValues();

@@ -358,6 +358,7 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 ### Properties
 
 - __limit__: The maximum number of images the user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
+- __confirmCapture__: Decides if a capture confirm dialog shall show up after capturing an image (defaults to true).
 
 ### Example
 
@@ -369,6 +370,7 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 ### iOS Quirks
 
 - The __limit__ parameter is not supported, and only one image is taken per invocation.
+- The __confirmCapture__ parameter is not supported, and everytime the capture confirm dialoge shows up.
 
 
 ## CaptureVideoOptions
