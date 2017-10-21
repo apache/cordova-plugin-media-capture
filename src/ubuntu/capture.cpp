@@ -109,8 +109,6 @@ void MediaCapture::cancel() {
     if (!_ecId)
         return;
 
-    m_cordova->execQML("CordovaWrapper.global.captureObject.destroy()");
-
     _recorder.clear();
     this->callback(_ecId, QString("{code: %1}").arg(CAPTURE_NO_MEDIA_FILES));
     _ecId = _scId = 0;
@@ -124,7 +122,11 @@ void MediaCapture::captureVideo(int scId, int ecId, const QVariantMap &) {
         return;
     }
 
+#ifdef Q_PROCESSOR_X86
     QString path = m_cordova->get_app_dir() + "/../qml/MediaCaptureWidget.qml";
+#else
+    QString path = m_cordova->get_app_dir() + "/../qml/MediaCaptureWidgetContentHub.qml";
+#endif
     QString qml = QString(code).arg(CordovaInternal::format(path)).arg("videoRecording");
     m_cordova->execQML(qml);
 
@@ -137,8 +139,6 @@ void MediaCapture::onVideoRecordEnd(const QString &uri) {
 
     this->callback(_scId, QString("[%1]").arg(formatFile(_db, path)));
     _ecId = _scId = 0;
-
-    m_cordova->execQML("CordovaWrapper.global.captureObject.destroy()");
 }
 
 void MediaCapture::captureImage(int scId, int ecId, const QVariantMap &) {
@@ -147,7 +147,11 @@ void MediaCapture::captureImage(int scId, int ecId, const QVariantMap &) {
         return;
     }
 
+#ifdef Q_PROCESSOR_X86
     QString path = m_cordova->get_app_dir() + "/../qml/MediaCaptureWidget.qml";
+#else
+    QString path = m_cordova->get_app_dir() + "/../qml/MediaCaptureWidgetContentHub.qml";
+#endif
     QString qml = QString(code).arg(CordovaInternal::format(path)).arg("camera");
     m_cordova->execQML(qml);
 

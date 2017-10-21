@@ -119,6 +119,7 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
 
         <resource-file src="src/ubuntu/back.png" />
         <resource-file src="src/ubuntu/MediaCaptureWidget.qml" />
+        <resource-file src="src/ubuntu/MediaCaptureWidgetContentHub.qml" />
         <resource-file src="src/ubuntu/shoot.png" />
         <resource-file src="src/ubuntu/microphone.png" />
         <resource-file src="src/ubuntu/record_on.png" />
