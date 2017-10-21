@@ -76,10 +76,12 @@
 
 @implementation CDVCapture
 @synthesize inUse;
+@synthesize isAnimated;
 
 - (void)pluginInitialize
 {
     self.inUse = NO;
+    self.isAnimated = YES;
 }
 
 - (void)captureAudio:(CDVInvokedUrlCommand*)command
@@ -89,6 +91,11 @@
 
     if ([options isKindOfClass:[NSNull class]]) {
         options = [NSDictionary dictionary];
+    }
+
+    NSNumber* animated = [options objectForKey:@"animated"];
+    if (animated) {
+        self.isAnimated = [animated boolValue];
     }
 
     NSNumber* duration = [options objectForKey:@"duration"];
@@ -105,13 +112,14 @@
     } else {
         // all the work occurs here
         CDVAudioRecorderViewController* audioViewController = [[CDVAudioRecorderViewController alloc] initWithCommand:self duration:duration callbackId:callbackId];
+        audioViewController.isAnimated = self.isAnimated;
 
         // Now create a nav controller and display the view...
         CDVAudioNavigationController* navController = [[CDVAudioNavigationController alloc] initWithRootViewController:audioViewController];
 
         self.inUse = YES;
 
-        [self.viewController presentViewController:navController animated:YES completion:nil];
+        [self.viewController presentViewController:navController animated:self.isAnimated completion:nil];
     }
 
     if (result) {
@@ -131,6 +139,10 @@
     // options could contain limit and mode neither of which are supported at this time
     // taking more than one picture (limit) is only supported if provide own controls via cameraOverlayView property
     // can support mode in OS
+    NSNumber* animated = [options objectForKey:@"animated"];
+    if (animated) {
+        self.isAnimated = [animated boolValue];
+    }
 
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         NSLog(@"Capture.imageCapture: camera not available.");
@@ -159,7 +171,7 @@
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
 
-        [self.viewController presentViewController:pickerController animated:YES completion:nil];
+        [self.viewController presentViewController:pickerController animated:self.isAnimated completion:nil];
     }
 }
 
@@ -222,6 +234,11 @@
 
     // options could contain limit, duration and mode
     // taking more than one video (limit) is only supported if provide own controls via cameraOverlayView property
+    NSNumber* animated = [options objectForKey:@"animated"];
+    if (animated) {
+        self.isAnimated = [animated boolValue];
+    }
+
     NSNumber* duration = [options objectForKey:@"duration"];
     NSString* mediaType = nil;
 
@@ -273,7 +290,7 @@
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
 
-        [self.viewController presentViewController:pickerController animated:YES completion:nil];
+        [self.viewController presentViewController:pickerController animated:self.isAnimated completion:nil];
     }
 }
 
@@ -540,7 +557,7 @@
     CDVImagePicker* cameraPicker = (CDVImagePicker*)picker;
     NSString* callbackId = cameraPicker.callbackId;
 
-    [[picker presentingViewController] dismissViewControllerAnimated:YES completion:nil];
+    [[picker presentingViewController] dismissViewControllerAnimated:self.isAnimated completion:nil];
 
     CDVPluginResult* result = nil;
 
@@ -577,7 +594,7 @@
     CDVImagePicker* cameraPicker = (CDVImagePicker*)picker;
     NSString* callbackId = cameraPicker.callbackId;
 
-    [[picker presentingViewController] dismissViewControllerAnimated:YES completion:nil];
+    [[picker presentingViewController] dismissViewControllerAnimated:self.isAnimated completion:nil];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_NO_MEDIA_FILES];
     [self.commandDelegate sendPluginResult:result callbackId:callbackId];
@@ -610,7 +627,7 @@
 @end
 
 @implementation CDVAudioRecorderViewController
-@synthesize errorCode, callbackId, duration, captureCommand, doneButton, recordingView, recordButton, recordImage, stopRecordImage, timerLabel, avRecorder, avSession, pluginResult, timer, isTimed;
+@synthesize errorCode, callbackId, duration, captureCommand, doneButton, recordingView, recordButton, recordImage, stopRecordImage, timerLabel, avRecorder, avSession, pluginResult, timer, isTimed, isAnimated;
 
 - (NSString*)resolveImageResource:(NSString*)resource
 {
@@ -894,7 +911,7 @@
 - (void)dismissAudioView:(id)sender
 {
     // called when done button pressed or when error condition to do cleanup and remove view
-    [[self.captureCommand.viewController.presentedViewController presentingViewController] dismissViewControllerAnimated:YES completion:nil];
+    [[self.captureCommand.viewController.presentedViewController presentingViewController] dismissViewControllerAnimated:self.isAnimated completion:nil];
 
     if (!self.pluginResult) {
         // return error
