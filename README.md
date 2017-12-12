@@ -61,13 +61,9 @@ Report issues with this plugin on the [Apache Cordova issue tracker](https://iss
 
 ## Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - Browser
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ## Objects
@@ -126,12 +122,8 @@ code.
 
 ### Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ### Example
@@ -189,13 +181,9 @@ object featuring a `CaptureError.CAPTURE_NO_MEDIA_FILES` error code.
 
 ### Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - Browser
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ### iOS Quirks
@@ -228,11 +216,6 @@ To add these entries into the `info.plist`, you can use the `edit-config` tag in
     <string>need to photo library access to get pictures from there</string>
 </edit-config>
 ```
-
-### Windows Phone 7 Quirks
-
-Invoking the native camera application while your device is connected
-via Zune does not work, and the error callback executes.
 
 ### Browser Quirks
 
@@ -291,12 +274,8 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 ### Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ### Example
@@ -319,10 +298,6 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
     navigator.device.capture.captureVideo(captureSuccess, captureError, {limit:2});
 
 
-### BlackBerry 10 Quirks
-
-- Cordova for BlackBerry 10 attempts to launch the __Video Recorder__ application, provided by RIM, to capture video recordings. The app receives a `CaptureError.CAPTURE_NOT_SUPPORTED` error code if the application is not installed on the device.
-
 
 ## CaptureAudioOptions
 
@@ -341,18 +316,10 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
     navigator.device.capture.captureAudio(captureSuccess, captureError, options);
 
-### Amazon Fire OS Quirks
-
-- The `duration` parameter is not supported.  Recording lengths cannot be limited programmatically.
-
 ### Android Quirks
 
 - The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
 
-### BlackBerry 10 Quirks
-
-- The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
-- The `limit` parameter is not supported, so only one recording can be created for each invocation.
 
 ### iOS Quirks
 
@@ -395,10 +362,6 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
     var options = { limit: 3 };
 
     navigator.device.capture.captureVideo(captureSuccess, captureError, options);
-
-### BlackBerry 10 Quirks
-
-- The __duration__ property is ignored, so the length of recordings can't be limited programmatically.
 
 ### iOS Quirks
 
@@ -549,23 +512,10 @@ callback.
 
 ### Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
-### Amazon Fire OS Quirks
-
-The API to access media file format information is limited, so not all
-`MediaFileData` properties are supported.
-
-### BlackBerry 10 Quirks
-
-Does not provide an API for information about media files, so all
-`MediaFileData` objects return with default values.
 
 ### Android Quirks
 
@@ -612,36 +562,6 @@ The API to access media file format information is limited, so not all
 - __width__: The width of the image or video in pixels. The value is zero for audio clips. (Number)
 
 - __duration__: The length of the video or sound clip in seconds. The value is zero for images. (Number)
-
-### BlackBerry 10 Quirks
-
-No API provides format information for media files, so the
-`MediaFileData` object returned by `MediaFile.getFormatData` features
-the following default values:
-
-- __codecs__: Not supported, and returns `null`.
-
-- __bitrate__: Not supported, and returns zero.
-
-- __height__: Not supported, and returns zero.
-
-- __width__: Not supported, and returns zero.
-
-- __duration__: Not supported, and returns zero.
-
-### Amazon Fire OS Quirks
-
-Supports the following `MediaFileData` properties:
-
-- __codecs__: Not supported, and returns `null`.
-
-- __bitrate__: Not supported, and returns zero.
-
-- __height__: Supported: image and video files only.
-
-- __width__: Supported: image and video files only.
-
-- __duration__: Supported: audio and video files only
 
 ### Android Quirks
 
