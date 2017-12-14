@@ -1,20 +1,15 @@
 {
   "name": "cordova-plugin-media-capture",
-  "version": "2.0.1-dev",
+  "version": "3.0.0-dev",
   "description": "Cordova Media Capture Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
     "id": "cordova-plugin-media-capture",
     "platforms": [
       "android",
-      "amazon-fireos",
-      "ubuntu",
       "ios",
-      "blackberry10",
-      "wp7",
-      "wp8",
-      "windows8",
-      "windows"
+      "windows",
+      "browser"
     ]
   },
   "repository": {
@@ -30,13 +25,7 @@
     "capture",
     "ecosystem:cordova",
     "cordova-android",
-    "cordova-amazon-fireos",
-    "cordova-ubuntu",
     "cordova-ios",
-    "cordova-blackberry10",
-    "cordova-wp7",
-    "cordova-wp8",
-    "cordova-windows8",
     "cordova-windows"
   ],
   "scripts": {
