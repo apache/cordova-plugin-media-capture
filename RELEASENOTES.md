@@ -20,6 +20,9 @@
 -->
 # Release Notes
 
+### 3.0.0 (Dec 15, 2017)
+* [CB-13669](https://issues.apache.org/jira/browse/CB-13669) : Remove deprecated plugins
+
 ### 2.0.0 (Nov 06, 2017)
 * [CB-13520](https://issues.apache.org/jira/browse/CB-13520) (all): Add 'protective' entry to `cordovaDependencies`
 * [CB-13266](https://issues.apache.org/jira/browse/CB-13266) (ios): Remove **iOS** usage descriptions

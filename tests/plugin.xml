@@ -22,7 +22,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     id="cordova-plugin-media-capture-tests"
-    version="2.0.1-dev">
+    version="3.0.0">
     <name>Cordova Media Capture Plugin Tests</name>
     <license>Apache 2.0</license>
 
