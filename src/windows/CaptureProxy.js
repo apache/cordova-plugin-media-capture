@@ -20,6 +20,7 @@
 */
 
 /* global Windows:true */
+var urlutil = require('cordova/urlutil');
 
 var MediaFile = require('cordova-plugin-media-capture.MediaFile');
 var CaptureError = require('cordova-plugin-media-capture.CaptureError');
@@ -273,7 +274,7 @@ module.exports = {
 
         var audioOptions = new CaptureAudioOptions();
         if (typeof (options.duration) === 'undefined') {
-            audioOptions.duration = 3600; // Arbitrary amount, need to change later
+            audioOptions.duration = 3599; // Arbitrary amount, need to change later
         } else if (options.duration > 0) {
             audioOptions.duration = options.duration;
         } else {
@@ -294,27 +295,147 @@ module.exports = {
 
         mediaCaptureSettings.streamingCaptureMode = CaptureNS.StreamingCaptureMode.audio;
 
-        var capturedFile;
-        var stopRecordTimeout;
+        var capturedFile = null;
+        var stopRecordTimeout = null;
+        var stopButton = null;
+        var cancelButton = null;
+        var progressUpdate = null;
+        var captureCancelled = false;
+        var cleanup;
 
         var stopRecord = function () {
             mediaCapture.stopRecordAsync().then(function () {
                 capturedFile.getBasicPropertiesAsync().then(function (basicProperties) {
                     var result = new MediaFile(capturedFile.name, 'ms-appdata:///local/' + capturedFile.name, capturedFile.contentType, basicProperties.dateModified, basicProperties.size);
                     result.fullPath = capturedFile.path;
-                    successCallback([result]);
+                    if (captureCancelled) {
+                        errorCallback(new CaptureError(CaptureError.CAPTURE_USER_CANCEL));
+                        cleanup();
+                    } else {
+                        // prevent deletion on cleanup!
+                        successCallback([result]);
+                        capturedFile = null;
+                        cleanup();
+                    }
                 }, function () {
                     errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                    cleanup();
                 });
-            }, function () { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
+            }, function () {
+                errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                cleanup();
+            });
         };
+
+        var cancelRecord = function () {
+            captureCancelled = true;
+            stopRecord();
+        }
+
+        cleanup = function () {
+            if (capturedFile) {
+                capturedFile.deleteAsync();
+                capturedFile = null;
+            }
+            if (stopButton) {
+                stopButton.removeEventListener("click", stopRecord, false);
+            }
+            if (cancelButton) {
+                cancelButton.removeEventListener("click", cancelRecord, false);
+            }
+            if (options.element && options.element.firstElementChild) {
+                var oldElement = options.element.firstElementChild;
+                options.element.removeChild(oldElement);
+                oldElement.innerHTML = "";
+            }
+        }
+
+        if (options.element && typeof options.element.tagName === "string" &&
+            options.element.tagName.toLowerCase() === "div") {
+            //TODO: Create progress bar and stop button
+            var captureRecorderStyle = document.createElement("link");
+            captureRecorderStyle.rel = "stylesheet";
+            captureRecorderStyle.type = "text/css";
+            captureRecorderStyle.href = urlutil.makeAbsolute("/www/css/cordova-plugin-media-capture.css");
+
+            document.head.appendChild(captureRecorderStyle);
+
+            var captureRecorderFrame = document.createElement("div");
+            captureRecorderFrame.className = "recorder-ui-wrap";
+
+            var actionBar = document.createElement("div");
+            actionBar.className = "recorder-action-bar";
+            actionBar.onclick = function (e) {
+                e.cancelBubble = true;
+            };
+
+            cancelButton = document.createElement("span");
+            cancelButton.className = "recorder-action win-button action-cancel";
+            actionBar.appendChild(cancelButton);
+
+            var progressBar = document.createElement("progress");
+            progressBar.className = "recorder-action win-progress-bar action-progress-bar";
+            progressBar.min = 0;
+            progressBar.max = audioOptions.duration;
+            actionBar.appendChild(progressBar);
+
+            var startTime = new Date();
+            var startMs = startTime.getHours() * 3600000 +
+                startTime.getMinutes() * 60000 +
+                startTime.getSeconds() * 1000 + 
+                startTime.getMilliseconds();
+            var getProgressDuration = function () {
+                var currentTime = new Date();
+                var currentMs = currentTime.getHours() * 3600000 +
+                    currentTime.getMinutes() * 60000 +
+                    currentTime.getSeconds() * 1000 +
+                    currentTime.getMilliseconds();
+                var ms = currentMs - startMs;
+                var seconds = Math.floor(ms / 1000);
+                var minPart = (Math.floor(seconds / 60) + 100).toString().substr(1);
+                var secPart = (seconds % 60 + 100).toString().substr(1);
+                var subSec = (ms % 1000 + 1000).toString().substr(1);
+                return {
+                    seconds: seconds,
+                    textContent: minPart + ":" + secPart + "." + subSec
+                };
+            };
+
+            var progressValue = document.createElement("span");
+            progressValue.className = "recorder-action win-type-body action-progress-value";
+            progressValue.textContent = "";
+            actionBar.appendChild(progressValue);
+
+            stopButton = document.createElement("span");
+            stopButton.className = "recorder-action win-button action-stop";
+            actionBar.appendChild(stopButton);
+
+            captureRecorderFrame.appendChild(actionBar);
+            options.element.appendChild(captureRecorderFrame);
+
+            progressUpdate = function () {
+                var duration = getProgressDuration();
+                progressBar.value = duration.seconds;
+                progressValue.textContent = duration.textContent;
+                window.setTimeout(progressUpdate, 50);
+            };
+            
+            stopButton.addEventListener("click", stopRecord, false);
+            cancelButton.addEventListener("click", cancelRecord, false);
+        }
 
         mediaCapture.initializeAsync(mediaCaptureSettings).done(function () {
             localAppData.createFileAsync('captureAudio.mp3', generateUniqueName).then(function (storageFile) {
                 capturedFile = storageFile;
                 mediaCapture.startRecordToStorageFileAsync(mp3EncodingProfile, capturedFile).then(function () {
+                    if (progressUpdate) {
+                        progressUpdate();
+                    }
                     stopRecordTimeout = setTimeout(stopRecord, audioOptions.duration * 1000);
                 }, function (err) {
+                    // delete first file on error!
+                    capturedFile.deleteAsync();
+                    capturedFile = null;
                     // -1072868846 is the error code for "No suitable transform was found to encode or decode the content."
                     // so we try to use another (m4a) format
                     if (err.number === -1072868846) {
@@ -328,15 +449,21 @@ module.exports = {
                             }, function () {
                                 // if we here, we're totally failed to record either mp3 or m4a
                                 errorCallback(new CaptureError(CaptureError.CAPTURE_INTERNAL_ERR));
-
+                                cleanup();
                             });
                         });
                     } else {
                         errorCallback(new CaptureError(CaptureError.CAPTURE_INTERNAL_ERR));
-
+                        cleanup();
                     }
                 });
-            }, function () { errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES)); });
+            }, function() {
+                errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                cleanup();
+            });
+        }, function () {
+            errorCallback(new CaptureError(CaptureError.CAPTURE_PERMISSION_DENIED));
+            cleanup();
         });
     },
 

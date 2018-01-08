@@ -1,0 +1,90 @@
+﻿.recorder-ui-wrap {
+    display: inline-block;
+    position: relative;
+    top: 0;
+    left: 0;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+}
+
+.recorder-action-bar {
+    display: inline-block;
+    position: relative;
+    bottom: 0;
+    background: 0 0 black;
+    width: 100%;
+    height: 40px;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 10px;
+}
+
+.recorder-action {
+    display: inline-block;
+    position: relative;
+    margin: 0 10px;
+}
+
+.app-bar-action {
+    min-width: 20px;
+    width: 40px;
+    height: 40px;
+    margin: 20px;
+    font-family: "Segoe UI Symbol";
+    color: white;
+    font-size: 32px;
+    text-align: center;
+    cursor: default;
+    margin: 0 10px;
+}
+
+.action-stop {
+    min-height: 28px;
+    min-width: 20px;
+    border-radius: 20px;
+    border-color: white;
+    color: red;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 8px;
+    padding-bottom: 0;
+}
+.action-stop::before {
+    content: "\2B1B";
+}
+
+
+.action-stop:hover {
+    color: red;
+    background-color: gray;
+}
+
+.action-cancel {
+    min-height: 28px;
+    min-width: 20px;
+    border-radius: 20px;
+    border-color: white;
+    color: whitesmoke;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 8px;
+    padding-bottom: 0;
+}
+.action-cancel::before {
+    content: "\E10A";
+}
+
+.action-cancel:hover {
+    background-color: gray;
+}
+
+.action-progress-bar {
+    top: -4px;
+    width: calc(100% - 240px);
+    background-color: white;
+}
+
+.action-progress-value {
+     color: white;
+}

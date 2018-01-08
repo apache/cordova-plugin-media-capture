@@ -22,7 +22,7 @@
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:rim="http://www.blackberry.com/ns/widgets"
            id="cordova-plugin-media-capture"
-      version="2.0.1-dev">
+      version="2.0.0">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -242,6 +242,7 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         <js-module src="src/windows/CaptureProxy.js" name="CaptureProxy">
             <runs />
         </js-module>
+        <asset src="src/windows/assets/cordova-plugin-media-capture.css" target="css/cordova-plugin-media-capture.css"/>
     </platform>
 
     <!-- browser -->
