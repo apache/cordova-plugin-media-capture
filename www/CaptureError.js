@@ -36,6 +36,8 @@ CaptureError.CAPTURE_INVALID_ARGUMENT = 2;
 CaptureError.CAPTURE_NO_MEDIA_FILES = 3;
 // User denied permissions required to perform the capture request.
 CaptureError.CAPTURE_PERMISSION_DENIED = 4;
+// User cancelled action.
+CaptureError.CAPTURE_USER_CANCEL = 10;
 // The requested capture operation is not supported.
 CaptureError.CAPTURE_NOT_SUPPORTED = 20;
 
