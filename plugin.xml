@@ -32,7 +32,7 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
     <issue>https://issues.apache.org/jira/browse/CB/component/12320646</issue>
 
     <engines>
-        <engine name="cordova-android" version=">=6.3.0" />
+        <engine name="cordova-android" version=">=6.0.0" />
     </engines>
 
     <dependency id="cordova-plugin-file" version="^5.0.0" />
