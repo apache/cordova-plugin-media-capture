@@ -223,10 +223,15 @@ public class Capture extends CordovaPlugin {
     }
 
     /**
-     * Sets up an intent to capture audio.  Result handled by onActivityResult()
+     * Sets up an intent to capture audio.  Result handled by onActivityResult()  
      */
     private void captureAudio(Request req) {
-      if (!PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+      boolean saveAlbumPermission = PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+      boolean recordAudioPermission = PermissionHelper.hasPermission(this, Manifest.permission.RECORD_AUDIO);
+
+      if (!recordAudioPermission) {
+          PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.RECORD_AUDIO);
+      } else if (!saveAlbumPermission) {
           PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.READ_EXTERNAL_STORAGE);
       } else {
           Intent intent = new Intent(android.provider.MediaStore.Audio.Media.RECORD_SOUND_ACTION);

@@ -44,7 +44,7 @@
     min-width: 20px;
     border-radius: 20px;
     border-color: white;
-    color: red;
+    color: red !important;
     text-align: center;
     font-size: 14px;
     padding-top: 8px;
@@ -56,7 +56,7 @@
 
 
 .action-stop:hover {
-    color: red;
+    color: red !important;
     background-color: gray;
 }
 

@@ -382,7 +382,7 @@ module.exports = {
             var startTime = new Date();
             var startMs = startTime.getHours() * 3600000 +
                 startTime.getMinutes() * 60000 +
-                startTime.getSeconds() * 1000 + 
+                startTime.getSeconds() * 1000 +
                 startTime.getMilliseconds();
             var getProgressDuration = function () {
                 var currentTime = new Date();
@@ -419,7 +419,7 @@ module.exports = {
                 progressValue.textContent = duration.textContent;
                 window.setTimeout(progressUpdate, 50);
             };
-            
+
             stopButton.addEventListener("click", stopRecord, false);
             cancelButton.addEventListener("click", cancelRecord, false);
         }
@@ -445,6 +445,9 @@ module.exports = {
                         localAppData.createFileAsync('captureAudio.m4a', generateUniqueName).then(function (storageFile) {
                             capturedFile = storageFile;
                             mediaCapture.startRecordToStorageFileAsync(m4aEncodingProfile, capturedFile).then(function () {
+								if (progressUpdate) {
+									progressUpdate();
+								}
                                 stopRecordTimeout = setTimeout(stopRecord, audioOptions.duration * 1000);
                             }, function () {
                                 // if we here, we're totally failed to record either mp3 or m4a
