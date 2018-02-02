@@ -305,22 +305,27 @@ module.exports = {
 
         var stopRecord = function () {
             mediaCapture.stopRecordAsync().then(function () {
-                capturedFile.getBasicPropertiesAsync().then(function (basicProperties) {
-                    var result = new MediaFile(capturedFile.name, 'ms-appdata:///local/' + capturedFile.name, capturedFile.contentType, basicProperties.dateModified, basicProperties.size);
-                    result.fullPath = capturedFile.path;
-                    if (captureCancelled) {
-                        errorCallback(new CaptureError(CaptureError.CAPTURE_USER_CANCEL));
-                        cleanup();
-                    } else {
-                        // prevent deletion on cleanup!
-                        successCallback([result]);
-                        capturedFile = null;
-                        cleanup();
-                    }
-                }, function () {
+                if (!capturedFile) {
                     errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                     cleanup();
-                });
+                } else {
+                    capturedFile.getBasicPropertiesAsync().then(function (basicProperties) {
+                        var result = new MediaFile(capturedFile.name, 'ms-appdata:///local/' + capturedFile.name, capturedFile.contentType, basicProperties.dateModified, basicProperties.size);
+                        result.fullPath = capturedFile.path;
+                        if (captureCancelled) {
+                            errorCallback(new CaptureError(CaptureError.CAPTURE_USER_CANCEL));
+                            cleanup();
+                        } else {
+                            // prevent deletion on cleanup!
+                            successCallback([result]);
+                            capturedFile = null;
+                            cleanup();
+                        }
+                    }, function () {
+                        errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
+                        cleanup();
+                    });
+                }
             }, function () {
                 errorCallback(new CaptureError(CaptureError.CAPTURE_NO_MEDIA_FILES));
                 cleanup();
