@@ -158,7 +158,7 @@
         }*/
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
-
+        pickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
         [self.viewController presentViewController:pickerController animated:YES completion:nil];
     }
 }
@@ -272,7 +272,7 @@
         }
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;
-
+        pickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
         [self.viewController presentViewController:pickerController animated:YES completion:nil];
     }
 }
