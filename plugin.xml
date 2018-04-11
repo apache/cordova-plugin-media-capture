@@ -22,7 +22,7 @@
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:rim="http://www.blackberry.com/ns/widgets"
            id="cordova-plugin-media-capture"
-      version="1.4.4-dev">
+      version="3.0.2-dev">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -31,8 +31,11 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
     <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-media-capture.git</repo>
     <issue>https://issues.apache.org/jira/browse/CB/component/12320646</issue>
 
-    <dependency id="cordova-plugin-file" version="^4.0.0" />
-    <dependency id="cordova-plugin-compat" version="^1.0.0" />
+    <engines>
+        <engine name="cordova-android" version=">=6.3.0" />
+    </engines>
+
+    <dependency id="cordova-plugin-file" version="^6.0.0" />
 
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
@@ -90,48 +93,6 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         </js-module>
     </platform>
 
-    <!-- amazon-fireos -->
-    <platform name="amazon-fireos">
-        <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Capture" >
-                <param name="android-package" value="org.apache.cordova.mediacapture.Capture"/>
-            </feature>
-        </config-file>
-
-        <config-file target="AndroidManifest.xml" parent="/*">
-            <uses-permission android:name="android.permission.RECORD_AUDIO" />
-            <uses-permission android:name="android.permission.RECORD_VIDEO"/>
-            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        </config-file>
-
-        <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
-        <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
-    </platform>
-
-
-    <!-- ubuntu -->
-    <platform name="ubuntu">
-        <header-file src="src/ubuntu/capture.h" />
-        <source-file src="src/ubuntu/capture.cpp" />
-
-        <resource-file src="src/ubuntu/back.png" />
-        <resource-file src="src/ubuntu/MediaCaptureWidget.qml" />
-        <resource-file src="src/ubuntu/shoot.png" />
-        <resource-file src="src/ubuntu/microphone.png" />
-        <resource-file src="src/ubuntu/record_on.png" />
-        <resource-file src="src/ubuntu/record_off.png" />
-        <resource-file src="src/ubuntu/toolbar-left.png" />
-        <resource-file src="src/ubuntu/toolbar-middle.png" />
-        <resource-file src="src/ubuntu/toolbar-right.png" />
-        <config-file target="config.xml" parent="/*">
-            <feature name="Capture">
-                <param policy_group="audio" policy_version="1" />
-                <param policy_group="camera" policy_version="1" />
-                <param policy_group="microphone" policy_version="1" />
-            </feature>
-        </config-file>
-    </platform>
-
     <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
@@ -146,97 +107,6 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         <framework src="CoreGraphics.framework" />
         <framework src="MobileCoreServices.framework" />
 
-        <preference name="CAMERA_USAGE_DESCRIPTION" default=" " />
-        <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
-            <string>$CAMERA_USAGE_DESCRIPTION</string>
-        </config-file>
-
-        <preference name="MICROPHONE_USAGE_DESCRIPTION" default=" " />
-        <config-file target="*-Info.plist" parent="NSMicrophoneUsageDescription">
-            <string>$MICROPHONE_USAGE_DESCRIPTION</string>
-        </config-file>
-
-        <preference name="PHOTOLIBRARY_USAGE_DESCRIPTION" default=" " />
-        <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
-            <string>$PHOTOLIBRARY_USAGE_DESCRIPTION</string>
-        </config-file>
-
-    </platform>
-
-    <!-- blackberry10 -->
-    <platform name="blackberry10">
-        <source-file src="src/blackberry10/index.js" target-dir="Capture" />
-        <config-file target="www/config.xml" parent="/widget">
-            <feature name="media-capture" value="Capture"/>
-        </config-file>
-        <config-file target="www/config.xml" parent="/widget/rim:permissions">
-          <rim:permit>access_shared</rim:permit>
-        </config-file>
-      </platform>
-
-    <!-- wp7 -->
-    <platform name="wp7">
-        <config-file target="config.xml" parent="/*">
-            <feature name="Capture">
-                <param name="wp-package" value="Capture"/>
-            </feature>
-        </config-file>
-
-        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
-            <Capability Name="ID_CAP_MEDIALIB"/>
-            <Capability Name="ID_CAP_MICROPHONE"/>
-            <Capability Name="ID_CAP_ISV_CAMERA" />
-        </config-file>
-
-        <source-file src="src/wp/Capture.cs" />
-        <source-file src="src/wp/UI/AudioCaptureTask.cs" />
-        <source-file src="src/wp/UI/AudioRecorder.xaml" />
-        <source-file src="src/wp/UI/AudioRecorder.xaml.cs" />
-        <source-file src="src/wp/UI/VideoCaptureTask.cs" />
-        <source-file src="src/wp/UI/VideoRecorder.xaml" />
-        <source-file src="src/wp/UI/VideoRecorder.xaml.cs" />
-    </platform>
-
-    <!-- wp8 -->
-    <platform name="wp8">
-        <config-file target="config.xml" parent="/*">
-            <feature name="Capture">
-                <param name="wp-package" value="Capture"/>
-            </feature>
-        </config-file>
-
-        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
-            <Capability Name="ID_CAP_MEDIALIB_AUDIO"/>
-            <Capability Name="ID_CAP_MEDIALIB_PHOTO"/>
-            <Capability Name="ID_CAP_MEDIALIB_PLAYBACK"/>
-            <Capability Name="ID_CAP_MICROPHONE"/>
-            <Capability Name="ID_CAP_ISV_CAMERA" />
-        </config-file>
-
-        <source-file src="src/wp/Capture.cs" />
-        <source-file src="src/wp/UI/AudioCaptureTask.cs" />
-        <source-file src="src/wp/UI/AudioRecorder.xaml" />
-        <source-file src="src/wp/UI/AudioRecorder.xaml.cs" />
-        <source-file src="src/wp/UI/VideoCaptureTask.cs" />
-        <source-file src="src/wp/UI/VideoRecorder.xaml" />
-        <source-file src="src/wp/UI/VideoRecorder.xaml.cs" />
-    </platform>
-
-    <!-- windows8 -->
-    <platform name="windows8">
-
-        <config-file target="package.appxmanifest" parent="/Package/Capabilities">
-            <DeviceCapability Name="microphone" />
-            <DeviceCapability Name="webcam" />
-        </config-file>
-
-        <js-module src="src/windows/MediaFile.js" name="MediaFile2">
-            <merges target="MediaFile" />
-        </js-module>
-
-        <js-module src="src/windows/CaptureProxy.js" name="CaptureProxy">
-            <runs />
-        </js-module>
     </platform>
 
     <!-- windows -->

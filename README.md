@@ -53,7 +53,7 @@ Although in the global scope, it is not available until after the `deviceready` 
         console.log(navigator.device.capture);
     }
 
-Report issues with this plugin on the [Apache Cordova issue tracker](https://issues.apache.org/jira/issues/?jql=project%20%3D%20CB%20AND%20status%20in%20%28Open%2C%20%22In%20Progress%22%2C%20Reopened%29%20AND%20resolution%20%3D%20Unresolved%20AND%20component%20%3D%20%22Plugin%20Media%20Capture%22%20ORDER%20BY%20priority%20DESC%2C%20summary%20ASC%2C%20updatedDate%20DESC)
+Report issues with this plugin on the [Apache Cordova issue tracker](https://issues.apache.org/jira/issues/?jql=project%20%3D%20CB%20AND%20status%20in%20%28Open%2C%20%22In%20Progress%22%2C%20Reopened%29%20AND%20resolution%20%3D%20Unresolved%20AND%20component%20%3D%20%22cordova-plugin-media-capture%22%20ORDER%20BY%20priority%20DESC%2C%20summary%20ASC%2C%20updatedDate%20DESC)
 
 ## Installation
 
@@ -61,13 +61,9 @@ Report issues with this plugin on the [Apache Cordova issue tracker](https://iss
 
 ## Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - Browser
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ## Objects
@@ -126,12 +122,8 @@ code.
 
 ### Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ### Example
@@ -189,42 +181,41 @@ object featuring a `CaptureError.CAPTURE_NO_MEDIA_FILES` error code.
 
 ### Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - Browser
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ### iOS Quirks
 
-Since iOS 10 it's mandatory to add a `NSCameraUsageDescription`, `NSMicrophoneUsageDescription` and `NSPhotoLibraryUsageDescriptionentry` in the info.plist.
+Since iOS 10 it's mandatory to provide an usage description in the `info.plist` if trying to access privacy-sensitive data. When the system prompts the user to allow access, this usage description string will displayed as part of the permission dialog box, but if you didn't provide the usage description, the app will crash before showing the dialog. Also, Apple will reject apps that access private data but don't provide an usage description.
 
-* `NSCameraUsageDescription` describes the reason that the app accesses the user’s camera.
-* `NSMicrophoneUsageDescription` describes the reason that the app accesses the user’s microphone.
+This plugins requires the following usage descriptions:
+
+* `NSCameraUsageDescription` describes the reason the app accesses the user's camera.
+* `NSMicrophoneUsageDescription` describes the reason the app accesses the user's microphone.
 * `NSPhotoLibraryUsageDescriptionentry` describes the reason the app accesses the user's photo library.
 
-When the system prompts the user to allow access, this string is displayed as part of the dialog box.
 
-To add this entry you can pass the following variables on plugin install.
+To add these entries into the `info.plist`, you can use the `edit-config` tag in the `config.xml` like this:
 
-* `CAMERA_USAGE_DESCRIPTION` for `NSCameraUsageDescription`
-* `MICROPHONE_USAGE_DESCRIPTION` for `NSMicrophoneUsageDescription`
-* `PHOTOLIBRARY_USAGE_DESCRIPTION` for `NSPhotoLibraryUsageDescriptionentry`
+```
+<edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
+    <string>need camera access to take pictures</string>
+</edit-config>
+```
 
--
-Example:
+```
+<edit-config target="NSMicrophoneUsageDescription" file="*-Info.plist" mode="merge">
+    <string>need microphone access to record sounds</string>
+</edit-config>
+```
 
-`cordova plugin add cordova-plugin-media-capture --variable CAMERA_USAGE_DESCRIPTION="your usage message"`
-
-If you don't pass the variable, the plugin will add an empty string as value.
-
-### Windows Phone 7 Quirks
-
-Invoking the native camera application while your device is connected
-via Zune does not work, and the error callback executes.
+```
+<edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
+    <string>need to photo library access to get pictures from there</string>
+</edit-config>
+```
 
 ### Browser Quirks
 
@@ -283,12 +274,8 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 ### Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
 ### Example
@@ -311,10 +298,6 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
     navigator.device.capture.captureVideo(captureSuccess, captureError, {limit:2});
 
 
-### BlackBerry 10 Quirks
-
-- Cordova for BlackBerry 10 attempts to launch the __Video Recorder__ application, provided by RIM, to capture video recordings. The app receives a `CaptureError.CAPTURE_NOT_SUPPORTED` error code if the application is not installed on the device.
-
 
 ## CaptureAudioOptions
 
@@ -333,18 +316,10 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
     navigator.device.capture.captureAudio(captureSuccess, captureError, options);
 
-### Amazon Fire OS Quirks
-
-- The `duration` parameter is not supported.  Recording lengths cannot be limited programmatically.
-
 ### Android Quirks
 
 - The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
 
-### BlackBerry 10 Quirks
-
-- The `duration` parameter is not supported.  Recording lengths can't be limited programmatically.
-- The `limit` parameter is not supported, so only one recording can be created for each invocation.
 
 ### iOS Quirks
 
@@ -389,10 +364,6 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
     var options = { limit: 3 };
 
     navigator.device.capture.captureVideo(captureSuccess, captureError, options);
-
-### BlackBerry 10 Quirks
-
-- The __duration__ property is ignored, so the length of recordings can't be limited programmatically.
 
 ### iOS Quirks
 
@@ -543,23 +514,10 @@ callback.
 
 ### Supported Platforms
 
-- Amazon Fire OS
 - Android
-- BlackBerry 10
 - iOS
-- Windows Phone 7 and 8
-- Windows 8
 - Windows
 
-### Amazon Fire OS Quirks
-
-The API to access media file format information is limited, so not all
-`MediaFileData` properties are supported.
-
-### BlackBerry 10 Quirks
-
-Does not provide an API for information about media files, so all
-`MediaFileData` objects return with default values.
 
 ### Android Quirks
 
@@ -606,36 +564,6 @@ The API to access media file format information is limited, so not all
 - __width__: The width of the image or video in pixels. The value is zero for audio clips. (Number)
 
 - __duration__: The length of the video or sound clip in seconds. The value is zero for images. (Number)
-
-### BlackBerry 10 Quirks
-
-No API provides format information for media files, so the
-`MediaFileData` object returned by `MediaFile.getFormatData` features
-the following default values:
-
-- __codecs__: Not supported, and returns `null`.
-
-- __bitrate__: Not supported, and returns zero.
-
-- __height__: Not supported, and returns zero.
-
-- __width__: Not supported, and returns zero.
-
-- __duration__: Not supported, and returns zero.
-
-### Amazon Fire OS Quirks
-
-Supports the following `MediaFileData` properties:
-
-- __codecs__: Not supported, and returns `null`.
-
-- __bitrate__: Not supported, and returns zero.
-
-- __height__: Supported: image and video files only.
-
-- __width__: Supported: image and video files only.
-
-- __duration__: Supported: audio and video files only
 
 ### Android Quirks
 
