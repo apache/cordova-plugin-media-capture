@@ -20,6 +20,9 @@
 -->
 # Release Notes
 
+### 3.0.2 (Apr 12, 2018)
+* [CB-13866](https://issues.apache.org/jira/browse/CB-13866): **iOS** fix Camera opens in portrait orientation on iphones
+
 ### 3.0.1 (Dec 27, 2017)
 * [CB-13707](https://issues.apache.org/jira/browse/CB-13707) Fix to allow 3.0.0 version install (#88)
 * Bump cordova-plugin-file dependency to 6.0.0
