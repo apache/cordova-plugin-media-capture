@@ -18,44 +18,47 @@
 */
 package org.apache.cordova.mediacapture;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
+import android.Manifest;
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import org.apache.cordova.file.FileUtils;
-import org.apache.cordova.file.LocalFilesystemURL;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.media.ExifInterface;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PermissionHelper;
 import org.apache.cordova.PluginManager;
+import org.apache.cordova.file.FileUtils;
+import org.apache.cordova.file.LocalFilesystemURL;
 import org.apache.cordova.mediacapture.PendingRequests.Request;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class Capture extends CordovaPlugin {
 
@@ -183,7 +186,7 @@ public class Capture extends CordovaPlugin {
     /**
      * Get the Image specific attributes
      *
-     * @param filePath path to the file
+     * @param fileUrl path to the file
      * @param obj represents the Media File Data
      * @return a JSONObject that represents the Media File Data
      * @throws JSONException
@@ -287,6 +290,12 @@ public class Capture extends CordovaPlugin {
         file.setWritable(true, false);
     }
 
+    private static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
     /**
      * Sets up an intent to capture video.  Result handled by onActivityResult()
      */
@@ -378,8 +387,16 @@ public class Capture extends CordovaPlugin {
     }
 
     public void onImageActivityResult(Request req) {
+        Uri uri = imageUri;
+
+        // Check image rotation
+        Bitmap rotatedBitmap = rotateAccordingToExifOrientation(uri);
+        if (rotatedBitmap != null) {
+            uri = fromBitmapToUri(this.cordova.getContext(), rotatedBitmap);
+        }
+
         // Add image to results
-        req.results.put(createMediaFile(imageUri));
+        req.results.put(createMediaFile(uri));
 
         checkForDuplicateImage();
 
@@ -535,6 +552,52 @@ public class Capture extends CordovaPlugin {
         } else {
             return android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI;
         }
+    }
+
+    @Nullable
+    private Bitmap rotateAccordingToExifOrientation(Uri uri) {
+        Context context = this.cordova.getContext();
+        int orientation;
+        Bitmap bitmap;
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            if (inputStream == null)
+                throw new IOException("input stream from ContentResolver is null");
+            ExifInterface ei = new ExifInterface(inputStream);
+            orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        } catch (IOException e) {
+            LOG.e(LOG_TAG, "Failed reading bitmap", e);
+            return null;
+        }
+
+        Bitmap rotatedBitmap;
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotatedBitmap = rotateImage(bitmap, 90);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotatedBitmap = rotateImage(bitmap, 180);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotatedBitmap = rotateImage(bitmap, 270);
+                break;
+
+            case ExifInterface.ORIENTATION_NORMAL:
+            default:
+                // use original bitmap
+                rotatedBitmap = null;
+        }
+        return rotatedBitmap;
+    }
+
+    private Uri fromBitmapToUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 85, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "title", null);
+        return Uri.parse(path);
     }
 
     private void executeRequest(Request req) {

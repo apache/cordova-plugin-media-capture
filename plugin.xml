@@ -91,6 +91,8 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         <js-module src="www/android/init.js" name="init">
             <runs />
         </js-module>
+
+        <framework src="com.android.support:exifinterface:27.+" />
     </platform>
 
     <!-- ios -->
