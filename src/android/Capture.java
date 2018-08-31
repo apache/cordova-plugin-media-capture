@@ -595,7 +595,7 @@ public class Capture extends CordovaPlugin {
 
     private Uri fromBitmapToUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 85, bytes);
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "title", null);
         return Uri.parse(path);
     }
