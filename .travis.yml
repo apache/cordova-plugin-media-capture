@@ -5,7 +5,7 @@ addons:
 env:
   global:
   - SAUCE_USERNAME=snay
-  - TRAVIS_NODE_VERSION="6.4"
+  - TRAVIS_NODE_VERSION="4.2"
 matrix:
   include:
   - env: PLATFORM=browser-chrome
@@ -19,7 +19,7 @@ matrix:
   - env: PLATFORM=browser-safari
     os: linux
     language: node_js
-    node_js: '4.2'
+    node_js: '6.4'
   - env: PLATFORM=browser-edge
     os: linux
     language: node_js
