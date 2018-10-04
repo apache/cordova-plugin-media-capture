@@ -365,6 +365,9 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - The __limit__ property is ignored.  Only one video is recorded per invocation.
 
+- iOS supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
+  See [Apple documentation](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIImagePickerController_Class/#//apple_ref/c/tdef/UIImagePickerControllerQualityType) for more details.
+
 ### Android Quirks
 
 - Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
