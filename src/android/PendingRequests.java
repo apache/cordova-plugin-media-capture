@@ -178,6 +178,9 @@ public class PendingRequests {
         // Quality level for video capture 0 low, 1 high (CAPTURE_VIDEO only)
         public int quality = 1;
 
+        // Confirm capture of image
+        public boolean confirmCapture = true;
+
         // The array of results to be returned to the javascript callback on success
         public JSONArray results = new JSONArray();
 
@@ -192,6 +195,7 @@ public class PendingRequests {
                 this.limit = options.optLong("limit", 1);
                 this.duration = options.optInt("duration", 0);
                 this.quality = options.optInt("quality", 1);
+                this.confirmCapture = options.optBoolean("confirmCapture", true);
             }
 
             this.requestCode = incrementCurrentReqId();

@@ -22,7 +22,11 @@
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:rim="http://www.blackberry.com/ns/widgets"
            id="cordova-plugin-media-capture"
+<<<<<<< HEAD
       version="3.0.3-dev">
+=======
+      version="3.0.3">
+>>>>>>> stash/master
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -79,7 +83,6 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
 
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.RECORD_AUDIO" />
-            <uses-permission android:name="android.permission.RECORD_VIDEO"/>
             <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         </config-file>
