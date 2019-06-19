@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-media-capture-tests",
-  "version": "1.4.3-dev",
+  "version": "3.0.3",
   "description": "",
   "cordova": {
     "id": "cordova-plugin-media-capture-tests",

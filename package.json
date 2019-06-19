@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-media-capture",
-  "version": "3.0.3-dev",
+  "version": "3.0.3",
   "description": "Cordova Media Capture Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
@@ -17,7 +17,7 @@
     "url": "https://github.com/apache/cordova-plugin-media-capture"
   },
   "bugs": {
-    "url": "https://issues.apache.org/jira/browse/CB"
+    "url": "https://github.com/apache/cordova-plugin-media-capture/issues"
   },
   "keywords": [
     "cordova",

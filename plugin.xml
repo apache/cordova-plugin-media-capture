@@ -20,16 +20,15 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:rim="http://www.blackberry.com/ns/widgets"
            id="cordova-plugin-media-capture"
-      version="3.0.3-dev">
+      version="3.0.3">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,media,capture</keywords>
-    <repo>https://git-wip-us.apache.org/repos/asf/cordova-plugin-media-capture.git</repo>
-    <issue>https://issues.apache.org/jira/browse/CB/component/12320646</issue>
+    <repo>https://github.com/apache/cordova-plugin-media-capture</repo>
+    <issue>https://github.com/apache/cordova-plugin-media-capture/issues</issue>
 
     <engines>
         <engine name="cordova-android" version=">=6.3.0" />
