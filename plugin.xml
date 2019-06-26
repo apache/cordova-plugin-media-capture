@@ -19,14 +19,10 @@
 -->
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:rim="http://www.blackberry.com/ns/widgets"
-           id="cordova-plugin-media-capture"
-<<<<<<< HEAD
-      version="3.0.3-dev">
-=======
-      version="3.0.3">
->>>>>>> stash/master
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
+    id="cordova-plugin-media-capture"
+    version="3.0.3">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -94,6 +90,8 @@ xmlns:rim="http://www.blackberry.com/ns/widgets"
         <js-module src="www/android/init.js" name="init">
             <runs />
         </js-module>
+
+        <framework src="com.android.support:exifinterface:27.+" />
     </platform>
 
     <!-- ios -->
