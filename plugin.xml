@@ -90,6 +90,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <js-module src="www/android/init.js" name="init">
             <runs />
         </js-module>
+
+        <framework src="com.android.support:exifinterface:27.+" />
     </platform>
 
     <!-- ios -->
