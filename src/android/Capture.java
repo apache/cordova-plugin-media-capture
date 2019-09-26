@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 import android.content.ActivityNotFoundException;
 import android.os.Build;
@@ -297,8 +298,16 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture video.  Result handled by onActivityResult()
      */
     private void captureVideo(Request req) {
-        if(cameraPermissionInManifest && !PermissionHelper.hasPermission(this, Manifest.permission.CAMERA)) {
-            PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.CAMERA);
+        ArrayList<String> list = new ArrayList<>();
+        if (!PermissionHelper.hasPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            list.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (cameraPermissionInManifest && !PermissionHelper.hasPermission(this, Manifest.permission.CAMERA))
+            list.add(Manifest.permission.CAMERA);
+        if (!PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE))
+            list.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (list.size() > 0) {
+            PermissionHelper.requestPermissions(this, req.requestCode, list.toArray(new String[list.size()]));
         } else {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
