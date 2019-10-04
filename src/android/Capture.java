@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import android.content.ActivityNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -75,6 +76,7 @@ public class Capture extends CordovaPlugin {
 //    private static final int CAPTURE_INVALID_ARGUMENT = 2;
     private static final int CAPTURE_NO_MEDIA_FILES = 3;
     private static final int CAPTURE_PERMISSION_DENIED = 4;
+    private static final int CAPTURE_NOT_SUPPORTED = 20;
 
     private boolean cameraPermissionInManifest;     // Whether or not the CAMERA permission is declared in AndroidManifest.xml
 
@@ -221,13 +223,17 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture audio.  Result handled by onActivityResult()
      */
     private void captureAudio(Request req) {
-        if (!PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.READ_EXTERNAL_STORAGE);
-        } else {
-            Intent intent = new Intent(android.provider.MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+      if (!PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+          PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.READ_EXTERNAL_STORAGE);
+      } else {
+          try {
+              Intent intent = new Intent(android.provider.MediaStore.Audio.Media.RECORD_SOUND_ACTION);
 
-            this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
-        }
+              this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
+          } catch (ActivityNotFoundException ex) {
+              pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NOT_SUPPORTED, "No Activity found to handle Audio Capture."));
+          }
+      }
     }
 
     private String getTempDirectoryPath() {
@@ -245,9 +251,8 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture images.  Result handled by onActivityResult()
      */
     private void captureImage(Request req) {
-        boolean needExternalStoragePermission =
-                !PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
+        boolean needExternalStoragePermission = !PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+      
         boolean needCameraPermission = cameraPermissionInManifest &&
                 !PermissionHelper.hasPermission(this, Manifest.permission.CAMERA);
 
