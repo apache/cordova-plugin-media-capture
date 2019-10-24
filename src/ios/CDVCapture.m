@@ -607,6 +607,7 @@
 @interface CDVAudioRecorderViewController () {
     UIStatusBarStyle _previousStatusBarStyle;
 }
+@property (nonatomic, getter=isModalInPresentation) BOOL modalInPresentation;
 @end
 
 @implementation CDVAudioRecorderViewController
@@ -639,6 +640,11 @@
         self.callbackId = theCallbackId;
         self.errorCode = CAPTURE_NO_MEDIA_FILES;
         self.isTimed = self.duration != nil;
+
+        if (@available(iOS 13, *)) {
+            self.modalInPresentation = YES;
+        }
+
         _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
 
         return self;
