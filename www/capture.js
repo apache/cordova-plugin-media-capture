@@ -79,10 +79,4 @@ Capture.prototype.captureVideo = function (successCallback, errorCallback, optio
     _capture('captureVideo', successCallback, errorCallback, options);
 };
 
-/**
- * Camera direction constants
- */
-Capture.CAMERA_BACK = 0;
-Capture.CAMERA_FRONT = 1;
-
 module.exports = new Capture();
