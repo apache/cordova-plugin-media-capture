@@ -30,7 +30,7 @@ var helpers = require('./helpers');
  * @param {Function} errorCB
  * @param {CaptureVideoOptions} options
  */
-function _capture (type, successCallback, errorCallback, options) {
+function _capture(type, successCallback, errorCallback, options) {
     var win = function (pluginResult) {
         successCallback(helpers.wrapMediaFiles(pluginResult));
     };
@@ -40,7 +40,7 @@ function _capture (type, successCallback, errorCallback, options) {
 /**
  * The Capture interface exposes an interface to the camera and microphone of the hosting device.
  */
-function Capture () {
+function Capture() {
     this.supportedAudioModes = [];
     this.supportedImageModes = [];
     this.supportedVideoModes = [];
@@ -78,5 +78,11 @@ Capture.prototype.captureImage = function (successCallback, errorCallback, optio
 Capture.prototype.captureVideo = function (successCallback, errorCallback, options) {
     _capture('captureVideo', successCallback, errorCallback, options);
 };
+
+/**
+ * Camera direction constants
+ */
+Capture.CAMERA_BACK = 0;
+Capture.CAMERA_FRONT = 1;
 
 module.exports = new Capture();
