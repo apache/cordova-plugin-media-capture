@@ -139,7 +139,9 @@ public class Capture extends CordovaPlugin {
 
         // check if use front end camera == 1
         // if that is the case then we are going to use the camera
-        this.useFrontEndCamera = options.getInt("cameraDirection") == 1 ? true : false;
+        if (options.has("cameraDirection")) {
+            this.useFrontEndCamera = options.getInt("cameraDirection") == 1 ? true : false;
+        }
 
         if (action.equals("captureAudio")) {
             this.captureAudio(pendingRequests.createRequest(CAPTURE_AUDIO, options, callbackContext));
