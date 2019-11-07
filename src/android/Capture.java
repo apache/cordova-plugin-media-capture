@@ -139,7 +139,7 @@ public class Capture extends CordovaPlugin {
 
         // check if use front end camera == 1
         // if that is the case then we are going to use the camera
-        if (options.has("cameraDirection")) {
+        if (options != null && options.has("cameraDirection")) {
             this.useFrontEndCamera = options.getInt("cameraDirection") == 1 ? true : false;
         }
 
