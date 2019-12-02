@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -313,8 +314,8 @@ public class Capture extends CordovaPlugin {
         } else {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
-            ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
-            ContentValues cv = new ContentValues();
+            final ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
+            final ContentValues cv = new ContentValues();
             cv.put(MediaStore.Images.Media.MIME_TYPE, VIDEO_MP4); // 3gp in some cases?
             try {
                 cordova.getThreadPool().submit(new Runnable() {
