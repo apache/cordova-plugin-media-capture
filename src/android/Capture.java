@@ -339,9 +339,9 @@ public class Capture extends CordovaPlugin {
                 }
                 this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
             } catch (InterruptedException e) {
-                System.out.println("Thread interrupted while creating path for new video: \n"+e.getMessage());
+                LOG.e(LOG_TAG, "Thread interrupted while creating path for new video: \n"+e.getMessage());
             } catch (ExecutionException e) {
-                System.out.println("Exception raised while creating folder for new video: \n" +e.getMessage());
+                LOG.e(LOG_TAG, "Exception raised while creating folder for new video: \n" +e.getMessage());
             }
         }
     }
