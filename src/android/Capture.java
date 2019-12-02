@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.os.Build;
@@ -288,21 +289,28 @@ public class Capture extends CordovaPlugin {
         file.setWritable(true, false);
     }
 
+    private String[] getRequiredPermissions(String[] allPerms) {
+        // not allowed to do multiple individual permissions requests so returning an array
+        ArrayList<String> neededPerms = new ArrayList<String>(allPerms.length);
+        for (String perm : allPerms) {
+            if (!PermissionHelper.hasPermission(this, perm)) {
+                neededPerms.add(perm);
+            }
+        }
+        return neededPerms.toArray(new String[]{});
+    }
+
     /**
      * Sets up an intent to capture video.  Result handled by onActivityResult()
      */
     private void captureVideo(Request req) {
-        String[] allPermissions = new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,
+        String[] neededPermissions = this.getRequiredPermissions(new String[] {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        boolean needsPermissions = false;
-        for (int i = 0; i < allPermissions.length; i++) {
-            if (!PermissionHelper.hasPermission(this, allPermissions[i])) {
-                needsPermissions = true;
-                PermissionHelper.requestPermission(this, req.requestCode, allPermissions[i]);
-            }
-        }
-        if (!needsPermissions) {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE});
+        if (neededPermissions.length > 0) {
+            PermissionHelper.requestPermissions(this, req.requestCode, neededPermissions);
+        } else {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
             ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
