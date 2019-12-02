@@ -82,6 +82,7 @@ public class Capture extends CordovaPlugin {
 
     private int numPics;                            // Number of pictures before capture activity
     private Uri imageUri;
+    private Uri videoUri;
 
 //    public void setContext(Context mCtx)
 //    {
@@ -291,10 +292,26 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture video.  Result handled by onActivityResult()
      */
     private void captureVideo(Request req) {
-        if(cameraPermissionInManifest && !PermissionHelper.hasPermission(this, Manifest.permission.CAMERA)) {
-            PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.CAMERA);
-        } else {
+        String[] allPermissions = new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        boolean needsPermissions = false;
+        for (int i = 0; i < allPermissions.length; i++) {
+            if (!PermissionHelper.hasPermission(this, allPermissions[i])) {
+                needsPermissions = true;
+                PermissionHelper.requestPermission(this, req.requestCode, allPermissions[i]);
+            }
+        }
+        if (!needsPermissions) {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
+
+            ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
+            ContentValues cv = new ContentValues();
+            cv.put(MediaStore.Images.Media.MIME_TYPE, VIDEO_MP4); // 3gp in some cases?
+            videoUri = contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cv);
+            LOG.d(LOG_TAG, "Taking a video and saving to: " + videoUri.toString());
+
+            intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, videoUri);
 
             if(Build.VERSION.SDK_INT > 7){
                 intent.putExtra("android.intent.extra.durationLimit", req.duration);
@@ -393,25 +410,19 @@ public class Capture extends CordovaPlugin {
     }
 
     public void onVideoActivityResult(Request req, Intent intent) {
-        Uri data = null;
 
-        if (intent != null){
-            // Get the uri of the video clip
-            data = intent.getData();
-        }
-
-        if( data == null){
+        if(videoUri == null){
             File movie = new File(getTempDirectoryPath(), "Capture.avi");
-            data = Uri.fromFile(movie);
+            videoUri = Uri.fromFile(movie);
         }
 
         // create a file object from the uri
-        if(data == null) {
+        if (videoUri == null) {
             pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: data is null"));
         }
         else {
-            req.results.put(createMediaFile(data));
-
+            req.results.put(createMediaFile(videoUri));
+            videoUri = null;
             if (req.results.length() >= req.limit) {
                 // Send Uri back to JavaScript for viewing video
                 pendingRequests.resolveWithSuccess(req);
