@@ -316,16 +316,32 @@ public class Capture extends CordovaPlugin {
             ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
             ContentValues cv = new ContentValues();
             cv.put(MediaStore.Images.Media.MIME_TYPE, VIDEO_MP4); // 3gp in some cases?
-            videoUri = contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cv);
-            LOG.d(LOG_TAG, "Taking a video and saving to: " + videoUri.toString());
+            try {
+                cordova.getThreadPool().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        videoUri = contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cv);
+                        File file = webView.getResourceApi().mapUriToFile(videoUri);
+                        if (file != null && !file.getParentFile().exists()) {
+                            file.getParentFile().mkdirs();
+                        }
+                    }
+                }).get(); // get() blocks the thread
 
-            intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, videoUri);
+                LOG.d(LOG_TAG, "Taking a video and saving to: " + videoUri.toString());
 
-            if(Build.VERSION.SDK_INT > 7){
-                intent.putExtra("android.intent.extra.durationLimit", req.duration);
-                intent.putExtra("android.intent.extra.videoQuality", req.quality);
+                intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, videoUri);
+
+                if(Build.VERSION.SDK_INT > 7){
+                    intent.putExtra("android.intent.extra.durationLimit", req.duration);
+                    intent.putExtra("android.intent.extra.videoQuality", req.quality);
+                }
+                this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
+            } catch (InterruptedException e) {
+                System.out.println("Thread interrupted while creating path for new video: \n"+e.getMessage());
+            } catch (ExecutionException e) {
+                System.out.println("Exception raised while creating folder for new video: \n" +e.getMessage());
             }
-            this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
         }
     }
 
