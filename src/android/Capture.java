@@ -77,6 +77,7 @@ public class Capture extends CordovaPlugin {
 //    private static final int CAPTURE_INVALID_ARGUMENT = 2;
     private static final int CAPTURE_NO_MEDIA_FILES = 3;
     private static final int CAPTURE_PERMISSION_DENIED = 4;
+    private static final int CANNOT_CREATE_TARGET_DIRECTORY = 5;
 
     private boolean cameraPermissionInManifest;     // Whether or not the CAMERA permission is declared in AndroidManifest.xml
 
@@ -339,9 +340,9 @@ public class Capture extends CordovaPlugin {
                 }
                 this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
             } catch (InterruptedException e) {
-                LOG.e(LOG_TAG, "Thread interrupted while creating path for new video: \n"+e.getMessage());
+                pendingRequests.resolveWithFailure(req, createErrorObject(CANNOT_CREATE_TARGET_DIRECTORY, "Thread interrupted while creating path for new video"));
             } catch (ExecutionException e) {
-                LOG.e(LOG_TAG, "Exception raised while creating folder for new video: \n" +e.getMessage());
+                pendingRequests.resolveWithFailure(req, createErrorObject(CANNOT_CREATE_TARGET_DIRECTORY, "Exception raised while creating folder for new video"));
             }
         }
     }
