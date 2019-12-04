@@ -324,15 +324,13 @@ public class Capture extends CordovaPlugin {
                 cordova.getThreadPool().submit(new Runnable() {
                     @Override
                     public void run() {
-                        videoUri = contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cv);
+                        videoUri = contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
                         File file = webView.getResourceApi().mapUriToFile(videoUri);
                         if (file != null && !file.getParentFile().exists()) {
                             file.getParentFile().mkdirs();
                         }
                     }
                 }).get(); // get() blocks the thread
-
-                LOG.d(LOG_TAG, "Taking a video and saving to: " + videoUri.toString());
 
                 intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, videoUri);
 
@@ -438,27 +436,32 @@ public class Capture extends CordovaPlugin {
     }
 
     public void onVideoActivityResult(Request req, Intent intent) {
-
-        if(videoUri == null){
-            File movie = new File(getTempDirectoryPath(), "Capture.avi");
-            videoUri = Uri.fromFile(movie);
-        }
-
-        // create a file object from the uri
-        if (videoUri == null) {
-            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: data is null"));
-        }
-        else {
-            req.results.put(createMediaFile(videoUri));
-            videoUri = null;
-            if (req.results.length() >= req.limit) {
-                // Send Uri back to JavaScript for viewing video
-                pendingRequests.resolveWithSuccess(req);
-            } else {
-                // still need to capture more video clips
-                captureVideo(req);
+        try {
+            if(videoUri == null){
+                File movie = new File(getTempDirectoryPath(), "Capture.avi");
+                videoUri = Uri.fromFile(movie);
             }
+
+            // create a file object from the uri
+            if (videoUri == null) {
+                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: data is null"));
+            }
+            else {
+                req.results.put(createMediaFile(videoUri));
+                if (req.results.length() >= req.limit) {
+                    // Send Uri back to JavaScript for viewing video
+                    pendingRequests.resolveWithSuccess(req);
+                } else {
+                    // still need to capture more video clips
+                    captureVideo(req);
+                }
+            }
+        } catch (Exception e) {
+            LOG.e(LOG_TAG, e.getMessage());
+        } finally {
+            videoUri = null;
         }
+
     }
 
     /**
