@@ -316,8 +316,10 @@ public class Capture extends CordovaPlugin {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
             final ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
-            final ContentValues cv = new ContentValues();
-            cv.put(MediaStore.Images.Media.MIME_TYPE, VIDEO_MP4); // 3gp in some cases?
+            final ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.Images.Media.MIME_TYPE, VIDEO_MP4); // 3gp in some cases?
+            LOG.d(LOG_TAG, "Taking a video and saving to: " + videoUri.toString());
+
             try {
                 cordova.getThreadPool().submit(new Runnable() {
                     @Override
