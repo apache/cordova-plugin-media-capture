@@ -318,7 +318,6 @@ public class Capture extends CordovaPlugin {
             final ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
             final ContentValues contentValues = new ContentValues();
             contentValues.put(MediaStore.Images.Media.MIME_TYPE, VIDEO_MP4); // 3gp in some cases?
-            LOG.d(LOG_TAG, "Taking a video and saving to: " + videoUri.toString());
 
             try {
                 cordova.getThreadPool().submit(new Runnable() {
@@ -331,7 +330,7 @@ public class Capture extends CordovaPlugin {
                         }
                     }
                 }).get(); // get() blocks the thread
-
+		LOG.d(LOG_TAG, "Taking a video and saving to: " + videoUri.toString());
                 intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, videoUri);
 
                 if(Build.VERSION.SDK_INT > 7){
