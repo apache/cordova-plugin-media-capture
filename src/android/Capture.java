@@ -25,7 +25,9 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -75,6 +77,7 @@ public class Capture extends CordovaPlugin {
 //    private static final int CAPTURE_INVALID_ARGUMENT = 2;
     private static final int CAPTURE_NO_MEDIA_FILES = 3;
     private static final int CAPTURE_PERMISSION_DENIED = 4;
+    private static final int CANNOT_CREATE_TARGET_DIRECTORY = 5;
 
     private boolean cameraPermissionInManifest;     // Whether or not the CAMERA permission is declared in AndroidManifest.xml
 
@@ -82,6 +85,7 @@ public class Capture extends CordovaPlugin {
 
     private int numPics;                            // Number of pictures before capture activity
     private Uri imageUri;
+    private Uri videoUri;
 
 //    public void setContext(Context mCtx)
 //    {
@@ -287,20 +291,58 @@ public class Capture extends CordovaPlugin {
         file.setWritable(true, false);
     }
 
+    private String[] getRequiredPermissions(String[] allPerms) {
+        // not allowed to do multiple individual permissions requests so returning an array
+        ArrayList<String> neededPerms = new ArrayList<String>(allPerms.length);
+        for (String perm : allPerms) {
+            if (!PermissionHelper.hasPermission(this, perm)) {
+                neededPerms.add(perm);
+            }
+        }
+        return neededPerms.toArray(new String[]{});
+    }
+
     /**
      * Sets up an intent to capture video.  Result handled by onActivityResult()
      */
     private void captureVideo(Request req) {
-        if(cameraPermissionInManifest && !PermissionHelper.hasPermission(this, Manifest.permission.CAMERA)) {
-            PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.CAMERA);
+        String[] neededPermissions = this.getRequiredPermissions(new String[] {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE});
+        if (neededPermissions.length > 0) {
+            PermissionHelper.requestPermissions(this, req.requestCode, neededPermissions);
         } else {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
-            if(Build.VERSION.SDK_INT > 7){
-                intent.putExtra("android.intent.extra.durationLimit", req.duration);
-                intent.putExtra("android.intent.extra.videoQuality", req.quality);
+            final ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
+            final ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.Images.Media.MIME_TYPE, VIDEO_MP4); // 3gp in some cases?
+
+            try {
+                cordova.getThreadPool().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        videoUri = contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
+                        File file = webView.getResourceApi().mapUriToFile(videoUri);
+                        if (file != null && !file.getParentFile().exists()) {
+                            file.getParentFile().mkdirs();
+                        }
+                    }
+                }).get(); // get() blocks the thread
+		LOG.d(LOG_TAG, "Taking a video and saving to: " + videoUri.toString());
+                intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, videoUri);
+
+                if(Build.VERSION.SDK_INT > 7){
+                    intent.putExtra("android.intent.extra.durationLimit", req.duration);
+                    intent.putExtra("android.intent.extra.videoQuality", req.quality);
+                }
+                this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
+            } catch (InterruptedException e) {
+                pendingRequests.resolveWithFailure(req, createErrorObject(CANNOT_CREATE_TARGET_DIRECTORY, "Thread interrupted while creating path for new video"));
+            } catch (ExecutionException e) {
+                pendingRequests.resolveWithFailure(req, createErrorObject(CANNOT_CREATE_TARGET_DIRECTORY, "Exception raised while creating folder for new video"));
             }
-            this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
         }
     }
 
@@ -393,33 +435,32 @@ public class Capture extends CordovaPlugin {
     }
 
     public void onVideoActivityResult(Request req, Intent intent) {
-        Uri data = null;
-
-        if (intent != null){
-            // Get the uri of the video clip
-            data = intent.getData();
-        }
-
-        if( data == null){
-            File movie = new File(getTempDirectoryPath(), "Capture.avi");
-            data = Uri.fromFile(movie);
-        }
-
-        // create a file object from the uri
-        if(data == null) {
-            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: data is null"));
-        }
-        else {
-            req.results.put(createMediaFile(data));
-
-            if (req.results.length() >= req.limit) {
-                // Send Uri back to JavaScript for viewing video
-                pendingRequests.resolveWithSuccess(req);
-            } else {
-                // still need to capture more video clips
-                captureVideo(req);
+        try {
+            if(videoUri == null){
+                File movie = new File(getTempDirectoryPath(), "Capture.avi");
+                videoUri = Uri.fromFile(movie);
             }
+
+            // create a file object from the uri
+            if (videoUri == null) {
+                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: data is null"));
+            }
+            else {
+                req.results.put(createMediaFile(videoUri));
+                if (req.results.length() >= req.limit) {
+                    // Send Uri back to JavaScript for viewing video
+                    pendingRequests.resolveWithSuccess(req);
+                } else {
+                    // still need to capture more video clips
+                    captureVideo(req);
+                }
+            }
+        } catch (Exception e) {
+            LOG.e(LOG_TAG, e.getMessage());
+        } finally {
+            videoUri = null;
         }
+
     }
 
     /**
