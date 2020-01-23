@@ -354,6 +354,8 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - __duration__: The maximum duration of a video clip, in seconds.
 
+- __quality__: The quality of the captured video. A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
+
 ### Example
 
     // limit capture operation to 3 video clips
@@ -361,20 +363,17 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
     navigator.device.capture.captureVideo(captureSuccess, captureError, options);
 
-### iOS Quirks
-
-- The __limit__ property is ignored.  Only one video is recorded per invocation.
-
-### Android Quirks
-
-- Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
-  See [here](http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY) for more details.
-
-### Example ( Android w/ quality )
+### Example ( w/ quality )
 
     // limit capture operation to 1 video clip of low quality
     var options = { limit: 1, quality: 0 };
     navigator.device.capture.captureVideo(captureSuccess, captureError, options);
+
+### iOS Quirks
+
+- The __limit__ property is ignored.  Only one video is recorded per invocation.
+
+- The __quality__ property has an additional value of `0.5` for Medium quality. 
 
 
 ## CaptureCB
