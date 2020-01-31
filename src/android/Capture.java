@@ -178,10 +178,9 @@ public class Capture extends CordovaPlugin {
     }
 
     /**
-     * Get the Image specific attributes
-     *
-     * @param filePath path to the file
-     * @param obj      represents the Media File Data
+     * Get the Image specific attributes     *
+     * @param fileUrl url pointing to the file
+     * @param obj represents the Media File Data
      * @return a JSONObject that represents the Media File Data
      * @throws JSONException
      */
