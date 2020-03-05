@@ -193,8 +193,8 @@ public class Capture extends CordovaPlugin {
     /**
      * Get the Image specific attributes
      *
-     * @param filePath path to the file
-     * @param obj      represents the Media File Data
+     * @param fileUrl url pointing to the file
+     * @param obj represents the Media File Data
      * @return a JSONObject that represents the Media File Data
      * @throws JSONException
      */
@@ -258,6 +258,9 @@ public class Capture extends CordovaPlugin {
 
         // Create the cache directory if it doesn't exist
         cache.mkdirs();
+      
+      
+      
         return cache.getAbsolutePath();
     }
 
