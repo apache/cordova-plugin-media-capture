@@ -117,7 +117,10 @@ CameraUI.prototype.startPreview = function (count, successCB, errorCB) {
     navigator.getUserMedia({video: true}, function (previewStream) {
         // Save video stream to be able to stop it later
         that._previewStream = previewStream;
-        that.preview.src = URL.createObjectURL(previewStream); // eslint-disable-line no-undef
+
+        // https://github.com/apache/cordova-plugin-media-capture/issues/149
+        that.preview.srcObject = previewStream;
+
         // We don't need to set visibility = true for preview element
         // since this will be done automatically in onplay event handler
     }, function (/* err */) {
@@ -131,10 +134,22 @@ CameraUI.prototype.startPreview = function (count, successCB, errorCB) {
 CameraUI.prototype.destroyPreview = function () {
     this.preview.pause();
     this.preview.src = null;
-    this._previewStream.stop();
+
+    // .stop() is deprecated
+    if (this._previewStream.hasOwnProperty('stop')) {
+        this._previewStream.stop();
+    } else {
+        let tracks = this._previewStream.getVideoTracks();
+        for (let i in tracks) {
+            tracks[i].stop();
+        }
+    }
+
     this._previewStream = null;
     if (this.container) {
-        document.body.removeChild(this.container);
+        // `document.body.removeChild(this.container);` throws an error on Chrome
+        // Solution: https://stackoverflow.com/a/42957162/1010548
+        this.container.parentNode.removeChild(this.container);
     }
 };
 
