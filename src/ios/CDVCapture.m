@@ -604,7 +604,7 @@
 
 @end
 
-@interface CDVAudioRecorderViewController () {
+@interface CDVAudioRecorderViewController () <UIAdaptivePresentationControllerDelegate> {
     UIStatusBarStyle _previousStatusBarStyle;
 }
 @end
@@ -732,6 +732,9 @@
     [super viewDidLoad];
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     NSError* error = nil;
+
+    // Add delegate to catch the dismiss event
+    self.navigationController.presentationController.delegate = self;
 
     if (self.avSession == nil) {
         // create audio session
@@ -974,6 +977,10 @@
     }
 
     [super viewWillAppear:animated];
+}
+
+- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController {
+    [self dismissAudioView:nil];
 }
 
 @end
