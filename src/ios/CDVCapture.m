@@ -811,9 +811,6 @@
         // view cleanup will occur in audioRecordingDidFinishRecording
     } else {
         // begin recording
-        [self.recordButton setImage:stopRecordImage forState:UIControlStateNormal];
-        self.recordButton.accessibilityTraits &= ~[self accessibilityTraits];
-        [self.recordingView setHidden:NO];
         __block NSError* error = nil;
 
         __weak CDVAudioRecorderViewController* weakSelf = self;
@@ -826,9 +823,12 @@
                 weakSelf.errorCode = CAPTURE_INTERNAL_ERR;
                 [weakSelf dismissAudioView:nil];
             } else {
+                [weakSelf.recordButton setImage:weakSelf.stopRecordImage forState:UIControlStateNormal];
+                weakSelf.recordButton.accessibilityTraits &= ~[self accessibilityTraits];
+                [weakSelf.recordingView setHidden:NO];
                 if (weakSelf.duration) {
                     weakSelf.isTimed = true;
-                    [weakSelf.avRecorder recordForDuration:[duration doubleValue]];
+                    [weakSelf.avRecorder recordForDuration:[weakSelf.duration doubleValue]];
                 } else {
                     [weakSelf.avRecorder record];
                 }
@@ -845,13 +845,15 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
             [self.avSession performSelector:rrpSel withObject:^(BOOL granted){
-                if (granted) {
-                    startRecording();
-                } else {
-                    NSLog(@"Error creating audio session, microphone permission denied.");
-                    weakSelf.errorCode = CAPTURE_INTERNAL_ERR;
-                    [weakSelf dismissAudioView:nil];
-                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (granted) {
+                        startRecording();
+                    } else {
+                        NSLog(@"Error creating audio session, microphone permission denied.");
+                        weakSelf.errorCode = CAPTURE_INTERNAL_ERR;
+                        [weakSelf showMicrophonePermissionAlert];
+                    }
+                });
             }];
 #pragma clang diagnostic pop
         } else {
@@ -889,6 +891,24 @@
         // issue a layout notification change so that VO will reannounce the button label when recording completes
         UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
     }
+}
+
+- (void) showMicrophonePermissionAlert {
+    UIAlertController* controller =
+        [UIAlertController alertControllerWithTitle:@"Access denied"
+                                            message:@"Access to the microphone has been prohibited. Please enable it in the Settings app to continue."
+                                     preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* actionOk = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [controller addAction:actionOk];
+
+    UIAlertAction* actionSettings = [UIAlertAction actionWithTitle:@"Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:[NSDictionary dictionary] completionHandler:nil];
+    }];
+    [controller addAction:actionSettings];
+
+    __weak CDVAudioRecorderViewController* weakSelf = self;
+    [weakSelf presentViewController:controller animated:true completion:nil];
 }
 
 - (void)dismissAudioView:(id)sender
