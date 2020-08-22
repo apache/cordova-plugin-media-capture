@@ -131,6 +131,7 @@
     // options could contain limit and mode neither of which are supported at this time
     // taking more than one picture (limit) is only supported if provide own controls via cameraOverlayView property
     // can support mode in OS
+    NSNumber* cameraDirection = [options objectForKey:@"cameraDirection"];
 
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         NSLog(@"Capture.imageCapture: camera not available.");
@@ -145,6 +146,11 @@
         pickerController.delegate = self;
         pickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
         pickerController.allowsEditing = NO;
+
+        if([cameraDirection intValue] == 1) {
+            pickerController.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+        }
+
         if ([pickerController respondsToSelector:@selector(mediaTypes)]) {
             // iOS 3.0
             pickerController.mediaTypes = [NSArray arrayWithObjects:(NSString*)kUTTypeImage, nil];
@@ -223,6 +229,7 @@
     // options could contain limit, duration and mode
     // taking more than one video (limit) is only supported if provide own controls via cameraOverlayView property
     NSNumber* duration = [options objectForKey:@"duration"];
+    NSNumber* cameraDirection = [options objectForKey:@"cameraDirection"];
     NSString* mediaType = nil;
 
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
@@ -255,6 +262,10 @@
         pickerController.allowsEditing = NO;
         // iOS 3.0
         pickerController.mediaTypes = [NSArray arrayWithObjects:mediaType, nil];
+
+        if([cameraDirection intValue] == 1) {
+            pickerController.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+        }
 
         if ([mediaType isEqualToString:(NSString*)kUTTypeMovie]){
             if (duration) {

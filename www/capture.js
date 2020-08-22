@@ -47,6 +47,12 @@ function Capture () {
 }
 
 /**
+ * Camera direction constants
+ */
+Capture.CAMERA_BACK = 0;
+Capture.CAMERA_FRONT = 1;
+
+/**
  * Launch audio recorder application for recording audio clip(s).
  *
  * @param {Function} successCB
