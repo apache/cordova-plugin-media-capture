@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var utils = require('cordova/utils');
 var exec = require('cordova/exec');

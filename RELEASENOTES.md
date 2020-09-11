@@ -20,6 +20,19 @@
 -->
 # Release Notes
 
+### 3.0.3 (Jun 19, 2019)
+
+-   fix(android): Catch ActivityNotFoundException ([#104](https://github.com/apache/cordova-plugin-media-capture/issues/104)) ([`f69ba2a`](https://github.com/apache/cordova-plugin-media-capture/commit/f69ba2a))
+-   fix(android): CB-14260: (android) captureImage permission denial on android 8.1 ([#95](https://github.com/apache/cordova-plugin-media-capture/issues/95)) ([`3755f9f`](https://github.com/apache/cordova-plugin-media-capture/commit/3755f9f))
+-   docs: remove outdated translations ([`6422b2b`](https://github.com/apache/cordova-plugin-media-capture/commit/6422b2b))
+-   build: add `.npmignore` to remove unneeded files from npm package ([`586f917`](https://github.com/apache/cordova-plugin-media-capture/commit/586f917))
+-   build: add `.gitattributes` to force LF (instead of possible CRLF on Windows) ([`246ce57`](https://github.com/apache/cordova-plugin-media-capture/commit/246ce57))
+-   ci(travis): Update Travis CI configuration for new paramedic ([#134](https://github.com/apache/cordova-plugin-media-capture/issues/134)) ([`f59af25`](https://github.com/apache/cordova-plugin-media-capture/commit/f59af25))
+-   chore(github): Add or update GitHub pull request and issue template ([`e5a982e`](https://github.com/apache/cordova-plugin-media-capture/commit/e5a982e))
+-   docs: remove JIRA link ([`c3928c8`](https://github.com/apache/cordova-plugin-media-capture/commit/c3928c8))
+-   ci(travis): also accept terms for android sdk `android-27` ([`59966ac`](https://github.com/apache/cordova-plugin-media-capture/commit/59966ac))
+-   chore(types): Add CaptureError.CAPTURE_PERMISSION_DENIED to type declaration file [#98](https://github.com/apache/cordova-plugin-media-capture/issues/98) ([`eff0128`](https://github.com/apache/cordova-plugin-media-capture/commit/eff0128), [`5fb4917`](https://github.com/apache/cordova-plugin-media-capture/commit/5fb4917))
+
 ### 3.0.2 (Apr 12, 2018)
 * [CB-13866](https://issues.apache.org/jira/browse/CB-13866): **iOS** fix Camera opens in portrait orientation on iphones
 

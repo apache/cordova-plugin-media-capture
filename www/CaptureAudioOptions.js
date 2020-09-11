@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * Encapsulates all audio capture operation configuration options.

@@ -17,11 +17,10 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
-/* eslint-env jasmine */
 /* global CaptureAudioOptions, CaptureImageOptions, CaptureVideoOptions, CaptureError */
-/* global Media, MediaFile, MediaFileData, resolveLocalFileSystemURL */
+/* global Media, MediaFile, MediaFileData, resolveLocalFileSystemURL, cordova */
 
 exports.defineAutoTests = function () {
     describe('Capture (navigator.device.capture)', function () {
@@ -150,7 +149,8 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     function captureImageWin (mediaFiles) {
         var path = mediaFiles[0].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
-        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') { // eslint-disable-line no-undef
+        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') {
+            // eslint-disable-line no-undef
             path = mediaFiles[0].localURL;
         }
         log('Image captured: ' + path);
@@ -160,17 +160,20 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     function captureImagesWin (mediaFiles) {
         var path = mediaFiles[0].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
-        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') { // eslint-disable-line no-undef
+        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') {
+            // eslint-disable-line no-undef
             path = mediaFiles[0].localURL;
         }
         var path2 = mediaFiles[1].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
-        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') { // eslint-disable-line no-undef
+        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') {
+            // eslint-disable-line no-undef
             path = mediaFiles[1].localURL;
         }
         var path3 = mediaFiles[2].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
-        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') { // eslint-disable-line no-undef
+        if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') {
+            // eslint-disable-line no-undef
             path = mediaFiles[2].localURL;
         }
         log('Image captured: ' + path);
@@ -222,10 +225,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     }
 
     function getMetadataWin (metadata) {
-        var strMetadata =
-        'duration = ' + metadata.duration + '\n' +
-        'width = ' + metadata.width + '\n' +
-        'height = ' + metadata.height;
+        var strMetadata = 'duration = ' + metadata.duration + '\n' + 'width = ' + metadata.width + '\n' + 'height = ' + metadata.height;
         log(strMetadata);
     }
 
@@ -266,36 +266,48 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     }
 
     function resolveMediaFileURL (mediaFile, callback) {
-        resolveLocalFileSystemURL(mediaFile.localURL, function (entry) {
-            log('Resolved by URL: ' + mediaFile.localURL);
-            if (callback) callback();
-        }, function (err) {
-            log('Failed to resolve by URL: ' + mediaFile.localURL);
-            log('Error: ' + JSON.stringify(err));
-            if (callback) callback();
-        });
+        resolveLocalFileSystemURL(
+            mediaFile.localURL,
+            function (entry) {
+                log('Resolved by URL: ' + mediaFile.localURL);
+                if (callback) callback();
+            },
+            function (err) {
+                log('Failed to resolve by URL: ' + mediaFile.localURL);
+                log('Error: ' + JSON.stringify(err));
+                if (callback) callback();
+            }
+        );
     }
 
     function resolveMediaFile (mediaFile, callback) {
-        resolveLocalFileSystemURL(mediaFile.fullPath, function (entry) {
-            log('Resolved by path: ' + mediaFile.fullPath);
-            if (callback) callback();
-        }, function (err) {
-            log('Failed to resolve by path: ' + mediaFile.fullPath);
-            log('Error: ' + JSON.stringify(err));
-            if (callback) callback();
-        });
+        resolveLocalFileSystemURL(
+            mediaFile.fullPath,
+            function (entry) {
+                log('Resolved by path: ' + mediaFile.fullPath);
+                if (callback) callback();
+            },
+            function (err) {
+                log('Failed to resolve by path: ' + mediaFile.fullPath);
+                log('Error: ' + JSON.stringify(err));
+                if (callback) callback();
+            }
+        );
     }
 
     function resolveVideo () {
         clearStatus();
         var options = { limit: 1, duration: 5 };
-        navigator.device.capture.captureVideo(function (mediaFiles) {
-            captureVideoWin(mediaFiles);
-            resolveMediaFile(mediaFiles[0], function () {
-                resolveMediaFileURL(mediaFiles[0]);
-            });
-        }, captureVideoFail, options);
+        navigator.device.capture.captureVideo(
+            function (mediaFiles) {
+                captureVideoWin(mediaFiles);
+                resolveMediaFile(mediaFiles[0], function () {
+                    resolveMediaFileURL(mediaFiles[0]);
+                });
+            },
+            captureVideoFail,
+            options
+        );
     }
 
     function clearStatus () {
@@ -307,7 +319,8 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     /******************************************************************************/
 
-    contentEl.innerHTML = '<div id="info" style="white-space: pre-wrap">' +
+    contentEl.innerHTML =
+        '<div id="info" style="white-space: pre-wrap">' +
         '<b>Status:</b> <div id="camera_status"></div>' +
         'img1: <img width="100" id="camera_image">' +
         'img2: <img width="100" id="camera_image2">' +
@@ -328,31 +341,59 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         '<p/> <div id="prohibited_camera_image"></div>' +
         'Expected result (iOS only): camera picker and alert with message that camera access is prohibited are shown. The alert has 2 buttons: OK and Settings. By click on "OK" camera is hidden, by pressing Settings it shows privacy settings for the app';
 
-    createActionButton('Capture 10 sec of audio and play', function () {
-        getAudio();
-    }, 'audio');
+    createActionButton(
+        'Capture 10 sec of audio and play',
+        function () {
+            getAudio();
+        },
+        'audio'
+    );
 
-    createActionButton('Capture 1 image', function () {
-        getImage();
-    }, 'image');
+    createActionButton(
+        'Capture 1 image',
+        function () {
+            getImage();
+        },
+        'image'
+    );
 
-    createActionButton('Capture 3 images', function () {
-        getImages();
-    }, 'images');
+    createActionButton(
+        'Capture 3 images',
+        function () {
+            getImages();
+        },
+        'images'
+    );
 
-    createActionButton('Capture 10 sec of video', function () {
-        getVideo();
-    }, 'video');
+    createActionButton(
+        'Capture 10 sec of video',
+        function () {
+            getVideo();
+        },
+        'video'
+    );
 
-    createActionButton('Capture 5 sec of video and resolve', function () {
-        resolveVideo();
-    }, 'video_and_resolve');
+    createActionButton(
+        'Capture 5 sec of video and resolve',
+        function () {
+            resolveVideo();
+        },
+        'video_and_resolve'
+    );
 
-    createActionButton('Disable access to Camera and click to capture video', function () {
-        getVideoPermissionError();
-    }, 'prohibited_camera_video');
+    createActionButton(
+        'Disable access to Camera and click to capture video',
+        function () {
+            getVideoPermissionError();
+        },
+        'prohibited_camera_video'
+    );
 
-    createActionButton('Disable access to Camera and click to capture image', function () {
-        getImagePermissionError();
-    }, 'prohibited_camera_image');
+    createActionButton(
+        'Disable access to Camera and click to capture image',
+        function () {
+            getImagePermissionError();
+        },
+        'prohibited_camera_image'
+    );
 };
