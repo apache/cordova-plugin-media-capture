@@ -311,23 +311,27 @@
 
 - (void)showPermissionsAlert
 {
-    __weak CDVCapture* weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[[UIAlertView alloc] initWithTitle:[[NSBundle mainBundle]
-                                             objectForInfoDictionaryKey:@"CFBundleDisplayName"]
-                                    message:NSLocalizedString(@"Access to the camera has been prohibited; please enable it in the Settings app to continue.", nil)
-                                   delegate:weakSelf
-                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                          otherButtonTitles:NSLocalizedString(@"Settings", nil), nil] show];
-    });
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]
+        message:NSLocalizedString(@"Access to the camera has been prohibited; please enable it in the Settings app to continue.", nil)
+        preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+    style:UIAlertActionStyleDefault
+    handler:^(UIAlertAction * action)
+    {
+        [self returnNoPermissionError];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
+    style:UIAlertActionStyleDefault
+    handler:^(UIAlertAction * action)
+    {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]options:@{} completionHandler:nil];
+        [self returnNoPermissionError];
+    }]];
+    [self.viewController presentViewController:alertController animated:YES completion:^{}];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)returnNoPermissionError
 {
-    if (buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-    }
-
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_PERMISSION_DENIED];
 
     [[pickerController presentingViewController] dismissViewControllerAnimated:YES completion:nil];
@@ -588,19 +592,11 @@
 
 @implementation CDVAudioNavigationController
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     // delegate to CVDAudioRecorderViewController
     return [self.topViewController supportedInterfaceOrientations];
 }
-#else
-- (NSUInteger)supportedInterfaceOrientations
-{
-    // delegate to CVDAudioRecorderViewController
-    return [self.topViewController supportedInterfaceOrientations];
-}
-#endif
 
 @end
 
@@ -654,7 +650,7 @@
     }
 
     // create view and display
-    CGRect viewRect = [[UIScreen mainScreen] applicationFrame];
+    CGRect viewRect = [[UIScreen mainScreen] bounds];
     UIView* tmp = [[UIView alloc] initWithFrame:viewRect];
 
     // make backgrounds
@@ -696,12 +692,7 @@
     // timerLabel.autoresizingMask = reSizeMask;
     [self.timerLabel setBackgroundColor:[UIColor clearColor]];
     [self.timerLabel setTextColor:[UIColor whiteColor]];
-#ifdef __IPHONE_6_0
     [self.timerLabel setTextAlignment:NSTextAlignmentCenter];
-#else
-    // for iOS SDK < 6.0
-    [self.timerLabel setTextAlignment:UITextAlignmentCenter];
-#endif
     [self.timerLabel setText:@"0:00"];
     [self.timerLabel setAccessibilityHint:PluginLocalizedString(captureCommand, @"recorded time in minutes and seconds", nil)];
     self.timerLabel.accessibilityTraits |= UIAccessibilityTraitUpdatesFrequently;
@@ -776,7 +767,6 @@
     }
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     UIInterfaceOrientationMask orientation = UIInterfaceOrientationMaskPortrait;
@@ -784,22 +774,6 @@
 
     orientation = orientation | (supported & UIInterfaceOrientationMaskPortraitUpsideDown);
     return orientation;
-}
-#else
-- (NSUInteger)supportedInterfaceOrientations
-{
-    NSUInteger orientation = UIInterfaceOrientationMaskPortrait; // must support portrait
-    NSUInteger supported = [captureCommand.viewController supportedInterfaceOrientations];
-
-    orientation = orientation | (supported & UIInterfaceOrientationMaskPortraitUpsideDown);
-    return orientation;
-}
-#endif
-
-- (void)viewDidUnload
-{
-    [self setView:nil];
-    [self.captureCommand setInUse:NO];
 }
 
 - (void)processButton:(id)sender
@@ -828,7 +802,7 @@
             } else {
                 if (weakSelf.duration) {
                     weakSelf.isTimed = true;
-                    [weakSelf.avRecorder recordForDuration:[duration doubleValue]];
+                    [weakSelf.avRecorder recordForDuration:[weakSelf.duration doubleValue]];
                 } else {
                     [weakSelf.avRecorder record];
                 }
@@ -882,7 +856,7 @@
         //BOOL isUIAccessibilityAnnouncementNotification = (&UIAccessibilityAnnouncementNotification != NULL);
         if (UIAccessibilityAnnouncementNotification) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 500ull * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-                    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, PluginLocalizedString(captureCommand, @"timed recording complete", nil));
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, PluginLocalizedString(self->captureCommand, @"timed recording complete", nil));
                 });
         }
     } else {
@@ -908,10 +882,6 @@
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     // return result
     [self.captureCommand.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
-
-    if (IsAtLeastiOSVersion(@"7.0")) {
-        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle];
-    }
 }
 
 - (void)updateTime
@@ -960,20 +930,6 @@
     NSLog(@"error recording audio");
     self.pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageToErrorObject:CAPTURE_INTERNAL_ERR];
     [self dismissAudioView:nil];
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleDefault;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    if (IsAtLeastiOSVersion(@"7.0")) {
-        [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
-    }
-
-    [super viewWillAppear:animated];
 }
 
 @end
