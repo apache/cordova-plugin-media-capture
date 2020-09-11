@@ -18,51 +18,48 @@
 */
 package org.apache.cordova.mediacapture;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
+import android.Manifest;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import org.apache.cordova.file.FileUtils;
-import org.apache.cordova.file.LocalFilesystemURL;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.media.ExifInterface;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PermissionHelper;
 import org.apache.cordova.PluginManager;
+import org.apache.cordova.file.FileUtils;
+import org.apache.cordova.file.LocalFilesystemURL;
 import org.apache.cordova.mediacapture.PendingRequests.Request;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.media.ExifInterface;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class Capture extends CordovaPlugin {
 
