@@ -20,15 +20,15 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
-           id="cordova-plugin-media-capture"
+           id="cordova-plugin-ns0m-media-capture"
       version="3.0.4-dev">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,media,capture</keywords>
-    <repo>https://github.com/apache/cordova-plugin-media-capture</repo>
-    <issue>https://github.com/apache/cordova-plugin-media-capture/issues</issue>
+    <repo>https://github.com/ns0m/cordova-plugin-ns0m-media-capture</repo>
+    <issue>https://github.com/ns0m/cordova-plugin-ns0m-media-capture/issues</issue>
 
     <engines>
         <engine name="cordova-android" version=">=6.3.0" />

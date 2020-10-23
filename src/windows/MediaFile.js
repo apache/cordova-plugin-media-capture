@@ -21,8 +21,8 @@
 
 /* global Windows */
 
-var MediaFileData = require('cordova-plugin-media-capture.MediaFileData');
-var CaptureError = require('cordova-plugin-media-capture.CaptureError');
+var MediaFileData = require('cordova-plugin-ns0m-media-capture.MediaFileData');
+var CaptureError = require('cordova-plugin-ns0m-media-capture.CaptureError');
 
 module.exports = {
     getFormatData: function (successCallback, errorCallback, args) {
