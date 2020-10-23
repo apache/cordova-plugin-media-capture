@@ -12,12 +12,9 @@ Thumbs.db
 *.swp
 *.user
 
+.idea
+*.iml
+
+*.tgz
+
 node_modules
-
-
-
-
-
-
-
- 
