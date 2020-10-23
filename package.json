@@ -1,10 +1,10 @@
 {
-  "name": "cordova-plugin-media-capture",
+  "name": "cordova-plugin-ns0m-media-capture",
   "version": "3.0.4-dev",
   "description": "Cordova Media Capture Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
-    "id": "cordova-plugin-media-capture",
+    "id": "cordova-plugin-ns0m-media-capture",
     "platforms": [
       "android",
       "ios",
@@ -12,8 +12,8 @@
       "browser"
     ]
   },
-  "repository": "github:apache/cordova-plugin-media-capture",
-  "bugs": "https://github.com/apache/cordova-plugin-media-capture/issues",
+  "repository": "github:ns0m/cordova-plugin-ns0m-media-capture",
+  "bugs": "https://github.com/ns0m/cordova-plugin-ns0m-media-capture/issues",
   "keywords": [
     "cordova",
     "media",
