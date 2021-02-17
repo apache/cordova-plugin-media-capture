@@ -257,9 +257,7 @@
         pickerController.mediaTypes = [NSArray arrayWithObjects:mediaType, nil];
 
         if ([mediaType isEqualToString:(NSString*)kUTTypeMovie]){
-            if (duration) {
-                pickerController.videoMaximumDuration = [duration doubleValue];
-            }
+            pickerController.videoMaximumDuration = 60 * 60; // 1 hour
             //NSLog(@"pickerController.videoMaximumDuration = %f", pickerController.videoMaximumDuration);
         }
 
