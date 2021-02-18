@@ -269,6 +269,14 @@
             // pickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
             // pickerController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
             // pickerController.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
+
+            NSNumber* cameraDirection = [options objectForKey:@"cameraDirection"];
+
+            // check if the value of camera direction is 1
+            // if that is the case use the front face camera
+            if([cameraDirection intValue] == 1) {
+                pickerController.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+            }
         }
         // CDVImagePicker specific property
         pickerController.callbackId = callbackId;

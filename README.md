@@ -21,9 +21,9 @@ description: Capture audio, video, and images.
 #         under the License.
 -->
 
-|AppVeyor|Travis CI|
-|:-:|:-:|
-|[![Build status](https://ci.appveyor.com/api/projects/status/github/apache/cordova-plugin-media-capture?branch=master)](https://ci.appveyor.com/project/ApacheSoftwareFoundation/cordova-plugin-media-capture)|[![Build Status](https://travis-ci.org/apache/cordova-plugin-media-capture.svg?branch=master)](https://travis-ci.org/apache/cordova-plugin-media-capture)|
+|                                                                                                    AppVeyor                                                                                                    |                                                                         Travis CI                                                                         |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| [![Build status](https://ci.appveyor.com/api/projects/status/github/apache/cordova-plugin-media-capture?branch=master)](https://ci.appveyor.com/project/ApacheSoftwareFoundation/cordova-plugin-media-capture) | [![Build Status](https://travis-ci.org/apache/cordova-plugin-media-capture.svg?branch=master)](https://travis-ci.org/apache/cordova-plugin-media-capture) |
 
 # cordova-plugin-media-capture
 
@@ -332,10 +332,12 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - __limit__: The maximum number of images the user can capture in a single capture operation. The value must be greater than or equal to 1 (defaults to 1).
 
+- __cameraDirection__: Pick camera direction. Accepted values are 1 (for front camera) and 0 (for back camera). Or you can use the constants (window.MediaCapture.CAMERA_FRONT or window.MediaCapture.CAMERA_BACK)
+
 ### Example
 
     // limit capture operation to 3 images
-    var options = { limit: 3 };
+    var options = { limit: 3, cameraDirection: window.MediaCapture.CAMERA_FRONT };
 
     navigator.device.capture.captureImage(captureSuccess, captureError, options);
 
@@ -354,10 +356,12 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - __duration__: The maximum duration of a video clip, in seconds.
 
+- __cameraDirection__: Pick camera direction. Accepted values are 1 (for front camera) and 0 (for back camera). Or you can use the constants (window.MediaCapture.CAMERA_FRONT or window.MediaCapture.CAMERA_BACK)
+
 ### Example
 
     // limit capture operation to 3 video clips
-    var options = { limit: 3 };
+    var options = { limit: 3, cameraDirection: window.MediaCapture.CAMERA_FRONT };
 
     navigator.device.capture.captureVideo(captureSuccess, captureError, options);
 

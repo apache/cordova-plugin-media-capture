@@ -35,6 +35,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </engines>
 
     <dependency id="cordova-plugin-file" version="^6.0.0" />
+    
+    <js-module src="www/CameraConstants.js" name="MediaCapture">
+        <clobbers target="MediaCapture" />
+    </js-module>
 
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
