@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-ns0m-media-capture",
-  "version": "3.0.4-2",
+  "version": "3.0.4-3",
   "description": "Cordova Media Capture Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
