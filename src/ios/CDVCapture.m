@@ -267,7 +267,7 @@
         // iOS 4.0
         if ([pickerController respondsToSelector:@selector(cameraCaptureMode)]) {
             pickerController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
-            switch ((int) ([quality doubleValue] * 10)) {
+            switch ((int) (quality ? [quality doubleValue] * 10 : -1)) {
                 case 0:
                     pickerController.videoQuality = UIImagePickerControllerQualityTypeLow;
                     break;
