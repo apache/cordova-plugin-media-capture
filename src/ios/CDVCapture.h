@@ -49,8 +49,10 @@ typedef NSUInteger CDVCaptureError;
 {
     CDVImagePicker* pickerController;
     BOOL inUse;
+    BOOL saveToGallery;
 }
 @property BOOL inUse;
+@property BOOL saveToGallery;
 - (void)captureAudio:(CDVInvokedUrlCommand*)command;
 - (void)captureImage:(CDVInvokedUrlCommand*)command;
 - (CDVPluginResult*)processImage:(UIImage*)image type:(NSString*)mimeType forCallbackId:(NSString*)callbackId;
