@@ -59,7 +59,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 import org.apache.cordova.BuildHelper;
 
 public class Capture extends CordovaPlugin {
