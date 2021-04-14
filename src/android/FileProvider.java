@@ -17,5 +17,6 @@
        under the License.
 */
 package org.apache.cordova.mediacapture;
+import androidx.core.content.FileProvider;
 
-public class FileProvider extends android.support.v4.content.FileProvider {}
+public class FileProvider extends FileProvider {}
