@@ -71,6 +71,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
+            <preference name="AndroidXEnabled" value="true" />
             <feature name="Capture" >
                 <param name="android-package" value="org.apache.cordova.mediacapture.Capture"/>
             </feature>
