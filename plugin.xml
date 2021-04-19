@@ -71,7 +71,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <preference name="AndroidXEnabled" value="true" />
             <feature name="Capture" >
                 <param name="android-package" value="org.apache.cordova.mediacapture.Capture"/>
             </feature>
@@ -104,9 +103,9 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <js-module src="www/android/init.js" name="init">
             <runs />
         </js-module>
-        <preference name="ANDROIDX_VERSION" default="1.+" />
-        <framework src="androidx.legacy:legacy-support-v4:$ANDROIDX_VERSION" />
-        <framework src="androidx.appcompat:appcompat:$ANDROIDX_VERSION" />
+        <preference name="ANDROID_SUPPORT_V4_VERSION" default="27.+"/>
+        <framework src="com.android.support:support-v4:$ANDROID_SUPPORT_V4_VERSION"/>
+
     </platform>
 
     <!-- ios -->
