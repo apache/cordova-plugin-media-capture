@@ -105,6 +105,7 @@
     } else {
         // all the work occurs here
         CDVAudioRecorderViewController* audioViewController = [[CDVAudioRecorderViewController alloc] initWithCommand:self duration:duration callbackId:callbackId];
+
         // Now create a nav controller and display the view...
         CDVAudioNavigationController* navController = [[CDVAudioNavigationController alloc] initWithRootViewController:audioViewController];
 
@@ -606,6 +607,7 @@
 @interface CDVAudioRecorderViewController () {
     UIStatusBarStyle _previousStatusBarStyle;
 }
+@property (nonatomic, getter=isModalInPresentation) BOOL modalInPresentation;
 @end
 
 @implementation CDVAudioRecorderViewController
@@ -638,6 +640,11 @@
         self.callbackId = theCallbackId;
         self.errorCode = CAPTURE_NO_MEDIA_FILES;
         self.isTimed = self.duration != nil;
+        
+        if (@available(iOS 13, *)) {
+            self.modalInPresentation = YES;
+        }
+
         _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
 
         return self;
@@ -974,5 +981,6 @@
 
     [super viewWillAppear:animated];
 }
+
 
 @end
