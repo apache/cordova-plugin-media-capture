@@ -23,6 +23,8 @@ description: Capture audio, video, and images.
 
 # cordova-plugin-media-capture
 
+[![Android Testsuite](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/android.yml/badge.svg)](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/android.yml) [![Chrome Testsuite](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/chrome.yml/badge.svg)](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/chrome.yml) [![iOS Testsuite](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/ios.yml/badge.svg)](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/ios.yml) [![Lint Test](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/lint.yml/badge.svg)](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/lint.yml)
+
 This plugin provides access to the device's audio, image, and video capture capabilities.
 
 __WARNING__: Collection and use of images, video, or
