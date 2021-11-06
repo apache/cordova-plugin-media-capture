@@ -1,6 +1,6 @@
 ### Publication-only version of the [apache/cordova-plugin-media-capture](https://github.com/apache/cordova-plugin-media-capture) package with some early fixes. [![Latest Published Version](https://img.shields.io/npm/v/cordova-plugin-ns0m-media-capture)](https://www.npmjs.com/package/cordova-plugin-ns0m-media-capture)
 ```
-cordova plugin add cordova-plugin-ns0m-media-capture@3.0.4-5
+cordova plugin add cordova-plugin-ns0m-media-capture@3.0.4-6
 ```
 
 ---
