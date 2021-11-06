@@ -285,17 +285,6 @@ public class Capture extends CordovaPlugin {
         }
     }
 
-    private String getTempDirectoryPath() {
-        File cache = null;
-
-        // Use internal storage
-        cache = cordova.getActivity().getCacheDir();
-
-        // Create the cache directory if it doesn't exist
-        cache.mkdirs();
-        return cache.getAbsolutePath();
-    }
-
     /**
      * Sets up an intent to capture images.  Result handled by onActivityResult()
      */
@@ -427,17 +416,8 @@ public class Capture extends CordovaPlugin {
     }
 
     public void onVideoActivityResult(Request req, Intent intent) {
-        Uri data = null;
-
-        if (intent != null){
-            // Get the uri of the video clip
-            data = intent.getData();
-        }
-
-        if( data == null){
-            File movie = new File(getTempDirectoryPath(), "Capture.avi");
-            data = Uri.fromFile(movie);
-        }
+        // Get the uri of the video clip
+        Uri data = intent.getData();
 
         // create a file object from the uri
         if(data == null) {
