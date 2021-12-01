@@ -213,68 +213,22 @@
 
 - (void)captureVideo:(CDVInvokedUrlCommand*)command
 {
-    NSString* callbackId = command.callbackId;
-    NSDictionary* options = [command argumentAtIndex:0];
+    let captureSession = AVCaptureSession()
+    captureSession.beginConfiguration()
+    let videoDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back)
+    guard
+        let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice!),
+        captureSession.canAddInput(videoDeviceInput)
+        else { return }
+    captureSession.addInput(videoDeviceInput)
 
-    if ([options isKindOfClass:[NSNull class]]) {
-        options = [NSDictionary dictionary];
-    }
+    let movieFileOutput = AVCaptureMovieFileOutput()
+    guard captureSession.canAddOutput(movieFileOutput) else { return }
+    captureSession.sessionPreset = .video
+    captureSession.addOutput(photoOutput)
+    captureSession.commitConfiguration()
 
-    // options could contain limit, duration and mode
-    // taking more than one video (limit) is only supported if provide own controls via cameraOverlayView property
-    NSNumber* duration = [options objectForKey:@"duration"];
-    NSString* mediaType = nil;
-
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        // there is a camera, it is available, make sure it can do movies
-        pickerController = [[CDVImagePicker alloc] init];
-
-        NSArray* types = nil;
-        if ([UIImagePickerController respondsToSelector:@selector(availableMediaTypesForSourceType:)]) {
-            types = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
-            // NSLog(@"MediaTypes: %@", [types description]);
-
-            if ([types containsObject:(NSString*)kUTTypeMovie]) {
-                mediaType = (NSString*)kUTTypeMovie;
-            } else if ([types containsObject:(NSString*)kUTTypeVideo]) {
-                mediaType = (NSString*)kUTTypeVideo;
-            }
-        }
-    }
-    if (!mediaType) {
-        // don't have video camera return error
-        NSLog(@"Capture.captureVideo: video mode not available.");
-        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_NOT_SUPPORTED];
-        [self.commandDelegate sendPluginResult:result callbackId:callbackId];
-        pickerController = nil;
-    } else {
-        [self showAlertIfAccessProhibited];
-
-        pickerController.delegate = self;
-        pickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-        pickerController.allowsEditing = NO;
-        // iOS 3.0
-        pickerController.mediaTypes = [NSArray arrayWithObjects:mediaType, nil];
-
-        if ([mediaType isEqualToString:(NSString*)kUTTypeMovie]){
-            if (duration) {
-                pickerController.videoMaximumDuration = [duration doubleValue];
-            }
-            //NSLog(@"pickerController.videoMaximumDuration = %f", pickerController.videoMaximumDuration);
-        }
-
-        // iOS 4.0
-        if ([pickerController respondsToSelector:@selector(cameraCaptureMode)]) {
-            pickerController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
-            pickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
-            // pickerController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-            // pickerController.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
-        }
-        // CDVImagePicker specific property
-        pickerController.callbackId = callbackId;
-        pickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
-        [self.viewController presentViewController:pickerController animated:YES completion:nil];
-    }
+    movieFileOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: self)
 }
 
 - (CDVPluginResult*)processVideo:(NSString*)moviePath forCallbackId:(NSString*)callbackId
