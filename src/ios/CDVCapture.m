@@ -224,11 +224,14 @@
 
     let movieFileOutput = AVCaptureMovieFileOutput()
     guard captureSession.canAddOutput(movieFileOutput) else { return }
-    captureSession.sessionPreset = .video
+    // captureSession.sessionPreset = .video
     captureSession.addOutput(photoOutput)
     captureSession.commitConfiguration()
 
-    movieFileOutput.startRecording(to: URL(fileURLWithPath: outputFilePath), recordingDelegate: self)
+    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    let fileUrl = paths[0].appendingPathComponent("output.mp4")
+    try? FileManager.default.removeItem(at: fileUrl)
+    movieFileOutput.startRecording(to: fileUrl, recordingDelegate: self)
 }
 
 - (CDVPluginResult*)processVideo:(NSString*)moviePath forCallbackId:(NSString*)callbackId
