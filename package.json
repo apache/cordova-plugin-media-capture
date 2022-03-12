@@ -1,6 +1,6 @@
 {
-  "name": "cordova-plugin-media-capture",
-  "version": "3.0.4-dev",
+  "name": "@athleticnet/cordova-plugin-media-capture",
+  "version": "3.0.6",
   "description": "Cordova Media Capture Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
@@ -12,7 +12,6 @@
       "browser"
     ]
   },
-  "repository": "github:apache/cordova-plugin-media-capture",
   "bugs": "https://github.com/apache/cordova-plugin-media-capture/issues",
   "keywords": [
     "cordova",
@@ -44,5 +43,12 @@
   },
   "devDependencies": {
     "@cordova/eslint-config": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AthleticNet/athletic-live-api.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
