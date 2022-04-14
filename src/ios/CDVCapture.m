@@ -275,9 +275,20 @@
     }
 }
 
+- (NSURL *)applicationDocumentsDirectory {
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
 - (CDVPluginResult*)processVideo:(NSString*)moviePath forCallbackId:(NSString*)callbackId
 {
-    // save the movie to photo album (only avail as of iOS 3.1)
+    // copy to documents folder and remove from tmp folder
+    NSURL *tempMoviePath = [NSURL fileURLWithPath:moviePath];
+    NSURL *docsDirectory = [self applicationDocumentsDirectory];
+    NSURL *docsMoviePath = [docsDirectory URLByAppendingPathComponent:[[tempMoviePath path] lastPathComponent]];
+
+    NSString *docsMoviePathString = docsMoviePath.absoluteString;
+
+    if ( [[NSFileManager defaultManager] isReadableFileAtPath:moviePath] ) [[NSFileManager defaultManager] copyItemAtURL:tempMoviePath toURL:docsMoviePath error:nil];
 
     NSLog(@"can save %@: %d ?", moviePath, UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath));
     if (&UIVideoAtPathIsCompatibleWithSavedPhotosAlbum != NULL && UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath) == YES) {
@@ -285,8 +296,12 @@
         UISaveVideoAtPathToSavedPhotosAlbum(moviePath, nil, nil, nil);
         NSLog(@"finished saving movie");
     }
+
+    // delete temp video
+    [[NSFileManager defaultManager] removeItemAtPath:moviePath error:nil];
+
     // create MediaFile object
-    NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
+    NSDictionary* fileDict = [self getMediaDictionaryFromPath:docsMoviePathString ofType:nil];
     NSArray* fileArray = [NSArray arrayWithObject:fileDict];
 
     return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
@@ -642,7 +657,7 @@
 
 - (void)loadView
 {
-	if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
 
@@ -658,7 +673,7 @@
         microphoneResource = @"CDVCapture.bundle/microphone-568h";
     }
 
-    NSBundle* cdvBundle = [NSBundle bundleForClass:[CDVCapture class]];
+    NSBundle* cdvBundle = [NSBundle mainBundle];
     UIImage* microphone = [UIImage imageNamed:[self resolveImageResource:microphoneResource] inBundle:cdvBundle compatibleWithTraitCollection:nil];
     UIView* microphoneView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, viewRect.size.width, microphone.size.height)];
     [microphoneView setBackgroundColor:[UIColor colorWithPatternImage:microphone]];
