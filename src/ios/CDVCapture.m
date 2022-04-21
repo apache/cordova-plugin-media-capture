@@ -286,14 +286,14 @@
     NSURL *docsDirectory = [self applicationDocumentsDirectory];
     NSURL *docsMoviePath = [docsDirectory URLByAppendingPathComponent:[[tempMoviePath path] lastPathComponent]];
 
-    NSString *docsMoviePathString = docsMoviePath.absoluteString;
+    NSString *docsMoviePathString = docsMoviePath.path;
 
     if ( [[NSFileManager defaultManager] isReadableFileAtPath:moviePath] ) [[NSFileManager defaultManager] copyItemAtURL:tempMoviePath toURL:docsMoviePath error:nil];
 
-    NSLog(@"can save %@: %d ?", moviePath, UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath));
-    if (&UIVideoAtPathIsCompatibleWithSavedPhotosAlbum != NULL && UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath) == YES) {
+    NSLog(@"can save %@: %d ?", docsMoviePathString, UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(docsMoviePathString));
+    if (&UIVideoAtPathIsCompatibleWithSavedPhotosAlbum != NULL && UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(docsMoviePathString) == YES) {
         NSLog(@"try to save movie");
-        UISaveVideoAtPathToSavedPhotosAlbum(moviePath, nil, nil, nil);
+        UISaveVideoAtPathToSavedPhotosAlbum(docsMoviePathString, nil, nil, nil);
         NSLog(@"finished saving movie");
     }
 
