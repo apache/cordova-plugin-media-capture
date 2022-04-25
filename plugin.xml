@@ -21,7 +21,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-ns0m-media-capture"
-      version="3.0.4-8">
+      version="4.0.0-dev">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -31,10 +31,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     <issue>https://github.com/ns0m/cordova-plugin-ns0m-media-capture/issues</issue>
 
     <engines>
-        <engine name="cordova-android" version=">=6.3.0" />
+        <engine name="cordova-android" version=">=10.0.0" />
     </engines>
 
-    <dependency id="cordova-plugin-file" version="^6.0.0" />
+    <dependency id="cordova-plugin-file" version="^7.0.0" />
 
     <js-module src="www/CaptureAudioOptions.js" name="CaptureAudioOptions">
         <clobbers target="CaptureAudioOptions" />
