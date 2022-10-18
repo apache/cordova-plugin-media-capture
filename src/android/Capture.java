@@ -254,7 +254,7 @@ public class Capture extends CordovaPlugin {
 
     private boolean isMissingPermissions(Request req, String mediaPermission) {
         ArrayList<String> permissions = new ArrayList<>(Arrays.asList(storagePermissions));
-        if (mediaPermission != null) {
+        if (mediaPermission != null && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissions.add(mediaPermission);
         }
         return isMissingPermissions(req, permissions);
@@ -265,7 +265,7 @@ public class Capture extends CordovaPlugin {
         if (cameraPermissionInManifest) {
             cameraPermissions.add(Manifest.permission.CAMERA);
         }
-        if (mediaPermission != null) {
+        if (mediaPermission != null && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             cameraPermissions.add(mediaPermission);
         }
         return isMissingPermissions(req, cameraPermissions);
