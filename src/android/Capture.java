@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import android.content.ActivityNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -75,7 +76,8 @@ public class Capture extends CordovaPlugin {
 //    private static final int CAPTURE_INVALID_ARGUMENT = 2;
     private static final int CAPTURE_NO_MEDIA_FILES = 3;
     private static final int CAPTURE_PERMISSION_DENIED = 4;
-
+    private static final int CAPTURE_NOT_SUPPORTED = 20;
+	
     private boolean cameraPermissionInManifest;     // Whether or not the CAMERA permission is declared in AndroidManifest.xml
 
     private final PendingRequests pendingRequests = new PendingRequests();
@@ -234,9 +236,12 @@ public class Capture extends CordovaPlugin {
       } else if (!saveAlbumPermission) {
           PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.READ_EXTERNAL_STORAGE);
       } else {
-          Intent intent = new Intent(android.provider.MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-
-          this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
+	      try {
+              Intent intent = new Intent(android.provider.MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+			  this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
+		  } catch (ActivityNotFoundException ex) {
+              pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NOT_SUPPORTED, "No Activity found to handle Audio Capture."));
+          }
       }
     }
 
