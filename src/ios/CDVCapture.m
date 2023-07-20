@@ -735,6 +735,8 @@
         }
     }
 
+    [self.avSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
+    
     // create file to record to in temporary dir
 
     NSString* docsPath = [NSTemporaryDirectory()stringByStandardizingPath];   // use file system temporary directory
@@ -793,7 +795,6 @@
         __weak CDVAudioRecorderViewController* weakSelf = self;
 
         void (^startRecording)(void) = ^{
-            [weakSelf.avSession setCategory:AVAudioSessionCategoryRecord error:&error];
             [weakSelf.avSession setActive:YES error:&error];
             if (error) {
                 // can't continue without active audio session
