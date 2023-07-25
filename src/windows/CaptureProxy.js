@@ -21,26 +21,26 @@
 
 /* global Windows */
 
-var MediaFile = require('cordova-plugin-media-capture.MediaFile');
-var CaptureError = require('cordova-plugin-media-capture.CaptureError');
-var CaptureAudioOptions = require('cordova-plugin-media-capture.CaptureAudioOptions');
-var CaptureVideoOptions = require('cordova-plugin-media-capture.CaptureVideoOptions');
-var MediaFileData = require('cordova-plugin-media-capture.MediaFileData');
+const MediaFile = require('cordova-plugin-media-capture.MediaFile');
+const CaptureError = require('cordova-plugin-media-capture.CaptureError');
+const CaptureAudioOptions = require('cordova-plugin-media-capture.CaptureAudioOptions');
+const CaptureVideoOptions = require('cordova-plugin-media-capture.CaptureVideoOptions');
+const MediaFileData = require('cordova-plugin-media-capture.MediaFileData');
 
 /*
  * Class that combines all logic for capturing picture and video on WP8.1
  */
 function MediaCaptureProxy () {
-    var previewContainer;
-    var capturePreview = null;
-    var captureCancelButton = null; // eslint-disable-line no-unused-vars
-    var captureSettings = null;
-    var captureStarted = false;
-    var capturedPictureFile;
-    var capturedVideoFile;
-    var capture = null;
+    let previewContainer;
+    let capturePreview = null;
+    let captureCancelButton = null; // eslint-disable-line no-unused-vars
+    let captureSettings = null;
+    let captureStarted = false;
+    let capturedPictureFile;
+    let capturedVideoFile;
+    let capture = null;
 
-    var CaptureNS = Windows.Media.Capture;
+    const CaptureNS = Windows.Media.Capture;
 
     /**
      * Helper function that toggles visibility of DOM elements with provided ids
@@ -48,11 +48,11 @@ function MediaCaptureProxy () {
      */
     function toggleElements () {
         // convert arguments to array
-        var args = Array.prototype.slice.call(arguments);
+        const args = Array.prototype.slice.call(arguments);
         args.forEach(function (buttonId) {
-            var buttonEl = document.getElementById(buttonId);
+            const buttonEl = document.getElementById(buttonId);
             if (buttonEl) {
-                var curDisplayStyle = buttonEl.style.display;
+                const curDisplayStyle = buttonEl.style.display;
                 buttonEl.style.display = curDisplayStyle === 'none' ? 'block' : 'none';
             }
         });
@@ -63,7 +63,7 @@ function MediaCaptureProxy () {
      * Capture starts, when you clicking on preview.
      */
     function createCameraUI () {
-        var buttonStyle = 'margin: 7px; border: 2.5px solid white; width: 45%; height: 35px; color: white; background-color: black;';
+        const buttonStyle = 'margin: 7px; border: 2.5px solid white; width: 45%; height: 35px; color: white; background-color: black;';
 
         previewContainer = document.createElement('div');
         previewContainer.style.cssText =
@@ -109,7 +109,7 @@ function MediaCaptureProxy () {
     function startCameraPreview (takeCallback, errorCallback, selectCallback, retakeCallback) {
         // try to select appropriate device for capture
         // rear camera is preferred option
-        var expectedPanel = Windows.Devices.Enumeration.Panel.back;
+        const expectedPanel = Windows.Devices.Enumeration.Panel.back;
         Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture).done(function (
             devices
         ) {
@@ -187,11 +187,11 @@ function MediaCaptureProxy () {
                         toggleElements('cancelCapture');
                         document.getElementById('takePicture').text = 'Stop';
 
-                        var encodingProperties = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(
+                        const encodingProperties = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(
                             Windows.Media.MediaProperties.VideoEncodingQuality.auto
                         );
-                        var generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName;
-                        var localFolder = Windows.Storage.ApplicationData.current.localFolder;
+                        const generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName;
+                        const localFolder = Windows.Storage.ApplicationData.current.localFolder;
 
                         localFolder.createFileAsync('cameraCaptureVideo.mp4', generateUniqueCollisionOption).done(
                             function (capturedFile) {
@@ -235,9 +235,9 @@ function MediaCaptureProxy () {
                 startCameraPreview(
                     // Callback for Take button - captures intermediate image file.
                     function () {
-                        var encodingProperties = Windows.Media.MediaProperties.ImageEncodingProperties.createJpeg();
-                        var overwriteCollisionOption = Windows.Storage.CreationCollisionOption.replaceExisting;
-                        var tempFolder = Windows.Storage.ApplicationData.current.temporaryFolder;
+                        const encodingProperties = Windows.Media.MediaProperties.ImageEncodingProperties.createJpeg();
+                        const overwriteCollisionOption = Windows.Storage.CreationCollisionOption.replaceExisting;
+                        const tempFolder = Windows.Storage.ApplicationData.current.temporaryFolder;
 
                         tempFolder.createFileAsync('cameraCaptureImage.jpg', overwriteCollisionOption).done(
                             function (capturedFile) {
@@ -268,8 +268,8 @@ function MediaCaptureProxy () {
                     },
                     // Callback for Select button - copies intermediate file into persistent application's storage
                     function () {
-                        var generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName;
-                        var localFolder = Windows.Storage.ApplicationData.current.localFolder;
+                        const generateUniqueCollisionOption = Windows.Storage.CreationCollisionOption.generateUniqueName;
+                        const localFolder = Windows.Storage.ApplicationData.current.localFolder;
 
                         capturedPictureFile.copyAsync(localFolder, capturedPictureFile.name, generateUniqueCollisionOption).done(
                             function (copiedFile) {
@@ -297,9 +297,9 @@ function MediaCaptureProxy () {
 
 module.exports = {
     captureAudio: function (successCallback, errorCallback, args) {
-        var options = args[0];
+        const options = args[0];
 
-        var audioOptions = new CaptureAudioOptions();
+        const audioOptions = new CaptureAudioOptions();
         if (typeof options.duration === 'undefined') {
             audioOptions.duration = 3600; // Arbitrary amount, need to change later
         } else if (options.duration > 0) {
@@ -310,27 +310,27 @@ module.exports = {
         }
 
         // Some shortcuts for long namespaces
-        var CaptureNS = Windows.Media.Capture;
-        var MediaPropsNS = Windows.Media.MediaProperties;
-        var localAppData = Windows.Storage.ApplicationData.current.localFolder;
-        var generateUniqueName = Windows.Storage.NameCollisionOption.generateUniqueName;
+        const CaptureNS = Windows.Media.Capture;
+        const MediaPropsNS = Windows.Media.MediaProperties;
+        const localAppData = Windows.Storage.ApplicationData.current.localFolder;
+        const generateUniqueName = Windows.Storage.NameCollisionOption.generateUniqueName;
 
-        var mediaCapture = new CaptureNS.MediaCapture();
-        var mediaCaptureSettings = new CaptureNS.MediaCaptureInitializationSettings();
-        var mp3EncodingProfile = new MediaPropsNS.MediaEncodingProfile.createMp3(MediaPropsNS.AudioEncodingQuality.auto); // eslint-disable-line new-cap
-        var m4aEncodingProfile = new MediaPropsNS.MediaEncodingProfile.createM4a(MediaPropsNS.AudioEncodingQuality.auto); // eslint-disable-line new-cap
+        const mediaCapture = new CaptureNS.MediaCapture();
+        const mediaCaptureSettings = new CaptureNS.MediaCaptureInitializationSettings();
+        const mp3EncodingProfile = new MediaPropsNS.MediaEncodingProfile.createMp3(MediaPropsNS.AudioEncodingQuality.auto); // eslint-disable-line new-cap
+        const m4aEncodingProfile = new MediaPropsNS.MediaEncodingProfile.createM4a(MediaPropsNS.AudioEncodingQuality.auto); // eslint-disable-line new-cap
 
         mediaCaptureSettings.streamingCaptureMode = CaptureNS.StreamingCaptureMode.audio;
 
-        var capturedFile;
-        var stopRecordTimeout;
+        let capturedFile;
+        let stopRecordTimeout;
 
-        var stopRecord = function () {
+        const stopRecord = function () {
             mediaCapture.stopRecordAsync().then(
                 function () {
                     capturedFile.getBasicPropertiesAsync().then(
                         function (basicProperties) {
-                            var result = new MediaFile(
+                            const result = new MediaFile(
                                 capturedFile.name,
                                 'ms-appdata:///local/' + capturedFile.name,
                                 capturedFile.contentType,
@@ -392,10 +392,10 @@ module.exports = {
     },
 
     captureImage: function (successCallback, errorCallback, args) {
-        var CaptureNS = Windows.Media.Capture;
+        const CaptureNS = Windows.Media.Capture;
 
         function fail (code, data) {
-            var err = new CaptureError(code);
+            const err = new CaptureError(code);
             err.message = data;
             errorCallback(err);
         }
@@ -405,13 +405,13 @@ module.exports = {
             // We are running on WP8.1 which lacks CameraCaptureUI class
             // so we need to use MediaCapture class instead and implement custom UI for camera
 
-            var proxy = new MediaCaptureProxy();
+            const proxy = new MediaCaptureProxy();
 
             proxy.capturePhoto(
                 function (photoFile) {
                     photoFile.getBasicPropertiesAsync().done(
                         function (basicProperties) {
-                            var result = new MediaFile(
+                            const result = new MediaFile(
                                 photoFile.name,
                                 'ms-appdata:///local/' + photoFile.name,
                                 photoFile.contentType,
@@ -431,7 +431,7 @@ module.exports = {
                 }
             );
         } else {
-            var cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
+            const cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
             cameraCaptureUI.photoSettings.allowCropping = true;
             cameraCaptureUI.photoSettings.maxResolution = Windows.Media.Capture.CameraCaptureUIMaxPhotoResolution.highestAvailable;
             cameraCaptureUI.photoSettings.format = Windows.Media.Capture.CameraCaptureUIPhotoFormat.jpeg;
@@ -446,7 +446,7 @@ module.exports = {
                             function () {
                                 file.getBasicPropertiesAsync().then(
                                     function (basicProperties) {
-                                        var result = new MediaFile(
+                                        const result = new MediaFile(
                                             file.name,
                                             'ms-appdata:///local/' + file.name,
                                             file.contentType,
@@ -477,11 +477,11 @@ module.exports = {
     },
 
     captureVideo: function (successCallback, errorCallback, args) {
-        var options = args[0];
-        var CaptureNS = Windows.Media.Capture;
+        const options = args[0];
+        const CaptureNS = Windows.Media.Capture;
 
         function fail (code, data) {
-            var err = new CaptureError(code);
+            const err = new CaptureError(code);
             err.message = data;
             errorCallback(err);
         }
@@ -491,12 +491,12 @@ module.exports = {
             // We are running on WP8.1 which lacks CameraCaptureUI class
             // so we need to use MediaCapture class instead and implement custom UI for camera
 
-            var proxy = new MediaCaptureProxy();
+            const proxy = new MediaCaptureProxy();
 
             proxy.captureVideo(function (videoFile) {
                 videoFile.getBasicPropertiesAsync().done(
                     function (basicProperties) {
-                        var result = new MediaFile(
+                        const result = new MediaFile(
                             videoFile.name,
                             'ms-appdata:///local/' + videoFile.name,
                             videoFile.contentType,
@@ -512,14 +512,14 @@ module.exports = {
                 );
             }, fail);
         } else {
-            var videoOptions = new CaptureVideoOptions();
+            const videoOptions = new CaptureVideoOptions();
             if (options.duration && options.duration > 0) {
                 videoOptions.duration = options.duration;
             }
             if (options.limit > 1) {
                 videoOptions.limit = options.limit;
             }
-            var cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
+            const cameraCaptureUI = new Windows.Media.Capture.CameraCaptureUI();
             cameraCaptureUI.videoSettings.allowTrimming = true;
             cameraCaptureUI.videoSettings.format = Windows.Media.Capture.CameraCaptureUIVideoFormat.mp4;
             cameraCaptureUI.videoSettings.maxDurationInSeconds = videoOptions.duration;
@@ -534,7 +534,7 @@ module.exports = {
                             function () {
                                 file.getBasicPropertiesAsync().then(
                                     function (basicProperties) {
-                                        var result = new MediaFile(
+                                        const result = new MediaFile(
                                             file.name,
                                             'ms-appdata:///local/' + file.name,
                                             file.contentType,
@@ -567,7 +567,7 @@ module.exports = {
     getFormatData: function (successCallback, errorCallback, args) {
         Windows.Storage.StorageFile.getFileFromPathAsync(args[0]).then(
             function (storageFile) {
-                var mediaTypeFlag = String(storageFile.contentType).split('/')[0].toLowerCase();
+                const mediaTypeFlag = String(storageFile.contentType).split('/')[0].toLowerCase();
                 if (mediaTypeFlag === 'audio') {
                     storageFile.properties.getMusicPropertiesAsync().then(
                         function (audioProperties) {
