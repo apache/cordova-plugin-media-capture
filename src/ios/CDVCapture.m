@@ -76,6 +76,7 @@
 
 @implementation CDVCapture
 @synthesize inUse;
+@synthesize saveToGallery;
 
 - (void)pluginInitialize
 {
@@ -220,6 +221,14 @@
         options = [NSDictionary dictionary];
     }
 
+    // option to save video to gallery or not
+    NSNumber* saveToGallery = [options objectForKey:@"saveToGallery"];
+    if([saveToGallery intValue] == 1) {
+        self.saveToGallery = YES;
+    } else {
+        self.saveToGallery = NO;
+    }
+
     // options could contain limit, duration and mode
     // taking more than one video (limit) is only supported if provide own controls via cameraOverlayView property
     NSNumber* duration = [options objectForKey:@"duration"];
@@ -280,14 +289,15 @@
 - (CDVPluginResult*)processVideo:(NSString*)moviePath forCallbackId:(NSString*)callbackId
 {
     // save the movie to photo album (only avail as of iOS 3.1)
-
-    /* don't need, it should automatically get saved
-     NSLog(@"can save %@: %d ?", moviePath, UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath));
-    if (&UIVideoAtPathIsCompatibleWithSavedPhotosAlbum != NULL && UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath) == YES) {
-        NSLog(@"try to save movie");
-        UISaveVideoAtPathToSavedPhotosAlbum(moviePath, nil, nil, nil);
-        NSLog(@"finished saving movie");
-    }*/
+    if(self.saveToGallery == YES) {
+        NSLog(@"can save %@: %d ?", moviePath, UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath));
+        if (&UIVideoAtPathIsCompatibleWithSavedPhotosAlbum != NULL && UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath) == YES) {
+            NSLog(@"try to save movie");
+            UISaveVideoAtPathToSavedPhotosAlbum(moviePath, nil, nil, nil);
+            NSLog(@"finished saving movie");
+        }
+    }
+     
     // create MediaFile object
     NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
     NSArray* fileArray = [NSArray arrayWithObject:fileDict];
