@@ -19,8 +19,8 @@
  *
  */
 
-var exec = require('cordova/exec');
-var helpers = require('./helpers');
+const exec = require('cordova/exec');
+const helpers = require('./helpers');
 
 /**
  * Launches a capture of different types.
@@ -31,7 +31,7 @@ var helpers = require('./helpers');
  * @param {CaptureVideoOptions} options
  */
 function _capture (type, successCallback, errorCallback, options) {
-    var win = function (pluginResult) {
+    const win = function (pluginResult) {
         successCallback(helpers.wrapMediaFiles(pluginResult));
     };
     exec(win, errorCallback, 'Capture', type, [options]);

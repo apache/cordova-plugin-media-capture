@@ -19,13 +19,13 @@
  *
  */
 
-var MediaFile = require('./MediaFile');
+const MediaFile = require('./MediaFile');
 
 function wrapMediaFiles (pluginResult) {
-    var mediaFiles = [];
-    var i;
+    const mediaFiles = [];
+    let i;
     for (i = 0; i < pluginResult.length; i++) {
-        var mediaFile = new MediaFile();
+        const mediaFile = new MediaFile();
         mediaFile.name = pluginResult[i].name;
 
         // Backwards compatibility
@@ -40,5 +40,5 @@ function wrapMediaFiles (pluginResult) {
 }
 
 module.exports = {
-    wrapMediaFiles: wrapMediaFiles
+    wrapMediaFiles
 };

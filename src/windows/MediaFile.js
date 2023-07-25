@@ -21,14 +21,14 @@
 
 /* global Windows */
 
-var MediaFileData = require('cordova-plugin-media-capture.MediaFileData');
-var CaptureError = require('cordova-plugin-media-capture.CaptureError');
+const MediaFileData = require('cordova-plugin-media-capture.MediaFileData');
+const CaptureError = require('cordova-plugin-media-capture.CaptureError');
 
 module.exports = {
     getFormatData: function (successCallback, errorCallback, args) {
         Windows.Storage.StorageFile.getFileFromPathAsync(this.fullPath).then(
             function (storageFile) {
-                var mediaTypeFlag = String(storageFile.contentType).split('/')[0].toLowerCase();
+                const mediaTypeFlag = String(storageFile.contentType).split('/')[0].toLowerCase();
                 if (mediaTypeFlag === 'audio') {
                     storageFile.properties.getMusicPropertiesAsync().then(
                         function (audioProperties) {
