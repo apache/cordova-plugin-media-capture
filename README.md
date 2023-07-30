@@ -352,6 +352,8 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - __duration__: The maximum duration of a video clip, in seconds.
 
+- __quality__: To allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
+
 ### Example
 
     // limit capture operation to 3 video clips
@@ -363,13 +365,13 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - The __limit__ property is ignored.  Only one video is recorded per invocation.
 
-- iOS supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality, value of `0.5` means medium quality, and value of `0` means low quality.
-  See [here](https://developer.apple.com/documentation/uikit/uiimagepickercontroller/1619154-videoquality?language=objc) for more details.
+- The __quality__ property can have a value of `0.5` for medium quality.
+
+- See [here](https://developer.apple.com/documentation/uikit/uiimagepickercontroller/1619154-videoquality?language=objc) for more details about the __quality__ property on iOS.
 
 ### Android Quirks
 
-- Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
-  See [here](http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY) for more details.
+- See [here](http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY) for more details about the __quality__ property on Android.
 
 ### Example ( w/ quality )
 
