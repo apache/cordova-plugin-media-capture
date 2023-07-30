@@ -272,10 +272,10 @@
                     pickerController.videoQuality = UIImagePickerControllerQualityTypeLow;
                     break;
                 case 5:
-                default:
                     pickerController.videoQuality = UIImagePickerControllerQualityTypeMedium;
                     break;
                 case 10:
+                default:
                     pickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
                     break;
             }
