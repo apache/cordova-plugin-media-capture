@@ -502,7 +502,7 @@
 - (NSDictionary*)getMediaDictionaryFromPath:(NSString*)fullPath ofType:(NSString*)type
 {
     NSFileManager* fileMgr = [[NSFileManager alloc] init];
-    NSMutableDictionary* fileDict = [NSMutableDictionary dictionaryWithCapacity:5];
+    NSMutableDictionary* fileDict = [NSMutableDictionary dictionaryWithCapacity:6];
 
     CDVFile *fs = [self.commandDelegate getCommandInstance:@"File"];
 
@@ -519,14 +519,15 @@
         [fileDict setObject:[url absoluteURL] forKey:@"localURL"];
     }
     // determine type
-    if (!type) {
+    NSString* mimeType = type;
+    if (!mimeType) {
         id command = [self.commandDelegate getCommandInstance:@"File"];
         if ([command isKindOfClass:[CDVFile class]]) {
             CDVFile* cdvFile = (CDVFile*)command;
-            NSString* mimeType = [cdvFile getMimeTypeFromPath:fullPath];
-            [fileDict setObject:(mimeType != nil ? (NSObject*)mimeType : [NSNull null]) forKey:@"type"];
+            mimeType = [cdvFile getMimeTypeFromPath:fullPath];
         }
     }
+    [fileDict setObject:(mimeType != nil ? (NSObject*)mimeType : [NSNull null]) forKey:@"type"];
     NSDictionary* fileAttrs = [fileMgr attributesOfItemAtPath:fullPath error:nil];
     [fileDict setObject:[NSNumber numberWithUnsignedLongLong:[fileAttrs fileSize]] forKey:@"size"];
     NSDate* modDate = [fileAttrs fileModificationDate];
@@ -926,7 +927,7 @@
     if (flag) {
         NSString* filePath = [avRecorder.url path];
         // NSLog(@"filePath: %@", filePath);
-        NSDictionary* fileDict = [captureCommand getMediaDictionaryFromPath:filePath ofType:@"audio/wav"];
+        NSDictionary* fileDict = [captureCommand getMediaDictionaryFromPath:filePath ofType:nil];
         NSArray* fileArray = [NSArray arrayWithObject:fileDict];
 
         self.pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
