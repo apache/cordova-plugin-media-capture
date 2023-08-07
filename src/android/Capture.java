@@ -384,6 +384,11 @@ public class Capture extends CordovaPlugin {
     public void onAudioActivityResult(Request req, Intent intent) {
         Uri srcContentUri = intent.getData();
 
+        if (srcContentUri == null) {
+            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: data is null"));
+            return;
+        }
+
         // Get file name
         String srcContentUriString = srcContentUri.toString();
         String fileName = srcContentUriString.substring(srcContentUriString.lastIndexOf('/') + 1);
@@ -410,11 +415,12 @@ public class Capture extends CordovaPlugin {
                     destFOS.write(buf, 0, length);
                 }
             } else {
-                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to copy recording to application cache directory."));
+                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to create new file to application cache directory."));
                 return;
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to copy recording to application cache directory."));
+            return;
         }
 
         LOG.d(LOG_TAG, "Recording file path: " + destFile);
@@ -428,7 +434,8 @@ public class Capture extends CordovaPlugin {
             mediaFile.put("lastModifiedDate", tmpRootFile.lastModified());
             mediaFile.put("size", tmpRootFile.length());
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: no mediaFile created from " + srcContentUri));
+            return;
         }
 
         req.results.put(mediaFile);
