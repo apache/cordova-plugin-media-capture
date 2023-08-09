@@ -782,7 +782,6 @@
     self.navigationItem.rightBarButtonItem = self.doneButton;
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     UIInterfaceOrientationMask orientation = UIInterfaceOrientationMaskPortrait;
