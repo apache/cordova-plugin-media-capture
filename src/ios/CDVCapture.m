@@ -613,7 +613,7 @@
 
 @end
 
-@interface CDVAudioRecorderViewController () {
+@interface CDVAudioRecorderViewController () <UIAdaptivePresentationControllerDelegate> {
     UIStatusBarStyle _previousStatusBarStyle;
 }
 @end
@@ -736,6 +736,9 @@
     [super viewDidLoad];
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     NSError* error = nil;
+
+    // Add delegate to catch the dismiss event
+    self.navigationController.presentationController.delegate = self;
 
     if (self.avSession == nil) {
         // create audio session
@@ -943,6 +946,10 @@
 
     NSLog(@"error recording audio");
     self.pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageToErrorObject:CAPTURE_INTERNAL_ERR];
+    [self dismissAudioView:nil];
+}
+
+- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController {
     [self dismissAudioView:nil];
 }
 
