@@ -895,8 +895,8 @@
 
 - (void) showMicrophonePermissionAlert {
     UIAlertController* controller =
-        [UIAlertController alertControllerWithTitle:@"Access denied"
-                                            message:@"Access to the microphone has been prohibited. Please enable it in the Settings app to continue."
+        [UIAlertController alertControllerWithTitle:PluginLocalizedString(captureCommand, @"Access denied", nil)
+                                            message:PluginLocalizedString(captureCommand, @"Access to the microphone has been prohibited. Please enable it in the Settings app to continue.", nil)
                                      preferredStyle:UIAlertControllerStyleAlert];
 
     UIAlertAction* actionOk = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];

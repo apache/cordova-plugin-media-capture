@@ -25,3 +25,7 @@
 "timed recording complete" = "timed recording complete";
 // accessibility hint for display of recorded elapsed time
 "recorded time in minutes and seconds" = "recorded time in minutes and seconds";
+// Access denied
+"Access denied" = "Access denied";
+// Microphone access has been prohibited
+"Access to the microphone has been prohibited. Please enable it in the Settings app to continue." = "Access to the microphone has been prohibited. Please enable it in the Settings app to continue.";

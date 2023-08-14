@@ -26,3 +26,7 @@
 "timed recording complete" = "inspelning har avslutad";
 // accessibility hint for display of recorded elapsed time
 "recorded time in minutes and seconds" = "inspelad tid in minuter och sekund";
+// Access denied
+"Access denied" = "Tillträde beviljas ej";
+// Microphone access has been prohibited
+"Access to the microphone has been prohibited. Please enable it in the Settings app to continue." = "Tillgång till mikrofonen har förbjudits. Aktivera det i appen Inställningar för att fortsätta.";
