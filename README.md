@@ -21,11 +21,9 @@ description: Capture audio, video, and images.
 #         under the License.
 -->
 
-|AppVeyor|Travis CI|
-|:-:|:-:|
-|[![Build status](https://ci.appveyor.com/api/projects/status/github/apache/cordova-plugin-media-capture?branch=master)](https://ci.appveyor.com/project/ApacheSoftwareFoundation/cordova-plugin-media-capture)|[![Build Status](https://travis-ci.org/apache/cordova-plugin-media-capture.svg?branch=master)](https://travis-ci.org/apache/cordova-plugin-media-capture)|
-
 # cordova-plugin-media-capture
+
+[![Android Testsuite](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/android.yml/badge.svg)](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/android.yml) [![Chrome Testsuite](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/chrome.yml/badge.svg)](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/chrome.yml) [![iOS Testsuite](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/ios.yml/badge.svg)](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/ios.yml) [![Lint Test](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/lint.yml/badge.svg)](https://github.com/apache/cordova-plugin-media-capture/actions/workflows/lint.yml)
 
 This plugin provides access to the device's audio, image, and video capture capabilities.
 
@@ -354,6 +352,8 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - __duration__: The maximum duration of a video clip, in seconds.
 
+- __quality__: To allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
+
 ### Example
 
     // limit capture operation to 3 video clips
@@ -365,12 +365,15 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 
 - The __limit__ property is ignored.  Only one video is recorded per invocation.
 
+- The __quality__ property can have a value of `0.5` for medium quality.
+
+- See [here](https://developer.apple.com/documentation/uikit/uiimagepickercontroller/1619154-videoquality?language=objc) for more details about the __quality__ property on iOS.
+
 ### Android Quirks
 
-- Android supports an additional __quality__ property, to allow capturing video at different qualities.  A value of `1` ( the default ) means high quality and value of `0` means low quality, suitable for MMS messages.
-  See [here](http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY) for more details.
+- See [here](http://developer.android.com/reference/android/provider/MediaStore.html#EXTRA_VIDEO_QUALITY) for more details about the __quality__ property on Android.
 
-### Example ( Android w/ quality )
+### Example ( w/ quality )
 
     // limit capture operation to 1 video clip of low quality
     var options = { limit: 1, quality: 0 };

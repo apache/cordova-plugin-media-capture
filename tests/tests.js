@@ -52,7 +52,7 @@ exports.defineAutoTests = function () {
 
         describe('CaptureAudioOptions', function () {
             it('capture.spec.6 CaptureAudioOptions constructor should exist', function () {
-                var options = new CaptureAudioOptions();
+                const options = new CaptureAudioOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
                 expect(options.duration).toBeDefined();
@@ -61,7 +61,7 @@ exports.defineAutoTests = function () {
 
         describe('CaptureImageOptions', function () {
             it('capture.spec.7 CaptureImageOptions constructor should exist', function () {
-                var options = new CaptureImageOptions();
+                const options = new CaptureImageOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
             });
@@ -69,7 +69,7 @@ exports.defineAutoTests = function () {
 
         describe('CaptureVideoOptions', function () {
             it('capture.spec.8 CaptureVideoOptions constructor should exist', function () {
-                var options = new CaptureVideoOptions();
+                const options = new CaptureVideoOptions();
                 expect(options).toBeDefined();
                 expect(options.limit).toBeDefined();
                 expect(options.duration).toBeDefined();
@@ -85,7 +85,7 @@ exports.defineAutoTests = function () {
             });
 
             it('capture.spec.10 CaptureError properties should exist', function () {
-                var error = new CaptureError();
+                const error = new CaptureError();
                 expect(error).toBeDefined();
                 expect(error.code).toBeDefined();
             });
@@ -93,7 +93,7 @@ exports.defineAutoTests = function () {
 
         describe('MediaFileData', function () {
             it('capture.spec.11 MediaFileData constructor should exist', function () {
-                var fileData = new MediaFileData();
+                const fileData = new MediaFileData();
                 expect(fileData).toBeDefined();
                 expect(fileData.bitrate).toBeDefined();
                 expect(fileData.codecs).toBeDefined();
@@ -105,7 +105,7 @@ exports.defineAutoTests = function () {
 
         describe('MediaFile', function () {
             it('capture.spec.12 MediaFile constructor should exist', function () {
-                var fileData = new MediaFile();
+                const fileData = new MediaFile();
                 expect(fileData).toBeDefined();
                 expect(fileData.name).toBeDefined();
                 expect(fileData.type).toBeDefined();
@@ -121,7 +121,7 @@ exports.defineAutoTests = function () {
 /******************************************************************************/
 
 exports.defineManualTests = function (contentEl, createActionButton) {
-    var pageStartTime = +new Date();
+    const pageStartTime = +new Date();
 
     function log (value) {
         document.getElementById('camera_status').textContent += (new Date() - pageStartTime) / 1000 + ': ' + value + '\n';
@@ -129,9 +129,9 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     }
 
     function captureAudioWin (mediaFiles) {
-        var path = mediaFiles[0].fullPath;
+        const path = mediaFiles[0].fullPath;
         log('Audio captured: ' + path);
-        var m = new Media(path);
+        const m = new Media(path);
         m.play();
         getFileMetadata(mediaFiles[0]);
     }
@@ -142,12 +142,12 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     function getAudio () {
         clearStatus();
-        var options = { limit: 1, duration: 10 };
+        const options = { limit: 1, duration: 10 };
         navigator.device.capture.captureAudio(captureAudioWin, captureAudioFail, options);
     }
 
     function captureImageWin (mediaFiles) {
-        var path = mediaFiles[0].fullPath;
+        let path = mediaFiles[0].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
         if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') {
             // eslint-disable-line no-undef
@@ -158,19 +158,19 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     }
 
     function captureImagesWin (mediaFiles) {
-        var path = mediaFiles[0].fullPath;
+        let path = mediaFiles[0].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
         if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') {
             // eslint-disable-line no-undef
             path = mediaFiles[0].localURL;
         }
-        var path2 = mediaFiles[1].fullPath;
+        const path2 = mediaFiles[1].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
         if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') {
             // eslint-disable-line no-undef
             path = mediaFiles[1].localURL;
         }
-        var path3 = mediaFiles[2].fullPath;
+        const path3 = mediaFiles[2].fullPath;
         // Necessary since windows doesn't allow file URLs for <img> elements
         if (cordova.platformId === 'windows' || cordova.platformId === 'windows8' || cordova.platformId === 'browser') {
             // eslint-disable-line no-undef
@@ -190,29 +190,29 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     function getImage () {
         clearStatus();
-        var options = { limit: 1 };
+        const options = { limit: 1 };
         navigator.device.capture.captureImage(captureImageWin, captureImageFail, options);
     }
 
     function getImages () {
         clearStatus();
-        var options = { limit: 3 };
+        const options = { limit: 3 };
         navigator.device.capture.captureImage(captureImagesWin, captureImageFail, options);
     }
 
     function captureVideoWin (mediaFiles) {
-        var path = mediaFiles[0].fullPath;
+        const path = mediaFiles[0].fullPath;
         log('Video captured: ' + path);
 
         // need to inject the video element into the html
         // doesn't seem to work if you have a pre-existing video element and
         // add in a source tag
-        var vid = document.createElement('video');
+        const vid = document.createElement('video');
         vid.id = 'theVideo';
         vid.width = '320';
         vid.height = '240';
         vid.controls = 'true';
-        var source_vid = document.createElement('source');
+        const source_vid = document.createElement('source');
         source_vid.id = 'theSource';
         source_vid.src = path;
         vid.appendChild(source_vid);
@@ -225,7 +225,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     }
 
     function getMetadataWin (metadata) {
-        var strMetadata = 'duration = ' + metadata.duration + '\n' + 'width = ' + metadata.width + '\n' + 'height = ' + metadata.height;
+        const strMetadata = 'duration = ' + metadata.duration + '\n' + 'width = ' + metadata.width + '\n' + 'height = ' + metadata.height;
         log(strMetadata);
     }
 
@@ -239,7 +239,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     function getVideo () {
         clearStatus();
-        var options = { limit: 1, duration: 10 };
+        const options = { limit: 1, duration: 10 };
         navigator.device.capture.captureVideo(captureVideoWin, captureVideoFail, options);
     }
 
@@ -256,12 +256,12 @@ exports.defineManualTests = function (contentEl, createActionButton) {
     }
 
     function getVideoPermissionError () {
-        var options = { limit: 1, duration: 10 };
+        const options = { limit: 1, duration: 10 };
         navigator.device.capture.captureVideo(permissionWasNotAllowed, catchPermissionError, options);
     }
 
     function getImagePermissionError () {
-        var options = { limit: 1 };
+        const options = { limit: 1 };
         navigator.device.capture.captureImage(permissionWasNotAllowed, catchPermissionError, options);
     }
 
@@ -297,7 +297,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     function resolveVideo () {
         clearStatus();
-        var options = { limit: 1, duration: 5 };
+        const options = { limit: 1, duration: 5 };
         navigator.device.capture.captureVideo(
             function (mediaFiles) {
                 captureVideoWin(mediaFiles);

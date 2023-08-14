@@ -28,7 +28,7 @@
  * @param {long} width
  * @param {float} duration
  */
-var MediaFileData = function (codecs, bitrate, height, width, duration) {
+const MediaFileData = function (codecs, bitrate, height, width, duration) {
     this.codecs = codecs || null;
     this.bitrate = bitrate || 0;
     this.height = height || 0;
