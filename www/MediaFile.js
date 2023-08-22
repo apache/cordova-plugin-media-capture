@@ -19,10 +19,10 @@
  *
  */
 
-var utils = require('cordova/utils');
-var exec = require('cordova/exec');
-var File = require('cordova-plugin-file.File');
-var CaptureError = require('./CaptureError');
+const utils = require('cordova/utils');
+const exec = require('cordova/exec');
+const File = require('cordova-plugin-file.File');
+const CaptureError = require('./CaptureError');
 /**
  * Represents a single file.
  *
@@ -32,7 +32,7 @@ var CaptureError = require('./CaptureError');
  * lastModifiedDate {Date} last modified date
  * size {Number} size of the file in bytes
  */
-var MediaFile = function (name, localURL, type, lastModifiedDate, size) {
+const MediaFile = function (name, localURL, type, lastModifiedDate, size) {
     MediaFile.__super__.constructor.apply(this, arguments);
 };
 

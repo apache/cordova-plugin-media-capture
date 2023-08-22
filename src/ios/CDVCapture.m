@@ -272,10 +272,10 @@
                     pickerController.videoQuality = UIImagePickerControllerQualityTypeLow;
                     break;
                 case 5:
-                default:
                     pickerController.videoQuality = UIImagePickerControllerQualityTypeMedium;
                     break;
                 case 10:
+                default:
                     pickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
                     break;
             }
@@ -676,6 +676,8 @@
         }
     }
 
+    [self.avSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
+    
     // create file to record to in temporary dir
 
     NSString* docsPath = [NSTemporaryDirectory()stringByStandardizingPath];   // use file system temporary directory
@@ -709,7 +711,6 @@
 }
 
 -(void) setupUI {
-
     CGRect viewRect = self.view.bounds;
     CGFloat topInset = self.navigationController.navigationBar.frame.size.height;
     CGFloat bottomInset = 10;
@@ -804,7 +805,6 @@
         __weak CDVAudioRecorderViewController* weakSelf = self;
 
         void (^startRecording)(void) = ^{
-            [weakSelf.avSession setCategory:AVAudioSessionCategoryRecord error:&error];
             [weakSelf.avSession setActive:YES error:&error];
             if (error) {
                 // can't continue without active audio session
@@ -883,8 +883,8 @@
 
 - (void) showMicrophonePermissionAlert {
     UIAlertController* controller =
-        [UIAlertController alertControllerWithTitle:@"Access denied"
-                                            message:@"Access to the microphone has been prohibited. Please enable it in the Settings app to continue."
+        [UIAlertController alertControllerWithTitle:PluginLocalizedString(captureCommand, @"Access denied", nil)
+                                            message:PluginLocalizedString(captureCommand, @"Access to the microphone has been prohibited. Please enable it in the Settings app to continue.", nil)
                                      preferredStyle:UIAlertControllerStyleAlert];
 
     UIAlertAction* actionOk = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
@@ -966,15 +966,14 @@
     [self dismissAudioView:nil];
 }
 
+- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController {
+    [self dismissAudioView:nil];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-
     [self setupUI];
-}
-
-- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController {
-    [self dismissAudioView:nil];
 }
 
 @end

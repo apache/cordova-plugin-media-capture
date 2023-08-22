@@ -20,6 +20,38 @@
 -->
 # Release Notes
 
+### 5.0.0 (Aug 14, 2023)
+
+**Breaking Changes:**
+
+* [GH-274](https://github.com/apache/cordova-plugin-media-capture/pull/274) feat(android)!: bump file & **Android** requirements
+* [GH-262](https://github.com/apache/cordova-plugin-media-capture/pull/262) feat(android)!: support API 33+ permissions
+
+**Features:**
+
+* [GH-214](https://github.com/apache/cordova-plugin-media-capture/pull/214) feat(ios): support capture '`quality`' param for videos
+* [GH-256](https://github.com/apache/cordova-plugin-media-capture/pull/256) feat(ios): improve `Localizable.strings` & add `FR`
+
+**Fixes:**
+
+* [GH-184](https://github.com/apache/cordova-plugin-media-capture/pull/184) fix(ios): UI issues with main thread and added alert for permission.
+* [GH-279](https://github.com/apache/cordova-plugin-media-capture/pull/279) fix(ios): UI sizing of the audio capture controller according to parent view size
+* [GH-278](https://github.com/apache/cordova-plugin-media-capture/pull/278) fix(ios): `CAPTURE_APPLICATION_BUSY` error when dismissing modal by swipe
+* [GH-197](https://github.com/apache/cordova-plugin-media-capture/pull/197) fix(ios): set type attribute for captured audio
+* [GH-232](https://github.com/apache/cordova-plugin-media-capture/pull/232) fix(android): prevent app crash caused by NPE on intent data or `mediaFile`
+* [GH-195](https://github.com/apache/cordova-plugin-media-capture/pull/195) fix(MediaFiles): return missing '`lastModified`' and '`end`' attributes
+* [GH-212](https://github.com/apache/cordova-plugin-media-capture/pull/212) fix: use single version in `cordovaDependencies`
+* [GH-269](https://github.com/apache/cordova-plugin-media-capture/pull/269) fix(ios): set category before creating `AVAudioRecorder`
+
+**Other Changes:**
+
+* [GH-276](https://github.com/apache/cordova-plugin-media-capture/pull/276) dep: bump `@cordova/eslint-config@^5.0.0` w/ lint fix & `package-lock` rebuild
+* [GH-270](https://github.com/apache/cordova-plugin-media-capture/pull/270) chore: Update `SUPPORT_QUESTION.md` template
+* [GH-252](https://github.com/apache/cordova-plugin-media-capture/pull/252) chore(npm): rebuilt `package-lock`
+* [GH-273](https://github.com/apache/cordova-plugin-media-capture/pull/273) ci: sync github action workflow w/ paramedic base configs
+* [GH-254](https://github.com/apache/cordova-plugin-media-capture/pull/254) ci: sync workflow with paramedic
+* [GH-251](https://github.com/apache/cordova-plugin-media-capture/pull/251) ci(android): update java requirement for `cordova-android@11`
+
 ### 4.0.0 (May 25, 2022)
 
 * [GH-238](https://github.com/apache/cordova-plugin-media-capture/pull/238) dep!: bump `cordova-plugin-file@^7.0.0`
