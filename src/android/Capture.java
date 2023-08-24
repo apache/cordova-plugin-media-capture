@@ -408,22 +408,21 @@ public class Capture extends CordovaPlugin {
             File tmpRootFile = new File(destFile);
 
             try {
-                // If file exists
-                if (tmpRootFile.createNewFile()) {
-                    FileOutputStream destFOS = new FileOutputStream(tmpRootFile);
-
-                    byte[] buf = new byte[8192];
-                    int length;
-
-                    ContentResolver srcContentResolver = cordova.getContext().getContentResolver();
-                    InputStream srcIS = srcContentResolver.openInputStream(srcContentUri);
-
-                    while ((length = srcIS.read(buf)) != -1) {
-                        destFOS.write(buf, 0, length);
-                    }
-                } else {
+                boolean tmpRootFileCreated = tmpRootFile.createNewFile();
+                if (!tmpRootFileCreated) {
+                    // If file exists
                     pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to create new file to application cache directory."));
                     return;
+                }
+                try (FileOutputStream destFOS = new FileOutputStream(tmpRootFile)) {
+                    ContentResolver srcContentResolver = cordova.getContext().getContentResolver();
+                    try (InputStream srcIS = srcContentResolver.openInputStream(srcContentUri)) {
+                        byte[] buf = new byte[8192];
+                        int length;
+                        while ((length = srcIS.read(buf)) != -1) {
+                            destFOS.write(buf, 0, length);
+                        }
+                    }
                 }
             } catch (IOException e) {
                 pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to copy recording to application cache directory."));
