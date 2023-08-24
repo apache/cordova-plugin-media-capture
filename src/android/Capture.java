@@ -382,60 +382,68 @@ public class Capture extends CordovaPlugin {
     }
 
     public void onAudioActivityResult(Request req, Intent intent) {
-        Uri srcContentUri = intent.getData();
-
-        if (srcContentUri == null) {
+        // Get the uri of the audio clip
+        Uri data = intent.getData();
+        if (data == null) {
             pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: data is null"));
             return;
         }
 
-        // Get file name
-        String srcContentUriString = srcContentUri.toString();
-        String fileName = srcContentUriString.substring(srcContentUriString.lastIndexOf('/') + 1);
+        // Create a file object from the uri
+        JSONObject mediaFile = createMediaFile(data);
+        if (mediaFile == null) {
+            // error, but try to fallback copying the captured file into app cache dir
 
-        // Create dest file path
-        String tempRoot = cordova.getActivity().getCacheDir().getAbsolutePath();
-        String destFile = tempRoot + "/" + fileName;
+            Uri srcContentUri = data;
 
-        // Create dest file
-        File tmpRootFile = new File(destFile);
+            // Get file name
+            String srcContentUriString = srcContentUri.toString();
+            String fileName = srcContentUriString.substring(srcContentUriString.lastIndexOf('/') + 1);
 
-        try {
-            // If file exists
-            if (tmpRootFile.createNewFile()) {
-                FileOutputStream destFOS = new FileOutputStream(tmpRootFile);
+            // Create dest file path
+            String tempRoot = cordova.getActivity().getCacheDir().getAbsolutePath();
+            String destFile = tempRoot + "/" + fileName;
 
-                byte[] buf = new byte[8192];
-                int length;
+            // Create dest file
+            File tmpRootFile = new File(destFile);
 
-                ContentResolver srcContentResolver = cordova.getContext().getContentResolver();
-                InputStream srcIS = srcContentResolver.openInputStream(srcContentUri);
+            try {
+                // If file exists
+                if (tmpRootFile.createNewFile()) {
+                    FileOutputStream destFOS = new FileOutputStream(tmpRootFile);
 
-                while ((length = srcIS.read(buf)) != -1) {
-                    destFOS.write(buf, 0, length);
+                    byte[] buf = new byte[8192];
+                    int length;
+
+                    ContentResolver srcContentResolver = cordova.getContext().getContentResolver();
+                    InputStream srcIS = srcContentResolver.openInputStream(srcContentUri);
+
+                    while ((length = srcIS.read(buf)) != -1) {
+                        destFOS.write(buf, 0, length);
+                    }
+                } else {
+                    pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to create new file to application cache directory."));
+                    return;
                 }
-            } else {
-                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to create new file to application cache directory."));
+            } catch (IOException e) {
+                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to copy recording to application cache directory."));
                 return;
             }
-        } catch (IOException e) {
-            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to copy recording to application cache directory."));
-            return;
-        }
 
-        LOG.d(LOG_TAG, "Recording file path: " + destFile);
+            LOG.d(LOG_TAG, "Recording file path: " + destFile);
 
-        JSONObject mediaFile = new JSONObject();
-        try {
-            // File properties
-            mediaFile.put("name", tmpRootFile.getName());
-            mediaFile.put("fullPath", destFile);
-            mediaFile.put("type", FileHelper.getMimeType(Uri.fromFile(tmpRootFile), cordova));
-            mediaFile.put("lastModifiedDate", tmpRootFile.lastModified());
-            mediaFile.put("size", tmpRootFile.length());
-        } catch (JSONException e) {
-            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: no mediaFile created from " + srcContentUri));
-            return;
+            mediaFile = new JSONObject();
+            try {
+                // File properties
+                mediaFile.put("name", tmpRootFile.getName());
+                mediaFile.put("fullPath", destFile);
+                mediaFile.put("type", FileHelper.getMimeType(Uri.fromFile(tmpRootFile), cordova));
+                mediaFile.put("lastModifiedDate", tmpRootFile.lastModified());
+                mediaFile.put("size", tmpRootFile.length());
+            } catch (JSONException e) {
+                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: no mediaFile created from " + srcContentUri));
+                return;
+            }
         }
 
         req.results.put(mediaFile);
