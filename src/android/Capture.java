@@ -75,11 +75,10 @@ public class Capture extends CordovaPlugin {
     private static final int CAPTURE_PERMISSION_DENIED = 4;
     private static final int CAPTURE_NOT_SUPPORTED = 20;
 
-    private static String[] storagePermissions;
+    private static final String[] storagePermissions;
     static {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            storagePermissions = new String[]{
-            };
+            storagePermissions = new String[] {};
         } else {
             storagePermissions = new String[] {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
