@@ -76,6 +76,18 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             </feature>
         </config-file>
 
+        <config-file target="AndroidManifest.xml" parent="queries">
+            <intent>
+                <action android:name="android.provider.MediaStore.RECORD_SOUND" />
+            </intent>
+            <intent>
+                <action android:name="android.media.action.IMAGE_CAPTURE" />
+            </intent>
+            <intent>
+                <action android:name="android.media.action.VIDEO_CAPTURE" />
+            </intent>
+        </config-file>
+
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
             <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />

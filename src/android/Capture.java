@@ -18,8 +18,13 @@
 */
 package org.apache.cordova.mediacapture;
 
+import static org.apache.cordova.mediacapture.FileHelper.AUDIO_3GPP;
+import static org.apache.cordova.mediacapture.FileHelper.AUDIO_MP4;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -59,8 +64,7 @@ public class Capture extends CordovaPlugin {
 
     private static final String VIDEO_3GPP = "video/3gpp";
     private static final String VIDEO_MP4 = "video/mp4";
-    private static final String AUDIO_3GPP = "audio/3gpp";
-    private static final String[] AUDIO_TYPES = new String[] {"audio/3gpp", "audio/aac", "audio/amr", "audio/wav"};
+    private static final String[] AUDIO_TYPES = new String[] {AUDIO_3GPP, "audio/aac", "audio/amr", "audio/wav", AUDIO_MP4};
     private static final String IMAGE_JPEG = "image/jpeg";
 
     private static final int CAPTURE_AUDIO = 0;     // Constant for capture audio
@@ -376,7 +380,6 @@ public class Capture extends CordovaPlugin {
         }
     }
 
-
     public void onAudioActivityResult(Request req, Intent intent) {
         // Get the uri of the audio clip
         Uri data = intent.getData();
@@ -388,8 +391,57 @@ public class Capture extends CordovaPlugin {
         // Create a file object from the uri
         JSONObject mediaFile = createMediaFile(data);
         if (mediaFile == null) {
-            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: no mediaFile created from " + data));
-            return;
+            // error, but try to fallback copying the captured file into app cache dir
+
+            Uri srcContentUri = data;
+
+            // Get file name
+            String srcContentUriString = srcContentUri.toString();
+            String fileName = srcContentUriString.substring(srcContentUriString.lastIndexOf('/') + 1);
+
+            // Create dest file path
+            String tempRoot = cordova.getActivity().getCacheDir().getAbsolutePath();
+            String destFile = tempRoot + "/" + fileName;
+
+            // Create dest file
+            File tmpRootFile = new File(destFile);
+
+            try {
+                boolean tmpRootFileCreated = tmpRootFile.createNewFile();
+                if (!tmpRootFileCreated) {
+                    // If file exists
+                    pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to create new file to application cache directory."));
+                    return;
+                }
+                try (FileOutputStream destFOS = new FileOutputStream(tmpRootFile)) {
+                    ContentResolver srcContentResolver = cordova.getContext().getContentResolver();
+                    try (InputStream srcIS = srcContentResolver.openInputStream(srcContentUri)) {
+                        byte[] buf = new byte[8192];
+                        int length;
+                        while ((length = srcIS.read(buf)) != -1) {
+                            destFOS.write(buf, 0, length);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: failed to copy recording to application cache directory."));
+                return;
+            }
+
+            LOG.d(LOG_TAG, "Recording file path: " + destFile);
+
+            mediaFile = new JSONObject();
+            try {
+                // File properties
+                mediaFile.put("name", tmpRootFile.getName());
+                mediaFile.put("fullPath", destFile);
+                mediaFile.put("type", FileHelper.getMimeType(Uri.fromFile(tmpRootFile), cordova));
+                mediaFile.put("lastModifiedDate", tmpRootFile.lastModified());
+                mediaFile.put("size", tmpRootFile.length());
+            } catch (JSONException e) {
+                pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: no mediaFile created from " + srcContentUri));
+                return;
+            }
         }
 
         req.results.put(mediaFile);
