@@ -77,7 +77,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/*">
-            <uses-permission android:name="android.permission.RECORD_AUDIO" />
             <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
             <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
             <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
