@@ -236,8 +236,8 @@ public class Capture extends CordovaPlugin {
     }
 
     private boolean isMissingPermissions(Request req, List<String> permissions) {
-        ArrayList<String> missingPermissions = new ArrayList<>();
-        for (String permission: permissions) {
+        List<String> missingPermissions = new ArrayList<>();
+        for (String permission : permissions) {
             if (!PermissionHelper.hasPermission(this, permission)) {
                 missingPermissions.add(permission);
             }
@@ -256,7 +256,7 @@ public class Capture extends CordovaPlugin {
     }
 
     private boolean isMissingCameraPermissions(Request req) {
-        ArrayList<String> cameraPermissions = new ArrayList<>(Arrays.asList(storagePermissions));
+        List<String> cameraPermissions = new ArrayList<>(Arrays.asList(storagePermissions));
         if (cameraPermissionInManifest) {
             cameraPermissions.add(Manifest.permission.CAMERA);
         }
