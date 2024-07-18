@@ -30,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -237,9 +238,9 @@ public class Capture extends CordovaPlugin {
         return obj;
     }
 
-    private boolean isMissingPermissions(Request req, ArrayList<String> permissions) {
-        ArrayList<String> missingPermissions = new ArrayList<>();
-        for (String permission: permissions) {
+    private boolean isMissingPermissions(Request req, List<String> permissions) {
+        List<String> missingPermissions = new ArrayList<>();
+        for (String permission : permissions) {
             if (!PermissionHelper.hasPermission(this, permission)) {
                 missingPermissions.add(permission);
             }
@@ -253,21 +254,14 @@ public class Capture extends CordovaPlugin {
         return isMissingPermissions;
     }
 
-    private boolean isMissingPermissions(Request req, String mediaPermission) {
-        ArrayList<String> permissions = new ArrayList<>(Arrays.asList(storagePermissions));
-        if (mediaPermission != null && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissions.add(mediaPermission);
-        }
-        return isMissingPermissions(req, permissions);
+    private boolean isMissingPermissions(Request req) {
+        return isMissingPermissions(req, Arrays.asList(storagePermissions));
     }
 
-    private boolean isMissingCameraPermissions(Request req, String mediaPermission) {
-        ArrayList<String> cameraPermissions = new ArrayList<>(Arrays.asList(storagePermissions));
+    private boolean isMissingCameraPermissions(Request req) {
+        List<String> cameraPermissions = new ArrayList<>(Arrays.asList(storagePermissions));
         if (cameraPermissionInManifest) {
             cameraPermissions.add(Manifest.permission.CAMERA);
-        }
-        if (mediaPermission != null && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            cameraPermissions.add(mediaPermission);
         }
         return isMissingPermissions(req, cameraPermissions);
     }
@@ -276,7 +270,7 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture audio.  Result handled by onActivityResult()
      */
     private void captureAudio(Request req) {
-        if (isMissingPermissions(req, Manifest.permission.READ_MEDIA_AUDIO)) return;
+        if (isMissingPermissions(req)) return;
 
         try {
             Intent intent = new Intent(android.provider.MediaStore.Audio.Media.RECORD_SOUND_ACTION);
@@ -290,7 +284,7 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture images.  Result handled by onActivityResult()
      */
     private void captureImage(Request req) {
-        if (isMissingCameraPermissions(req, Manifest.permission.READ_MEDIA_IMAGES)) return;
+        if (isMissingCameraPermissions(req)) return;
 
         // Save the number of images currently on disk for later
         this.numPics = queryImgDB(whichContentStore()).getCount();
@@ -312,7 +306,7 @@ public class Capture extends CordovaPlugin {
      * Sets up an intent to capture video.  Result handled by onActivityResult()
      */
     private void captureVideo(Request req) {
-        if (isMissingCameraPermissions(req, Manifest.permission.READ_MEDIA_VIDEO)) return;
+        if (isMissingCameraPermissions(req)) return;
 
         Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
 
