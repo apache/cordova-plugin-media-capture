@@ -421,7 +421,7 @@ public class Capture extends CordovaPlugin {
 
         req.results.put(mediaFile);
 
-        checkForDuplicateImage();
+        // checkForDuplicateImage();
 
         if (req.results.length() >= req.limit) {
             // Send Uri back to JavaScript for viewing image
