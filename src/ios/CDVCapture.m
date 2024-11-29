@@ -76,10 +76,12 @@
 
 @implementation CDVCapture
 @synthesize inUse;
+@synthesize jpegCompression;
 
 - (void)pluginInitialize
 {
     self.inUse = NO;
+    self.jpegCompression = 0.5;
 }
 
 - (void)captureAudio:(CDVInvokedUrlCommand*)command
@@ -128,9 +130,16 @@
         options = [NSDictionary dictionary];
     }
 
-    // options could contain limit and mode neither of which are supported at this time
+    // options could contain limit, mode and quality
     // taking more than one picture (limit) is only supported if provide own controls via cameraOverlayView property
     // can support mode in OS
+    NSNumber* quality = [options objectForKey:@"quality"];
+    if (quality) {
+        CGFloat qualityValue = [quality floatValue];
+        if (qualityValue >= 0 && qualityValue <= 1) {
+            self.jpegCompression = qualityValue;
+        }
+    }
 
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         NSLog(@"Capture.imageCapture: camera not available.");
@@ -179,7 +188,7 @@
     if (mimeType && [mimeType isEqualToString:@"image/png"]) {
         data = UIImagePNGRepresentation(image);
     } else {
-        data = UIImageJPEGRepresentation(image, 0.5);
+        data = UIImageJPEGRepresentation(image, self.jpegCompression);
     }
 
     // write to temp directory and return URI
