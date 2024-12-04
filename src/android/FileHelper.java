@@ -27,6 +27,9 @@ import java.util.Locale;
 
 // TODO: Replace with CordovaResourceApi.getMimeType() post 3.1.
 public class FileHelper {
+    static final String AUDIO_3GPP = "audio/3gpp";
+    static final String AUDIO_MP4 = "audio/mp4";
+
     public static String getMimeTypeForExtension(String path) {
         String extension = path;
         int lastDot = extension.lastIndexOf('.');
@@ -36,7 +39,9 @@ public class FileHelper {
         // Convert the URI string to lower case to ensure compatibility with MimeTypeMap (see CB-2185).
         extension = extension.toLowerCase(Locale.getDefault());
         if (extension.equals("3ga")) {
-            return "audio/3gpp";
+            return AUDIO_3GPP;
+        } else if (extension.equals("m4a")) {
+            return AUDIO_MP4;
         }
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
     }
