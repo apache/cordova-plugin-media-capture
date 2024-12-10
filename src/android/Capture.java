@@ -258,10 +258,7 @@ public class Capture extends CordovaPlugin {
     }
 
     private String getTempDirectoryPath() {
-        File cache = null;
-
-        // Use internal storage
-        cache = cordova.getActivity().getCacheDir();
+        File cache = new File(cordova.getActivity().getCacheDir(), "org.apache.cordova.mediacapture");
 
         // Create the cache directory if it doesn't exist
         cache.mkdirs();
