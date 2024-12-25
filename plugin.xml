@@ -88,11 +88,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             </provider>
         </config-file>
 
-        <config-file target="AndroidManifest.xml" parent="/*">
-            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-        </config-file>
-
         <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
         <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
         <source-file src="src/android/PendingRequests.java" target-dir="src/org/apache/cordova/mediacapture" />
