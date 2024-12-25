@@ -94,7 +94,6 @@ public class Capture extends CordovaPlugin {
 
     private final PendingRequests pendingRequests = new PendingRequests();
 
-    private int numPics;                            // Number of pictures before capture activity
     private String audioAbsolutePath;
     private String imageAbsolutePath;
     private String videoAbsolutePath;
@@ -295,9 +294,6 @@ public class Capture extends CordovaPlugin {
     private void captureImage(Request req) {
         if (isMissingCameraPermissions(req)) return;
 
-        // Save the number of images currently on disk for later
-        this.numPics = queryImgDB(whichContentStore()).getCount();
-
         Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
@@ -428,8 +424,6 @@ public class Capture extends CordovaPlugin {
 
         req.results.put(mediaFile);
 
-        checkForDuplicateImage();
-
         if (req.results.length() >= req.limit) {
             // Send Uri back to JavaScript for viewing image
             pendingRequests.resolveWithSuccess(req);
@@ -527,38 +521,6 @@ public class Capture extends CordovaPlugin {
             // This will never happen
         }
         return obj;
-    }
-
-    /**
-     * Creates a cursor that can be used to determine how many images we have.
-     *
-     * @return a cursor
-     */
-    private Cursor queryImgDB(Uri contentStore) {
-        return this.cordova.getActivity().getContentResolver().query(
-            contentStore,
-            new String[] { MediaStore.Images.Media._ID },
-            null,
-            null,
-            null);
-    }
-
-    /**
-     * Used to find out if we are in a situation where the Camera Intent adds to images
-     * to the content store.
-     */
-    private void checkForDuplicateImage() {
-        Uri contentStore = whichContentStore();
-        Cursor cursor = queryImgDB(contentStore);
-        int currentNumOfImages = cursor.getCount();
-
-        // delete the duplicate file if the difference is 2
-        if ((currentNumOfImages - numPics) == 2) {
-            cursor.moveToLast();
-            int id = Integer.valueOf(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media._ID))) - 1;
-            Uri uri = Uri.parse(contentStore + "/" + id);
-            this.cordova.getActivity().getContentResolver().delete(uri, null, null);
-        }
     }
 
     /**
