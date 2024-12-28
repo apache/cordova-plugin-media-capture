@@ -28,9 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Date;
 
 import org.apache.cordova.CallbackContext;
@@ -48,20 +46,15 @@ import org.json.JSONObject;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
-import android.icu.util.Output;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.system.Os;
 import android.system.OsConstants;
 
@@ -329,11 +322,8 @@ public class Capture extends CordovaPlugin {
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, videoUri);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         LOG.d(LOG_TAG, "Recording a video and saving to: " + this.videoAbsolutePath);
-
-        if(Build.VERSION.SDK_INT > 7){
-            intent.putExtra("android.intent.extra.durationLimit", req.duration);
-            intent.putExtra("android.intent.extra.videoQuality", req.quality);
-        }
+        intent.putExtra("android.intent.extra.durationLimit", req.duration);
+        intent.putExtra("android.intent.extra.videoQuality", req.quality);
         this.cordova.startActivityForResult((CordovaPlugin) this, intent, req.requestCode);
     }
 
@@ -555,18 +545,6 @@ public class Capture extends CordovaPlugin {
             // This will never happen
         }
         return obj;
-    }
-
-    /**
-     * Determine if we are storing the images in internal or external storage
-     * @return Uri
-     */
-    private Uri whichContentStore() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            return android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        } else {
-            return android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI;
-        }
     }
 
     private void executeRequest(Request req) {
