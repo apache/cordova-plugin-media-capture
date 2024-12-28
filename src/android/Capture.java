@@ -417,19 +417,15 @@ public class Capture extends CordovaPlugin {
             while ((bytesRead = input.read(buffer)) != -1) {
                 output.write(buffer, 0, bytesRead);
             }
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: Unable to read input audio: File not found"));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: Unable to read input audio"));
-        }
-        finally {
+        } finally {
             try {
                 if (output != null) output.close();
                 if (input != null) input.close();
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: Unable to copy input audio"));
             }
         }
