@@ -339,8 +339,8 @@ public class Capture extends CordovaPlugin {
     public void onActivityResult(int requestCode, int resultCode, final Intent intent) {
         final Request req = pendingRequests.get(requestCode);
 
-        // Result received okay
-        if (resultCode == Activity.RESULT_OK) {
+        // Result received okay or the capture image intent has been cancelled
+        if (resultCode == Activity.RESULT_OK || (req.action == CAPTURE_IMAGE && intent == null)) {
             Runnable processActivityResult = new Runnable() {
                 @Override
                 public void run() {
@@ -443,6 +443,17 @@ public class Capture extends CordovaPlugin {
         JSONObject mediaFile = createMediaFileWithAbsolutePath(this.imageAbsolutePath);
         if (mediaFile == null) {
             pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: no mediaFile created from " + this.imageAbsolutePath));
+            return;
+        }
+
+        long size = 0;
+        try {
+            size = mediaFile.getLong("size");
+        } catch (JSONException e) {
+            // noop
+        }
+        if (size == 0) {
+            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_NO_MEDIA_FILES, "Error: file is empty"));
             return;
         }
 
