@@ -58,7 +58,7 @@
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
-
+ 
 - (UIViewController*)childViewControllerForStatusBarHidden {
     return nil;
 }
