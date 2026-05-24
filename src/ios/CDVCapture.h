@@ -31,6 +31,7 @@ enum CDVCaptureError {
     CAPTURE_PERMISSION_DENIED = 4,
     CAPTURE_NOT_SUPPORTED = 20
 };
+
 typedef NSUInteger CDVCaptureError;
 
 @interface CDVImagePicker : UIImagePickerController
@@ -49,8 +50,10 @@ typedef NSUInteger CDVCaptureError;
 {
     CDVImagePicker* pickerController;
     BOOL inUse;
+    BOOL saveVideoToGallery;
 }
 @property BOOL inUse;
+@property BOOL saveVideoToGallery;
 - (void)captureAudio:(CDVInvokedUrlCommand*)command;
 - (void)captureImage:(CDVInvokedUrlCommand*)command;
 - (CDVPluginResult*)processImage:(UIImage*)image type:(NSString*)mimeType forCallbackId:(NSString*)callbackId;
@@ -117,3 +120,5 @@ typedef NSUInteger CDVCaptureError;
 - (NSString*)formatTime:(int)interval;
 - (void)updateTime;
 @end
+
+
