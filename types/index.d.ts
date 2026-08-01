@@ -155,6 +155,10 @@ interface VideoOptions {
     limit?: number;
     /** The maximum duration of a video clip, in seconds. */
     duration?: number;
+    /** Set 1 in case you want to use front facing camera for video capture. */
+    frontFacing?: number;
+    /** Set 1 in case you want to use save video to gallery for video capture. */
+    saveToGallery?: number;
 }
 
 /** Encapsulates a set of media capture parameters that a device supports. */
