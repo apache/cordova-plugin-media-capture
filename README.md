@@ -340,6 +340,8 @@ capturing a video clip, the `CaptureErrorCB` callback executes with a
 ### iOS Quirks
 
 - The __limit__ parameter is not supported, and only one image is taken per invocation.
+- iOS supports an additional __quality__ property, to allow modification of the JPEG compression quality.  The value must be greather than or equal to 0 and less than or equal to 1 (defaults to 0.5).
+See [here](https://developer.apple.com/reference/uikit/1624115-uiimagejpegrepresentation?language=objc) for more details.
 
 
 ## CaptureVideoOptions
